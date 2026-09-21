@@ -1,7 +1,16 @@
 {
-  "name": "datasuite-countdown",
+  "name": "countdown-analytics",
   "displayName": "Countdown Analytics",
-  "description": "A DataSuite Shiny Apps for Countdown Analysis.",
+  "description": "Countdown to 2030 Shiny apps (RMNCAH, Vaxx, Pooled) and AI assistant tools for DataSuite.",
+  "keywords": [
+    "countdown",
+    "cd2030",
+    "rmncah",
+    "immunization",
+    "shiny",
+    "r",
+    "datasuite"
+  ],
   "version": "2.0.0",
   "publisher": "datasuite",
   "license": "MIT",
