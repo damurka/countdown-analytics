@@ -1,0 +1,229 @@
+.main-header .navbar-brand{
+  margin: 0;
+}
+
+.main-header .navbar-custom-menu .navbar-nav > li > a.btn {
+    background-color: #2c3e50 !important; /* Flatly primary color */
+    color: white !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important;
+    line-height: 1.5 !important;
+  }
+
+.content-header {
+  padding: 0;
+}
+
+.content-header>.right-buttons{
+  float: right;
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  padding: 7px 5px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.content-body {
+  min-height: 250px;
+  padding: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.content-body>.wrapper-content {
+  padding: 15px 0 0 0;
+}
+
+.content-body>.wrapper-content>.col-sm-12 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.content-body > .wrapper-content>.col-sm-6:first-child {
+  padding-left: 0;
+  padding-right: 7.5px;
+}
+
+.content-body > .wrapper-content>.col-sm-6:last-child {
+  padding-left: 7.5px;
+  padding-right: 0;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+a.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+  text-decoration: none; /* Remove underline */
+  cursor: not-allowed; /* Show a "not-allowed" cursor */
+}
+
+.cd-plot-wrap {
+  position: relative;
+  padding-top: 12px;
+}
+
+.cd-toolbox {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 50;
+
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  background: transparent;
+}
+
+.cd-toolbox .shiny-html-output,
+.cd-toolbox .cd-download-wrap {
+  display: inline-block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cd-toolbox .btn.btn-plot {
+  padding: 4px 6px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  font-size: 0;   /* hide label */
+  line-height: 1;
+}
+
+/* icon default */
+.cd-toolbox .btn.btn-plot i {
+  font-size: 16px;
+  color: #6b778c;
+}
+
+/* NO background on hover/focus — icon color only */
+.cd-toolbox .btn.btn-plot:hover,
+.cd-toolbox .btn.btn-plot:focus,
+.cd-toolbox .btn.btn-plot:active,
+.cd-toolbox .btn.btn-plot:active:focus {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* icon hover/focus */
+.cd-toolbox .btn.btn-plot:hover i,
+.cd-toolbox .btn.btn-plot:focus i,
+.cd-toolbox .btn.btn-plot:active i {
+  color: #3b4a66;
+}
+
+
+
+.main-sidebar {
+  z-index: 810;  /* keep above content */
+}
+
+/* Page background */
+.content-wrapper,
+.right-side,
+.content {
+  background-color: #f5f5f6 !important;
+}
+
+.control-label {
+  color: #000 !important;
+}
+
+/* Header + logo */
+.skin-green .main-header .logo,
+.skin-green .main-header .navbar {
+  background-color: #656565 !important;
+}
+
+/* Sidebar base */
+.skin-green .main-sidebar,
+.skin-green .left-side {
+  background-color: #f5f5f6 !important;
+  color: #000 !important;
+  border-right: 1px solid #9b5758;
+}
+
+/* Sidebar links */
+.skin-green .sidebar a,
+.skin-green .sidebar-menu > li > a {
+  color: #000 !important;
+}
+
+.skin-green .main-header .navbar .sidebar-toggle:hover {
+    background-color: #cfaa50 !important;
+}
+
+.sidebar-menu li>a>.fa-angle-left {
+  color: #cfaa50 !important;
+}
+
+/* Submenu background + links */
+.skin-green .sidebar-menu > li > .treeview-menu {
+  background-color: #cfaa50 !important;
+}
+.skin-green .treeview-menu > li > a {
+  color: #000 !important;
+}
+.skin-green .treeview-menu > li > a:hover {
+  background: rgba(0,0,0,0.06) !important;
+}
+
+/* Active/hover top-level item */
+.skin-green .sidebar-menu > li.active > a,
+.skin-green .sidebar-menu > li:hover > a {
+  color: #000 !important;
+  background: #e6e6e7 !important;
+  border-left-color: #cfaa50 !important;
+}
+
+/* Boxes (success) */
+.box.box-success > .box-header {
+  background-color: #9b5758 !important;
+  color: #fff !important;
+}
+.box.box-success {
+  border-top-color: #9b5758 !important;
+}
+.box.box-solid.box-success {
+  border-color: #9b5758 !important;
+}
+
+/* Tabs */
+.nav-tabs-custom>.nav-tabs>li.active,
+.nav-tabs-custom>.nav-tabs>li.active>a {
+  border-top-color: #9b5758 !important;
+}
+
+
+
+

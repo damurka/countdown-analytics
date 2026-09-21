@@ -1,0 +1,131 @@
+{
+  "name": "datasuite-countdown",
+  "displayName": "Countdown Analytics",
+  "description": "A DataSuite Shiny Apps for Countdown Analysis.",
+  "version": "2.0.0",
+  "publisher": "DataSuite",
+  "license": "MIT",
+  "icon": "assets/code.png",
+  "engines": {
+    "vscode": "^1.131.0"
+  },
+  "categories": [
+    "Shiny Apps",
+    "Data Science"
+  ],
+  "api": "none",
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "24.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aphrcwaro/countdown-analytics.git"
+  },
+  "contributes": {
+    "chatInstructions": [
+      {
+        "path": "./instructions/countdown-analysis.instructions.md",
+        "when": "shinyAppEditorAppId == 'rmncah' || shinyAppEditorAppId == 'vaxx' || shinyAppEditorAppId == 'pooled'"
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "cd2030Docs",
+        "displayName": "Look Up cd2030.core Data Reference",
+        "toolReferenceName": "cd2030Docs",
+        "canBeReferencedInPrompt": false,
+        "userDescription": "Look up which cache data a Shiny app page uses, and what it means.",
+        "modelDescription": "Looks up the generated data reference for a cd2030.core-backed Shiny app (see the \"Shiny App\" chat context for the current app's id). Given a \"page\" (a module id like \"3_national_coverage\"), returns that page's title, which CacheConnection methods/fields it reads, technical documentation for each, and -- where available -- the human-authored analysis rationale explaining why that page's numbers matter and how to interpret them. Given a \"functionName\" instead (e.g. \"calculate_coverage\"), returns that CacheConnection method/field's technical documentation directly, independent of any page -- use this for a custom analysis request that doesn't map onto an existing page, to find which method to call and what it returns. Omit both \"page\" and \"functionName\" to list every known page id and title for the app. Always look this up before writing R code against a Shiny app's CacheConnection cache, rather than guessing at method names or output meaning.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "appId": {
+              "type": "string",
+              "description": "The Shiny app id (see the \"Shiny App\" chat context for the current app's id)."
+            },
+            "page": {
+              "type": "string",
+              "description": "A specific page/module id (e.g. \"3_national_coverage\"). Omit (along with functionName) to list all available pages for this app."
+            },
+            "functionName": {
+              "type": "string",
+              "description": "A specific CacheConnection method or field name (e.g. \"calculate_coverage\") to look up directly, independent of any page."
+            }
+          },
+          "required": ["appId"]
+        }
+      },
+      {
+        "name": "readCd2030Cache",
+        "displayName": "Read Countdown Cache",
+        "toolReferenceName": "readCd2030Cache",
+        "canBeReferencedInPrompt": false,
+        "userDescription": "Load a Countdown Shiny app's .rds cache for analysis.",
+        "modelDescription": "Opens a Countdown Shiny app's `.rds` cache fresh via cd2030.core's own init_CacheConnection(), in the same managed R session runR uses, and returns its class and available methods/fields. The loaded cache stays available as the `.datasuite_cache` variable in that session for follow-up runR calls -- call cd2030Docs first to learn what each method/field means before using them. Always reopens fresh (never reuses a previous load) so you never analyze stale data after the Shiny app or a prior runR call has changed it. Accepts either the app's source file path or its .rds cache path directly (see the \"Shiny App\" chat context for the active app's file) -- the sibling .rds path is derived automatically if a non-.rds path is given.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Absolute path to the Shiny app's source file or its .rds cache (see the \"Shiny App\" chat context for the active app's selected file)."
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    ],
+    "shinyApps": [
+      {
+        "id": "rmncah",
+        "name": "RMNCAH",
+        "description": "Launch the RMNCAH App to keep working",
+        "icon": "graph",
+        "location": "apps/rmncah",
+        "accepts": ["xls", "xlsx", "dta", "rds"],
+        "capabilities": {
+          "requiresFile": true
+        },
+        "showOnStartPage": true
+      },
+      {
+        "id": "vaxx",
+        "name": "Vaxx",
+        "description": "Launch the Vaxx App to keep working",
+        "icon": "graph",
+        "location": "apps/vaxx",
+        "accepts": ["xls", "xlsx", "dta", "rds"],
+        "capabilities": {
+          "requiresFile": true
+        },
+        "showOnStartPage": false
+      },
+      {
+        "id": "pooled",
+        "name": "Pooled",
+        "description": "Launch the Pooled App to keep working",
+        "icon": "graph",
+        "location": "apps/pooled",
+        "accepts": ["rds"],
+        "capabilities": {
+          "requiresFile": true,
+          "canSelectFiles": false,
+          "canSelectFolders": true
+        },
+        "showOnStartPage": false
+      }
+    ]
+  }
+}

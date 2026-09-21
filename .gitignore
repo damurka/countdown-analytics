@@ -1,0 +1,13 @@
+node_modules/
+out/
+*.tsbuildinfo
+*.vsix
+
+# R / RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Renviron
+rsconnect/
+
+.DS_Store
