@@ -1,20 +1,30 @@
 {
-	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
 		"rootDir": "./src",
 		"outDir": "./out",
 		"types": [
-			"node"
+			"node",
+			"vscode"
 		],
-		"typeRoots": [
-			"../../node_modules/@types"
-		],
+		"esModuleInterop": true,
+		"target": "ES2024",
 		"lib": [
 			"ES2024"
-		]
+		],
+		"module": "commonjs",
+		"strict": true,
+		"exactOptionalPropertyTypes": false,
+		"useUnknownInCatchVariables": false,
+		"alwaysStrict": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"forceConsistentCasingInFileNames": true,
+		"experimentalDecorators": true
 	},
 	"include": [
-		"src/**/*",
-		"../../src/vscode-dts/vscode.d.ts"
+		"src/**/*"
 	]
 }

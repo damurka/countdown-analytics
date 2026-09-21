@@ -3,7 +3,7 @@
   "displayName": "Countdown Analytics",
   "description": "A DataSuite Shiny Apps for Countdown Analysis.",
   "version": "2.0.0",
-  "publisher": "DataSuite",
+  "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
   "engines": {
@@ -28,7 +28,11 @@
     "vscode:prepublish": "npm run compile"
   },
   "devDependencies": {
-    "@types/node": "24.x"
+    "@types/node": "24.x",
+    "@types/vscode": "1.125.0",
+    "@vscode/vsce": "^4.0.0",
+    "ovsx": "^1.2.0",
+    "typescript": "^6.0.3"
   },
   "repository": {
     "type": "git",
