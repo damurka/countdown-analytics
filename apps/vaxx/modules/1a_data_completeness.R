@@ -181,8 +181,8 @@ dataCompletenessServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "data_completeness",
         cache = cache,
-        path = "numerator-assessment",
-        section = "sec-dqa-data-completeness",
+        path = "2-data-quality-assessment",
+        section = "data-missingness",
         i18n = i18n
       )
     }

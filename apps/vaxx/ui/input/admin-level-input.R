@@ -46,7 +46,7 @@ adminLevelInputServer <- function(id, cache, i18n, allow_select_all = FALSE, sho
         
         # 1. Determine if the Region input is currently visible
         #    (Adjust 'show_district' logic based on your specific needs)
-        region_is_visible <- (current_admin != "national") &&
+        (current_admin != "national") &&
           show_region &&
           (current_admin != "district" || show_district)
       })

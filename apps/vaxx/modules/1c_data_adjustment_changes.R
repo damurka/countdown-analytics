@@ -1,4 +1,4 @@
-page_indicators <- c("instlivebirths", "bcg", "penta1", "measles1")
+adjustment_indicators <- c("instlivebirths", "bcg", "penta1", "measles1")
 
 adjustmentChangesUI <- function(id, i18n) {
   ns <- NS(id)
@@ -9,7 +9,7 @@ adjustmentChangesUI <- function(id, i18n) {
     i18n = i18n,
     include_report = TRUE,
     tabPanelsUI(ns("panel"), i18n, "title_adjust_visualize", downloadCoverageUI,
-      indicators = page_indicators,
+      indicators = adjustment_indicators,
       customIndicators = get_all_indicators(),
     )
   )
@@ -71,14 +71,14 @@ adjustmentChangesServer <- function(id, cache, i18n) {
             i18n = i18n
           )
         },
-        indicators = page_indicators
+        indicators = adjustment_indicators
       )
 
       countdownHeaderServer(
         "adjustment",
         cache = cache,
-        path = "numerator-adjustments",
-        section = "sec-dqa-adjust-outputs",
+        path = "3-data-adjustment",
+        # section = "sec-dqa-adjust-outputs",
         i18n = i18n
       )
     }

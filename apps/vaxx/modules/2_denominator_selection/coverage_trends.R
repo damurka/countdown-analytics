@@ -2,7 +2,11 @@ cov_trend_indicators <- c("penta1", "penta3", "measles1")
 
 coverageTrendsUI <- function(id, i18n) {
   ns <- NS(id)
-  tabPanelsUI(ns("panel"), i18n, "title_denom_pop_trend", downloadCoverageUI,
+  tabPanelsUI(
+    ns("panel"),
+    i18n,
+    "title_denom_pop_trend",
+    uiInput = downloadCoverageUI,
     indicators = cov_trend_indicators
   )
 }
@@ -22,8 +26,7 @@ coverageTrendsServer <- function(id, cache, admin_level, region, i18n) {
         serverInput = function(id, current_indicator) {
           coverage <- reactive({
             req(cache(), cache()$check_inequality_params, admin_level())
-            cache()$get_base_indicator_coverage(admin_level(), region()) %>% 
-              calculate_derived_coverage(current_indicator)
+            cache()$calculate_derived_coverage(current_indicator, admin_level(), region())
           })
 
           downloadCoverageServer(
@@ -37,7 +40,8 @@ coverageTrendsServer <- function(id, cache, admin_level, region, i18n) {
               region_name <- region()
               title <- if (is.null(region())) "plt_title_denom_nat_trend" else "plt_title_denom_subnat_trend"
               indicator <- i18n$t(paste0("opt_", current_indicator))
-              plot(d, 
+              plot(d,
+                   type = 'trend',
                    region = region(),
                    title = str_glue(i18n$t(title)),
                    x_label = i18n$t("title_global_year"),

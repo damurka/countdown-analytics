@@ -27,14 +27,7 @@ helpButtonServer <- function(id, path, section = NULL, cache) {
         )
 
         # Construct the URL concisely
-        url <- paste0(
-          'https://aphrcwaro.github.io/rmncah_guide/',
-          ifelse(lang_code == '', '', paste0(lang_code, '/')),
-          'pages/',
-          path,
-          ifelse(lang_code == '', '', paste0('.', lang_code)),
-          '.html'
-        )
+        url <- paste0('https://datasuite.vercel.app/', lang_code, '/docs/framework/')
         if (!is.null(section)) {
           url <- paste0(url, '#', section)
         }

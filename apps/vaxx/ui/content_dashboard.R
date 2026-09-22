@@ -43,6 +43,7 @@ countdownOptions <- function(title, ...) {
     status = 'success',
     width = 12,
     solidHeader = TRUE,
+    class = 'cd-options-card',
     fluidRow(...)
   )
 }

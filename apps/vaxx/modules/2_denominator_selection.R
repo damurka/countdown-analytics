@@ -10,7 +10,7 @@ denominatorSelectionUI <- function(id, i18n) {
     i18n = i18n,
     countdownOptions = countdownOptions(
       title = i18n$t("title_global_options"),
-      column(3, denominatorInputUI(ns("denominator"), i18n)),
+      column(3, denominatorInputUI(ns("denominator"), i18n, allow_input = TRUE)),
       column(6, adminLevelInputUI(ns("admin_level"), i18n, include_national = TRUE))
     ),
     include_report = TRUE,
@@ -44,8 +44,8 @@ denominatorSelectionServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "denominator_selection",
         cache = cache,
-        path = "denominator-assessment",
-        section = "sec-denominator-selection",
+        path = "4-denominator-selection",
+        # section = "population-trend-comparison",
         i18n = i18n
       )
     }

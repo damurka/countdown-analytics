@@ -75,84 +75,70 @@ nationalRatesServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
       ns <- session$ns
 
-      observeEvent(cache(),
-        {
-          req(cache())
+      observe({
+        req(cache())
 
-          national_estimates <- cache()$national_estimates
+        national_estimates <- cache()$national_estimates
+        estimates <- cache()$survey_estimates
+        survey_year <- cache()$survey_year
 
-          updateNumericInput(session, "neonatal_mortality_rate", value = national_estimates$nmr)
-          updateNumericInput(session, "post_neonatal_mortality_rate", value = national_estimates$pnmr)
-          updateNumericInput(session, "twin_rate", value = national_estimates$twin_rate)
-          updateNumericInput(session, "pregnancy_loss", value = national_estimates$preg_loss)
-          updateNumericInput(session, "stillbirth_rate", value = national_estimates$sbr)
-          updateNumericInput(session, "anc1_prop", value = national_estimates$anc1 * 100)
-          updateNumericInput(session, "penta1_prop", value = national_estimates$penta1 * 100)
+        updateNumericInput(session, "neonatal_mortality_rate", value = national_estimates$nmr)
+        updateNumericInput(session, "post_neonatal_mortality_rate", value = national_estimates$pnmr)
+        updateNumericInput(session, "twin_rate", value = national_estimates$twin_rate)
+        updateNumericInput(session, "pregnancy_loss", value = national_estimates$preg_loss)
+        updateNumericInput(session, "stillbirth_rate", value = national_estimates$sbr)
 
-          estimates <- cache()$survey_estimates
+        updateNumericInput(session, "anc1_prop", value = unname(estimates["anc1"]))
+        updateNumericInput(session, "ideliv_prop", value = unname(estimates["instlivebirths"]))
+        updateNumericInput(session, "bcg_prop", value = unname(estimates["bcg"]))
+        updateNumericInput(session, "penta1_prop", value = unname(estimates["penta1"]))
+        updateNumericInput(session, "penta3_prop", value = unname(estimates["penta3"]))
+        updateNumericInput(session, "opv1_prop", value = unname(estimates["opv1"]))
+        updateNumericInput(session, "opv3_prop", value = unname(estimates["opv3"]))
+        updateNumericInput(session, "measles1_prop", value = unname(estimates["measles1"]))
 
-          updateNumericInput(session, "ideliv_prop", value = unname(estimates["instlivebirths"]))
-          updateNumericInput(session, "bcg_prop", value = unname(estimates["bcg"]))
-          updateNumericInput(session, "opv1_prop", value = unname(estimates["opv1"]))
-          updateNumericInput(session, "opv3_prop", value = unname(estimates["opv3"]))
-          updateNumericInput(session, "penta3_prop", value = unname(estimates["penta3"]))
-          updateNumericInput(session, "measles1_prop", value = unname(estimates["measles1"]))
-        },
-        once = TRUE
-      )
+        updateNumericInput(session, "survey_year", value = survey_year)
+      })
 
-      observeEvent(c(input$neonatal_mortality_rate, input$post_neonatal_mortality_rate, input$twin_rate, input$stillbirth_rate, input$pregnancy_loss),
-        {
-          req(cache())
+      observeEvent(c(input$anc1_prop, input$ideliv_prop, input$bcg_prop, input$penta1_prop, input$penta3_prop, input$opv1_prop, input$opv3_prop, input$measles1_prop), {
+        req(cache())
 
-          estimates <- list(
-            sbr = input$stillbirth_rate,
-            nmr = input$neonatal_mortality_rate,
-            pnmr = input$post_neonatal_mortality_rate,
-            twin_rate = input$twin_rate,
-            preg_loss = input$pregnancy_loss
-          )
+        estimates <- c(
+          anc1 = as.numeric(input$anc1_prop),
+          instlivebirths = as.numeric(input$ideliv_prop),
+          bcg = as.numeric(input$bcg_prop),
+          penta1 = as.numeric(input$penta1_prop),
+          penta3 = as.numeric(input$penta3_prop),
+          opv1 = as.numeric(input$opv1_prop),
+          opv3 = as.numeric(input$opv3_prop),
+          measles1 = as.numeric(input$measles1_prop)
+        )
 
-          cache()$set_national_estimates(estimates)
-        },
-        ignoreInit = TRUE
-      )
+        isolate(cache()$set_survey_estimates(estimates))
+      })
 
-      observeEvent(c(input$anc1_prop, input$ideliv_prop, input$bcg_prop, input$penta1_prop, input$penta3_prop, input$opv1_prop, input$opv3_prop, input$measles1_prop),
-        {
-          req(cache())
+      observeEvent(c(input$neonatal_mortality_rate, input$post_neonatal_mortality_rate, input$stillbirth_rate, input$pregnancy_loss, input$twin_rate), {
+        req(cache())
 
-          estimates <- cache()$survey_estimates
-          new_estimates <- c(
-            anc1 = as.numeric(input$anc1_prop),
-            instlivebirths = as.numeric(input$ideliv_prop),
-            bcg = as.numeric(input$bcg_prop),
-            penta1 = as.numeric(input$penta1_prop),
-            penta3 = as.numeric(input$penta3_prop),
-            opv1 = as.numeric(input$opv1_prop),
-            opv3 = as.numeric(input$opv3_prop),
-            measles1 = as.numeric(input$measles1_prop)
-          )
+        estimates <- list(
+          nmr = input$neonatal_mortality_rate,
+          pnmr = input$post_neonatal_mortality_rate,
+          sbr = input$stillbirth_rate,
+          twin_rate = input$twin_rate,
+          preg_loss = input$pregnancy_loss
+        )
 
-          cache()$set_survey_estimates(new_estimates)
-        },
-        ignoreInit = TRUE
-      )
+        isolate(cache()$set_national_estimates(estimates))
+      })
 
       observeEvent(input$survey_start_year, {
         req(cache(), input$survey_start_year)
-        cache()$set_start_survey_year(as.numeric(input$survey_start_year))
-      })
-
-      observe({
-        req(cache())
-        survey_year <- cache()$survey_year
-        updateNumericInput(session, "survey_year", value = survey_year)
+        isolate(cache()$set_start_survey_year(as.numeric(input$survey_start_year)))
       })
 
       observeEvent(input$survey_year, {
         req(cache(), input$survey_year)
-        cache()$set_survey_year(as.numeric(input$survey_year))
+        isolate(cache()$set_survey_year(as.numeric(input$survey_year)))
       })
 
       output$survey_start_ui <- renderUI({

@@ -69,16 +69,7 @@ downloadReportServer <- function(id, cache, i18n) {
 
       report_name <- reactive({
         req(input$type)
-        if (input$type == "synthesis_report") {
-          lang <- switch(cache()$language,
-            en = "",
-            fr = "_fr",
-            pt = "_pt"
-          )
-          paste0(input$type, lang)
-        } else {
-          input$type
-        }
+        input$type
       })
 
       admin_level <- reactive({

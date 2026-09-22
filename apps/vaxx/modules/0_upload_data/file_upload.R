@@ -1,4 +1,3 @@
-source('modules/0_upload_data/file_upload_helpers.R')
 source('modules/0_upload_data/modal_helpers.R')
 source('ui/input/directory-input.R')
 

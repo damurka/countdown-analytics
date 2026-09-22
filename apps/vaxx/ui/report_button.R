@@ -30,38 +30,40 @@ reportButtonServer <- function(id, cache, report_name, i18n, adminlevel_1) {
       })
 
       extension <- reactive({
-        req(input$format)
+        'docx'
+        # req(input$format)
 
-        switch(input$format,
-               'word_document' = 'docx',
-               'pdf_document' = 'pdf',
-               'html_document' = 'html')
+        # switch(input$format,
+        #        'word_document' = 'docx',
+        #        'pdf_document' = 'pdf',
+        #        'html_document' = 'html')
       })
+
+      # observeEvent(input$generate_report, {
+      #   req(cache())
+
+      #   showModal(
+      #     modalDialog(
+      #       title = i18n$t("title_download_options"),
+      #       selectizeInput(
+      #         ns('format'), i18n$t("title_report_format"),
+      #         choices = c('Word' = 'word_document', 'PDF' = 'pdf_document')
+      #       ),
+      #       footer = tagList(
+      #         modalButton(i18n$t("btn_global_cancel")),
+      #         actionButton(ns('start_generate'), i18n$t("btn_report_generate"), class = 'btn bg-olive btn-flat')
+      #       )
+      #     )
+      #   )
+      # })
 
       observeEvent(input$generate_report, {
+        # req(input$format)
         req(cache())
 
-        showModal(
-          modalDialog(
-            title = i18n$t("title_download_options"),
-            selectizeInput(
-              ns('format'), i18n$t("title_report_format"),
-              choices = c('Word' = 'word_document', 'PDF' = 'pdf_document')
-            ),
-            footer = tagList(
-              modalButton(i18n$t("btn_global_cancel")),
-              actionButton(ns('start_generate'), i18n$t("btn_report_generate"), class = 'btn bg-olive btn-flat')
-            )
-          )
-        )
-      })
-
-      observeEvent(input$start_generate, {
-        req(input$format)
-
-        params <- list(
-          format = input$format
-        )
+        # params <- list(
+        #   format = input$format
+        # )
 
         removeModal()
         showModal(
@@ -91,11 +93,12 @@ reportButtonServer <- function(id, cache, report_name, i18n, adminlevel_1) {
             output_file = temp_file,
             report_name = report_name(),
             adminlevel_1 = adminlevel_1(),
-            output_format = params$format
+            i18n = i18n,
+            output_format = 'word_document'
           )
           temp_file
-        }, globals = list(cache = cache, params = params, generate_report = generate_report,
-                          extension = extension, adminlevel_1 = adminlevel_1, report_name = report_name))
+        }, globals = list(cache = cache, generate_report = generate_report,
+                          extension = extension, adminlevel_1 = adminlevel_1, report_name = report_name, i18n = i18n))
 
         rv$future %...>% {
           rv$generating <- FALSE

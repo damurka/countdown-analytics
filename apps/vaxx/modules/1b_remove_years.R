@@ -94,8 +94,8 @@ removeYearsServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         'remove_years',
         cache = cache,
-        path = 'numerator-adjustments',
-        section = 'sec-remove-years',
+        path = '3-data-adjustment',
+        section = '631-remove-years',
         i18n = i18n
       )
     }

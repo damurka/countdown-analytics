@@ -1,4 +1,4 @@
-page_indicators <- c("penta1", "penta3", "measles1")
+equity_indicators <- c("penta1", "penta3", "measles1")
 
 equityUI <- function(id, i18n) {
   ns <- NS(id)
@@ -20,7 +20,7 @@ equityUI <- function(id, i18n) {
     ),
     include_report = TRUE,
     tabPanelsUI(ns("panel"), i18n, "title_equity_analysis", downloadCoverageUI,
-      indicators = page_indicators
+      indicators = equity_indicators
     )
   )
 }
@@ -86,7 +86,7 @@ equityServer <- function(id, cache, i18n) {
             i18n = i18n
           )
         },
-        indicators = page_indicators
+        indicators = equity_indicators
       )
 
       countdownHeaderServer(

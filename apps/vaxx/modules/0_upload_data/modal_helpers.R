@@ -16,7 +16,7 @@ mappingModalServer <- function(id, cache, survey_data, survey_map, title, show_c
       gregion_levels <- reactive({
         req(cache())
 
-        cache()$countdown_data %>%
+        cache()$subnational_regions %>%
           distinct(adminlevel_1) %>%
           arrange(adminlevel_1) %>%
           pull(adminlevel_1)

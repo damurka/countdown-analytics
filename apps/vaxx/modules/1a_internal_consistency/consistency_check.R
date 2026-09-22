@@ -13,10 +13,6 @@ consistencyCheckUI <- function(id, i18n) {
       plotDownloadsRowUI(ns("penta1_penta3"))
     ),
     tabPanel(
-      i18n$t("opt_consist_opv1_opv3"),
-      plotDownloadsRowUI(ns("opv1_opv3"))
-    ),
-    tabPanel(
       i18n$t("opt_consist_custom"),
       fluidRow(
         column(3, indicatorSelect(ns("x_label"), i18n, label = "lbl_axis_x_consist")),
@@ -65,6 +61,11 @@ consistencyCheckServer <- function(id, cache, i18n) {
             y_label = vacc2,
             legend = legend()
           )
+        },
+        excel_write_fun = function(wb, d) {
+          sheet_name_1 <- i18n$t("ratio_plot")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet_name_1, d)
         }
       )
 
@@ -83,24 +84,11 @@ consistencyCheckServer <- function(id, cache, i18n) {
             y_label = vacc2,
             legend = legend()
           )
-        }
-      )
-
-      plotDownloadsRowServer(
-        id = "opv1_opv3",
-        i18n = i18n,
-        plot_data = data,
-        plot_filename = reactive("opv1_opv3_plot"),
-        plot_fun = function(d) {
-          vacc1 <- i18n$t("opt_opv1")
-          vacc2 <- i18n$t("opt_opv3")
-          plot_comparison_opv1_opv3(
-            d,
-            title = str_glue(i18n$t("plt_title_consist_checks")),
-            x_label = vacc1,
-            y_label = vacc2,
-            legend = legend()
-          )
+        },
+        excel_write_fun = function(wb, d) {
+          sheet_name_1 <- i18n$t("ratio_plot")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet_name_1, d)
         }
       )
 
@@ -122,6 +110,11 @@ consistencyCheckServer <- function(id, cache, i18n) {
             y_label = vacc2,
             legend = legend()
           )
+        },
+        excel_write_fun = function(wb, d) {
+          sheet_name_1 <- i18n$t("ratio_plot")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet_name_1, d)
         }
       )
     }

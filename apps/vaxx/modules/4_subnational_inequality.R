@@ -38,7 +38,7 @@ subnationalInequalityServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "subnational_inequality",
         cache = cache,
-        path = "subnational-inequality",
+        path = "7-subnational-analysis",
         i18n = i18n
       )
     }

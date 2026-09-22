@@ -208,8 +208,8 @@ reportingRateServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "reporting_rate",
         cache = cache,
-        path = "numerator-assessment",
-        section = "sec-dqa-reporting-rate",
+        path = "2-data-quality-assessment",
+        section = "reporting-completeness",
         i18n = i18n
       )
     }

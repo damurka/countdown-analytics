@@ -2211,6 +2211,46 @@
       "en": "Coverage",
       "fr": "Couverture",
       "pt": "Cobertura"
+    },
+    // Added to match the RMNCAH app
+    {
+      "key": "plt_title_denom_under1",
+      "en": "Under 1 (in thousands), DHIS2 and UN projections",
+      "fr": "Moins de 1 an (en milliers), projections DHIS2 et ONU",
+      "pt": "Menores de 1 ano (em milhares), projeções DHIS2 e ONU"
+    },
+    {
+      "key": "title_download_options",
+      "en": "Downloading Report",
+      "fr": "Téléchargement du rapport",
+      "pt": "Baixando o relatório"
+    },
+    {
+      "key": "title_routine_data",
+      "en": "Routine Data",
+      "fr": "Données de routine",
+      "es": "Datos de rutina",
+      "pt": "Dados de rotina"
+    },
+    {
+      "key": "title_survey_data",
+      "en": "Survey Data",
+      "fr": "Données d'enquête",
+      "es": "Datos de encuestas",
+      "pt": "Dados de inquérito"
+    },
+    {
+      "key": "title_target_admin1_rate",
+      "en": "Target Rate by Region",
+      "fr": "Taux cible par région",
+      "es": "Tasa objetivo por región",
+      "pt": "Taxa alvo por região"
+    },
+    {
+      "key": "ratio_plot",
+      "en": "Ratio plot",
+      "fr": "Graphique des ratios",
+      "pt": "Gráfico de razões"
     }
   ]
 }

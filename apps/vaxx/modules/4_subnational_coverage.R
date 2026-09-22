@@ -40,7 +40,7 @@ subnationalCoverageServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "subnational_coverage",
         cache = cache,
-        path = "subnational-coverage",
+        path = "7-subnational-analysis",
         i18n = i18n
       )
     }

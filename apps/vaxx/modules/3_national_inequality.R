@@ -10,7 +10,7 @@ nationalInequalityUI <- function(id, i18n) {
     i18n = i18n,
     countdownOptions(
       title = i18n$t("title_global_options"),
-      column(3, denominatorInputUI(ns("denominator"), i18n)),
+      column(6, denominatorInputUI(ns("denominator"), i18n)),
       column(3, selectizeInput(ns("years"), label = i18n$t("title_global_select_years"), choice = NULL, multiple = TRUE)),
       column(3, i18nSelectizeInput(ns("palette"), 
                                    label = i18n$t("title_global_palette"), 
@@ -46,7 +46,7 @@ nationalInequalityServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "national_inequality",
         cache = cache,
-        path = "national-inequality",
+        path = "6-equity-analysis",
         i18n = i18n
       )
     }

@@ -223,8 +223,8 @@ outlierDetectionServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "outlier_detection",
         cache = cache,
-        path = "numerator-assessment",
-        section = "sec-dqa-outlier",
+        path = "2-data-quality-assessment",
+        section = "outlier-detection",
         i18n = i18n
       )
     }

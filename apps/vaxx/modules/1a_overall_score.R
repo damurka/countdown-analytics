@@ -5,6 +5,7 @@ overallScoreUI <- function(id, i18n) {
     dashboardId = ns("data_quality"),
     dashboardTitle = i18n$t("title_score_main"),
     i18n = i18n,
+    include_report = TRUE,
     countdownOptions(
       title = i18n$t("title_global_options"),
       column(3, adminLevelInputUI(ns("region"), i18n, show_admin_level = FALSE))
@@ -117,8 +118,8 @@ overallScoreServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "data_quality",
         cache = cache,
-        path = "numerator-assessment",
-        section = "sec-dqa-overall-score",
+        path = "2-data-quality-assessment",
+        section = "overall-quality-score",
         i18n = i18n
       )
     }

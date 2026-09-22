@@ -47,7 +47,7 @@ denominatorAssessmentServer <- function(id, cache, i18n) {
                 my_title <- i18n$t("plt_title_denom_births")
                 my_labels <- c(i18n$t("lbl_leg_denom_un_births"), i18n$t("lbl_leg_denom_dhis2_live_births"), i18n$t("lbl_leg_denom_dhis2_tot_births"))
               } else if (current_indicator == "under1") {
-                my_title <- i18n$t("plt_title_denom_births")
+                my_title <- i18n$t("plt_title_denom_under1")
                 my_labels <- c(i18n$t("lbl_leg_denom_un_under1"), i18n$t("lbl_leg_denom_dhis2_under1"))
               }
 
@@ -68,8 +68,8 @@ denominatorAssessmentServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "denominator_assessment",
         cache = cache,
-        path = "denominator-assessment",
-        section = "sec-denominator-assessment",
+        path = "4-denominator-selection",
+        section = "population-trend-comparison",
         i18n = i18n
       )
     }

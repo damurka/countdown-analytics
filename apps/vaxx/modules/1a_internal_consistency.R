@@ -25,8 +25,8 @@ internalConsistencyServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         "internal_consistency",
         cache = cache,
-        path = "numerator-assessment",
-        section = "sec-dqa-consistency",
+        path = "2-data-quality-assessment",
+        section = "ratio-calculations",
         i18n = i18n
       )
     }

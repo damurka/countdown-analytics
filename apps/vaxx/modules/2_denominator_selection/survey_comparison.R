@@ -2,8 +2,12 @@ survey_comp_indicators <- c("instlivebirths", "bcg", "penta3", "measles1")
 
 surveyComparisonUI <- function(id, i18n) {
   ns <- NS(id)
-  tabPanelsUI(ns("panel"), i18n, "title_coverage_national", downloadCoverageUI,
-    indicators = survey_comp_indicators, showCustom = FALSE
+  tabPanelsUI(ns("panel"),
+              i18n,
+              "title_coverage_national",
+              uiInput = downloadCoverageUI,
+              indicators = survey_comp_indicators,
+              showCustom = FALSE
   )
 }
 
@@ -15,18 +19,14 @@ surveyComparisonServer <- function(id, cache, admin_level, region, i18n) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
-      denominatorInputServer("denominator", cache, i18n, allowInput = TRUE)
+      denominatorInputServer("denominator", cache, i18n)
 
       tabPanelsServer(
         "panel",
         serverInput = function(id, current_indicator) {
           coverage <- reactive({
-            req(cache(), cache()$check_inequality_params)
-            cache()$get_filtered_indicator_coverage(
-              indicator = current_indicator,
-              admin_level = admin_level(),
-              region = region()
-            )
+            req(cache(), cache()$check_inequality_params, admin_level())
+            cache()$calculate_derived_coverage(current_indicator, admin_level(), region())
           })
 
           downloadCoverageServer(
@@ -45,7 +45,7 @@ surveyComparisonServer <- function(id, cache, admin_level, region, i18n) {
                      dhis2         = i18n$t("lbl_denom_dhis2_proj"),
                      anc1          = i18n$t("lbl_denom_anc1_derived"),
                      penta1        = i18n$t("lbl_denom_penta1_derived"),
-                     penta1derived = i18n$t("lbl_denom_penta1_growth")
+                     penta1derived = i18n$t("opt_penta1derived")
                    ),
                    legend_labels = list(
                      facility = i18n$t("lbl_denom_facility_based"),

@@ -65,7 +65,6 @@ source("ui/render-plot.R")
 source("ui/report_button.R")
 source("ui/tab_panels.R")
 source("ui/tooltips.R")
-source("ui/save_cache.R")
 
 source("modules/introduction.R")
 
@@ -118,7 +117,7 @@ ui <- dashboardPage(
   ),
   sidebar = dashboardSidebar(
     usei18n(i18n),
-    selectInput(
+    selectizeInput(
       inputId = "selected_language",
       label = i18n$t("opt_global_change_language"),
       choices = c("English" = "en", "Français" = "fr", "Português" = "pt"),
@@ -183,19 +182,25 @@ ui <- dashboardPage(
         icon = icon("flag"),
         menuSubItem(i18n$t("title_coverage_national"),
           tabName = "national_coverage",
-          icon = icon("flag")
-        ),
-        menuSubItem(i18n$t("title_inequ_national"),
-          tabName = "national_inequality",
-          icon = icon("balance-scale-right")
+          icon = icon("chart-line")
         ),
         menuSubItem(i18n$t("title_nav_global_coverage"),
           tabName = "national_target",
-          icon = icon("user-slash")
+          icon = icon("bullseye")
         ),
-        menuSubItem(i18n$t("title_nav_equity"),
-          tabName = "equity_assessment",
-          icon = icon("balance-scale")
+        menuItem(
+          i18n$t("title_inequ_national"),
+          icon = icon("scale-unbalanced"),
+          startExpanded = TRUE,
+
+          menuSubItem(i18n$t("title_routine_data"),
+            tabName = "national_inequality",
+            icon = icon("clipboard-list")
+          ),
+          menuSubItem(i18n$t("title_survey_data"),
+            tabName = "equity_assessment",
+            icon = icon("users")
+          )
         )
       ),
       menuItem(i18n$t("title_nav_subnational_analysis"),
@@ -338,7 +343,6 @@ server <- function(input, output, session) {
   subnationalTargetServer("subnational_target", cache, i18n)
   equityServer("equity_assessment", cache, i18n)
   downloadReportServer("download_report", cache, i18n)
-  saveCacheServe("save_cache", cache, i18n)
 
   # session$onSessionEnded(stopApp)
 

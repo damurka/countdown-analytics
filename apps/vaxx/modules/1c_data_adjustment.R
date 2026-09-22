@@ -146,8 +146,8 @@ dataAdjustmentServer <- function(id, cache, i18n) {
       countdownHeaderServer(
         'data_adjustment',
         cache = cache,
-        path = 'numerator-adjustments',
-        section = 'sec-dqa-adjust-outputs',
+        path = '3-data-adjustment',
+        # section = 'sec-dqa-adjust-outputs',
         i18n = i18n
       )
     }

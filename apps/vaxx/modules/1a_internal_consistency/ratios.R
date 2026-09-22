@@ -37,6 +37,11 @@ calculateRatiosServer <- function(id, cache, i18n) {
               "penta1_penta3" = i18n$t("lbl_consist_ratio_penta1_penta3")
             )
           )
+        },
+        excel_write_fun = function(wb, d) {
+          sheet_name_1 <- i18n$t("ratio_plot")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet_name_1, d)
         }
       )
     }

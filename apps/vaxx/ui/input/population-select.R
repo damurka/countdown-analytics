@@ -4,11 +4,11 @@ populationSelect <- function(id) {
   choices <- c(
     "opt_denom_live_births_dhis2" = "totlivebirths_dhis2",
     "opt_denom_total_births_dhis2" = "totbirths_dhis2",
-    "opt_denom_total_births_un" = "un_births",
+    # "opt_denom_total_births_un" = "un_births",
     "opt_denom_total_pop_dhis2" = "totpop_dhis2",
-    "opt_denom_total_pop_un" = "un_population",
-    "opt_denom_under1_dhis2" = "totunder1_dhis2",
-    "opt_denom_under1_un" = "un_under1"
+    # "opt_denom_total_pop_un" = "un_population",
+    "opt_denom_under1_dhis2" = "totunder1_dhis2"#,
+    # "opt_denom_under1_un" = "un_under1"
   )
   i18nSelectizeInput(
     ns("population"),
