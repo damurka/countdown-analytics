@@ -31,6 +31,8 @@ All notable changes to this extension are documented here. The format is based o
 - **RMNCAH** charts with many regions no longer get cramped: a chart with more than 12 categories on
   its horizontal axis is turned so the names run down the side, and it grows taller to give each one a
   row (42 districts: 1,262 px instead of 400). *Keep* in the View tool restores the original.
+- **Vaxx** brought up to the same filter bar, per-chart Labels/View tools and many-region chart layout
+  as RMNCAH, sharing the same `js/` build (one bundle, published into both apps).
 
 ### Fixed
 
@@ -51,6 +53,15 @@ All notable changes to this extension are documented here. The format is based o
 - **RMNCAH** added the missing `title_global_maternal` translation.
 - **RMNCAH** National Inequality no longer fails when a year is chosen in the inequality panel: it
   read an undefined `years()`, which turned into a date function.
+- **Vaxx** National Inequality had the same undefined-`years()` bug as RMNCAH; fixed the same way.
+  Also removed the same dead year-dropdown observers (Reporting Rate, Outlier Detection) and a dangling
+  denominator server with no matching input, all pre-existing and found while porting RMNCAH's fixes.
+- A chart's download button could stop the whole page responding: its enable/disable state re-rendered
+  once for every field the cache settles during startup, and rendering it faster than the browser could
+  process sent "recalculating" while the previous cycle was still running, which the browser treats as
+  a protocol error and can stop processing further updates for the rest of the session (seen reliably
+  on Vaxx's Reporting Rate page; RMNCAH hit a milder form of the same race on the region dropdown, which
+  recovered on its own). The button's enabled state now settles before it re-renders.
 
 ### Changed
 
