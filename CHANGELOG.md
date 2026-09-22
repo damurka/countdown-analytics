@@ -17,8 +17,47 @@ All notable changes to this extension are documented here. The format is based o
 - Chat instructions for analysing data in the Countdown apps.
 - MIT license, README and this changelog.
 
+- **RMNCAH** filters are now compact React chips in a one-line filter bar on every page, in place of
+  the four-column Options cards: denominators, admin level and region, indicator, palette, population,
+  several-year selections (with a `+N` summary), the reporting-rate threshold (a number chip with
+  quick picks and a reset), and the year of each table. The components are TypeScript (`js/`, built
+  with webpack and Babel, rendered through `shiny.react`); the built bundle is committed, so running
+  the app needs no Node. Chip text follows the language, and long region lists (42 districts) are
+  grouped under their parent, searchable and scrollable.
+- **RMNCAH** every chart has two small tools beside the download buttons, for that chart only:
+  *Labels* edits the title, caption, axis and legend text (the chart's own text shows as the
+  placeholder, an empty field keeps it), and *View* swaps the axes, changes the text size and moves
+  the legend. Both also apply to the image download.
+- **RMNCAH** charts with many regions no longer get cramped: a chart with more than 12 categories on
+  its horizontal axis is turned so the names run down the side, and it grows taller to give each one a
+  row (42 districts: 1,262 px instead of 400). *Keep* in the View tool restores the original.
+
+### Fixed
+
+- **Vaxx** app updated to the current `cd2030.core` API. It called `get_filtered_indicator_coverage`
+  (removed; now `calculate_derived_coverage`), passed `admin_level` to `get_filtered_threshold`
+  (now `target_unit`), read survey estimates from their old location on the upload page, and did not
+  pass `i18n` to `generate_report`.
+- **Vaxx** adjustment page no longer shows the equity page's indicator list; the two pages shared a
+  global variable.
+
+- **RMNCAH** no longer recomputes the mortality summary in the background. It waited on every data
+  adjustment, about a second each, even when the Mortality Mapping page was closed. It now runs when
+  the page is opened.
+- **RMNCAH** denominator dropdowns: read-only copies no longer run observers or send scripts to a
+  dropdown that does not exist (a denominator change re-ran 14 things across 7 modules, now 2), and
+  the Denominator Selection page labels its maternal dropdown "maternal" instead of repeating
+  "vaccination". Removed an unused denominator server and a leftover debug `print`.
+- **RMNCAH** added the missing `title_global_maternal` translation.
+- **RMNCAH** National Inequality no longer fails when a year is chosen in the inequality panel: it
+  read an undefined `years()`, which turned into a date function.
+
 ### Changed
 
+- **Vaxx** brought in line with the RMNCAH app: nested Inequality menu (routine and survey data),
+  updated icons and branding, read-only denominators outside the denominator page, Word-only report
+  download, framework documentation links, no UN population denominators, and no separate OPV1/OPV3
+  consistency tab. The unused save-cache module was removed.
 - The extension now lives in its own repository and builds standalone (own `tsconfig`, pinned
   dependencies and lockfile) instead of inside the DataSuite monorepo.
 - Releases are built and published by CI: pushing a `v*` tag packages the `.vsix`, publishes it to

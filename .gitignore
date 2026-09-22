@@ -11,3 +11,6 @@ out/
 rsconnect/
 
 .DS_Store
+
+# React source toolchain (the built bundle in apps/*/www/cd-react is committed)
+js/node_modules/
