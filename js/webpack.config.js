@@ -1,16 +1,17 @@
 const path = require("path");
 
 // React, ReactDOM and shiny.react's own runtime are provided by shiny.react at page load (window.jsmodule),
-// so they are external: this bundle holds only the Countdown components. Both apps get their own copy of the
-// same build (each app directory is self-contained and deployable on its own; running either needs no Node),
-// so this is a multi-compiler config: one entry, two outputs.
-const APPS = ["rmncah", "vaxx"];
+// so they are external: this bundle holds only the Countdown components. It is built into the shared UI
+// (apps/_shared/www/cd-react) that every app loads, so running an app needs no Node.
+const OUTPUTS = [
+  { name: "shared", dir: path.resolve(__dirname, "..", "apps", "_shared", "www", "cd-react") },
+];
 
-module.exports = APPS.map((app) => ({
-  name: app,
+module.exports = OUTPUTS.map(({ name, dir }) => ({
+  name,
   entry: "./src/index.ts",
   output: {
-    path: path.resolve(__dirname, "..", "apps", app, "www", "cd-react"),
+    path: dir,
     filename: "cd-react.js",
   },
   module: {

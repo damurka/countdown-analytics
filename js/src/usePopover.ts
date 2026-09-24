@@ -6,6 +6,12 @@ import { useEffect, useRef, useState } from "react";
 export function usePopover() {
   const [open, setOpen] = useState(false);
   const [align, setAlign] = useState<"left" | "right">("left");
+  // Vertical counterpart to `align` -- "below" (the default) unless the popover would run off the
+  // bottom of the viewport, in which case it opens upward instead. Confirmed live: a tooltip trigger
+  // low in a long checklist (Data Quality's own per-check explanations, Tooltip.tsx) had nowhere to
+  // go below it and got cut off at the viewport edge with no way to flip, the same problem `align`
+  // already solves for the right edge -- this is that same fix, the other axis.
+  const [vAlign, setVAlign] = useState<"below" | "above">("below");
   const rootRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -41,6 +47,13 @@ export function usePopover() {
     if (trigger && pop) {
       const r = trigger.getBoundingClientRect();
       setAlign(r.left + pop.offsetWidth > window.innerWidth - 16 ? "right" : "left");
+      // The popover's own ALREADY-RENDERED position (its default "below" placement, since the
+      // --above class hasn't been applied yet this render) -- not an approximation reconstructed
+      // from the trigger's rect + offsetHeight, which was off by exactly whatever fixed CSS offset
+      // each caller uses (Tooltip.tsx's 24px, ChipFrame.tsx's 40px) and could still let a popover
+      // creep a few pixels past the intended margin even when that cruder check thought it was
+      // fine -- confirmed live, measuring pop.getBoundingClientRect() directly instead.
+      setVAlign(pop.getBoundingClientRect().bottom > window.innerHeight - 16 ? "above" : "below");
     }
     if (pop) {
       const target =
@@ -51,5 +64,5 @@ export function usePopover() {
     }
   }, [open]);
 
-  return { open, setOpen, close, align, rootRef, triggerRef, popRef };
+  return { open, setOpen, close, align, vAlign, rootRef, triggerRef, popRef };
 }

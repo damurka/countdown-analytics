@@ -1,0 +1,46 @@
+{
+  "languages": [
+    "key",
+    "en",
+    "fr",
+    "pt"
+  ],
+  "translation": [
+    {
+      "key": "btn_upload_map_survey",
+      "en": "Match Region Names",
+      "fr": "Associer les noms de région",
+      "pt": "Associar nomes de região"
+    },
+    {
+      "key": "btn_upload_map_mapping",
+      "en": "Match Region Names",
+      "fr": "Associer les noms de région",
+      "pt": "Associar nomes de região"
+    },
+    {
+      "key": "msg_upload_manual_mapping",
+      "en": "Match Survey Region Names to Your Dataset",
+      "fr": "Associer les noms de région de l'enquête à votre jeu de données",
+      "pt": "Associar os nomes de região da pesquisa ao seu conjunto de dados"
+    },
+    {
+      "key": "opt_penta1derived",
+      "en": "Penta 1 population Growth",
+      "fr": "Croissance de la population Penta 1",
+      "pt": "Crescimento da população Penta 1"
+    },
+    {
+      "key": "title_denom_select_best",
+      "en": "Selected Denominator",
+      "fr": "Dénominateur sélectionné",
+      "pt": "Denominador selecionado"
+    },
+    {
+      "key": "msg_upload_map_survey_nothing_yet",
+      "en": "Nothing to map yet — upload a survey folder in Survey Files first.",
+      "fr": "Rien à cartographier pour l'instant — téléversez d'abord un dossier d'enquête à l'étape Fichiers d'enquête.",
+      "pt": "Ainda não há nada para mapear — carregue primeiro uma pasta de inquérito em Ficheiros de inquérito."
+    }
+  ]
+}

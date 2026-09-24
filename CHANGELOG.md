@@ -33,6 +33,14 @@ All notable changes to this extension are documented here. The format is based o
   row (42 districts: 1,262 px instead of 400). *Keep* in the View tool restores the original.
 - **Vaxx** brought up to the same filter bar, per-chart Labels/View tools and many-region chart layout
   as RMNCAH, sharing the same `js/` build (one bundle, published into both apps).
+- **RMNCAH** the header bar and sidebar navigation are now React too (`HeaderBar.tsx`, `Sidebar.tsx`),
+  replacing shinydashboard's `dashboardHeader()`/`dashboardSidebar()`: shinydashboard fixes the markup
+  those produce (every header item must be `<li class="dropdown">`) and drives tab switching with its
+  own bundled JS, which left no room for the redesigned shell. `tabItems()` and every page's own
+  `tabItem()` are unchanged; switching tabs is now one explicit call (`js/src/nav.ts`) instead.
+  Sidebar sections (Start, Data Quality, Denominators, Analysis) match the design; the header adds a
+  breadcrumb (computed client-side, no server round-trip), the dataset pill, a language switcher and
+  an "Ask AI" placeholder. Download report kept its existing logic, only restyled.
 
 ### Fixed
 

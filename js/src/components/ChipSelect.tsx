@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { InputAdapter } from "@/shiny.react";
 import { ChipFrame, IconReset } from "./ChipFrame";
 import { OptionList } from "./OptionList";
@@ -8,7 +8,7 @@ import type { ChipOption } from "../types";
 
 // The compact single-choice filter chip from the app-shell design. It is a Shiny input (its value is
 // input$<inputId>) built with shiny.react's InputAdapter, so R can push a new value or new options with
-// updateReactInput(). Ports R's cdChipSelect() (apps/rmncah/ui/react/cd-react.R).
+// updateReactInput(). Ports R's cd_chip_select() (apps/rmncah/_shared/R/core (and components/)).
 
 export interface ChipSelectProps {
   id?: string;
@@ -24,6 +24,9 @@ export interface ChipSelectProps {
   resetLabel?: LocalText;
   searchLabel?: LocalText;
   emptyLabel?: LocalText;
+  /** Leave the chip empty when nothing is chosen. Off by default: a chip whose options arrive without a value
+   *  picks the first one, so no filter is ever shown as "—". */
+  allowEmpty?: boolean;
 }
 
 function ChipSelect({
@@ -39,9 +42,21 @@ function ChipSelect({
   resetLabel,
   searchLabel,
   emptyLabel,
+  allowEmpty,
 }: ChipSelectProps) {
   const lang = useLang();
   const current = value == null ? "" : String(value);
+  // Default to the first option when the value is empty or not among the options. Once per distinct option list,
+  // so a server that keeps pushing an empty value can't make this loop.
+  const optionKeys = options.map((o) => String(o.key)).join("");
+  const autoPicked = useRef("");
+  useEffect(() => {
+    if (allowEmpty || disabled || !onChange || options.length === 0) return;
+    if (options.some((o) => String(o.key) === current)) return;
+    if (autoPicked.current === optionKeys) return;
+    autoPicked.current = optionKeys;
+    onChange(String(options[0].key));
+  }, [optionKeys, current, allowEmpty, disabled]);
   const selected = options.find((o) => String(o.key) === current);
   const changed = defaultValue != null && String(defaultValue) !== current;
 

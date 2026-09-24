@@ -1,85 +1,136 @@
-library(shiny)
-library(bslib)
-library(DT)
-library(dplyr)
-library(purrr)
-library(openxlsx)
-library(haven)
-library(readr)
+# Pooled: combine several countries' saved datasets (.rds) and export the results. One page on the shared Countdown
+# shell (../_shared), with the "pooled" (green) theme.
+options(shiny.maxRequestSize = 2 * 1024 * 1024^2)
+
 library(cd2030.core)
 
+pacman::p_load(
+  shiny,
+  shiny.react,
+  htmltools,
+  dplyr,
+  purrr,
+  openxlsx,
+  haven,
+  readr,
+  reactable,
+  shiny.i18n,
+  stringr,
+  update = FALSE
+)
+
+source("../_shared/load.R")
+cd_ui_load()
+
+app_name <- Sys.getenv("CDSUITE_SHINY_NAME", unset = "Pooled")
+app_version <- Sys.getenv("CDSUITE_SHINY_VERSION", unset = "2.0.0")
 pre_loaded_dir <- Sys.getenv("CDSUITE_SHINY_SELECTED_FILE", unset = NA)
-print(pre_loaded_dir)
-pooled_files <- list.files(pre_loaded_dir, pattern = "\\.rds$", full.names = TRUE, ignore.case = TRUE)
+language <- Sys.getenv("CDSUITE_SHINY_LOCALE", unset = "en")
 
-ui <- page_sidebar(
-  title = 'CD2030 Data Pooling & Extraction',
-  theme = bs_theme(
-    version = 5,
-    preset = 'flatly',
-    "font-size-base" = "0.75rem"
-  ),
+using_local_files <- !is.na(pre_loaded_dir) && nzchar(pre_loaded_dir) && dir.exists(pre_loaded_dir)
+pooled_files <- if (using_local_files) list.files(pre_loaded_dir, pattern = "[.]rds$", full.names = TRUE, ignore.case = TRUE) else character()
 
-  sidebar = sidebar(
-    title = 'Configuration',
-    if (pre_loaded_dir != "") {
-      div(
-        class = "p-2 bg-light border rounded mb-3 text-muted",
-        style = "font-size: 0.85rem; line-height: 1.4;",
-        icon("check-circle", class = "text-success"),
-        strong(length(pooled_files), "files pre-loaded"),
-        br(),
-        span("Folder: "),
-        # code() gives it a nice monospaced look, word-break ensures it doesn't overflow
-        tags$code(basename(pre_loaded_dir), style = "font-size: 0.8rem; word-break: break-all;")
+i18n <- init_i18n(translation_json_path = cd_translations("translation/translation.json"))
+i18n$set_translation_language(language)
+cd_use_i18n(i18n)
+
+# Every table the page can build, by domain. The names are what the user sees and what process_dataset() switches on.
+base_datasets <- c(
+  "Parameters", "Overall Score",
+  "Indicator Coverage - National", "Indicator Coverage - Admin 1", "Indicator Coverage - District",
+  "Coverage - National", "Coverage - Admin 1"
+)
+rmncah_datasets <- c("National Mortality", "Admin 1 Mortality", "National Service Utilization", "Admin 1 Service Utilization")
+datasets_for <- function(domain) if (identical(domain, "rmncah")) c(base_datasets, rmncah_datasets) else base_datasets
+
+cd_nav_sections <- list(
+  cd_nav_section("Pooling",
+    cd_nav_item("Data pooling", tabName = "pooling", icon = "layer-group")
+  )
+)
+
+ui <- cd_app_ui(
+  theme = "pooled",
+  title = app_name,
+  header = cd_app_bar(app_name, app_version),
+  sidebar = cd_sidebar(),
+  body = cd_app_body(
+    usei18n(i18n),
+    cd_head_assets(),
+    cd_screens(
+      cd_screen(
+        tabName = "pooling",
+
+        cd_filter_bar(
+          cd_chip_select("dataset_type", "Domain", i18n = i18n,
+                         options = list(
+                           list(key = "rmncah", text = "RMNCAH"),
+                           list(key = "vaccine", text = "Immunization (VAXX)")
+                         ))
+        ),
+
+        cd_page_header("pooling", "CD2030 Data Pooling & Extraction", i18n, include_help = FALSE),
+
+        cd_page_content(
+          cd_card(
+            title = "Configuration",
+            subtitle = "Load the countries' saved datasets, pick a table to build, then download it.",
+            i18n = i18n,
+            div(
+              class = "cd-field-stack",
+              if (using_local_files) {
+                cd_status_banner(
+                  "success",
+                  paste(length(pooled_files), "files pre-loaded"),
+                  paste("Folder:", basename(pre_loaded_dir)),
+                  i18n = i18n
+                )
+              } else {
+                cd_file_upload("rds_files", label = "1. Upload RDS files", accept = ".rds,.RDS", multiple = TRUE, i18n = i18n)
+              },
+              div(class = "cd-upload-actions", cd_button("load_btn", "Load datasets", icon = "folder-open", variant = "primary", i18n = i18n)),
+              shiny.react::reactOutput("target_ui"),
+              div(class = "cd-upload-actions", cd_button("process_btn", "Build selected table", icon = "gears", variant = "primary", i18n = i18n)),
+              div(
+                class = "cd-upload-actions",
+                tags$a(id = "download_single", class = "shiny-download-link cd-button", href = "", target = "_blank", download = NA,
+                       tags$i(class = "fa fa-file-csv"), " Download current (CSV)"),
+                tags$a(id = "download_full", class = "shiny-download-link cd-button cd-button--primary", href = "", target = "_blank", download = NA,
+                       tags$i(class = "fa fa-file-excel"), " Download all as Excel")
+              )
+            )
+          ),
+
+          cd_card(
+            title = "Data preview",
+            i18n = i18n,
+            div(class = "cd-log-caption", textOutput("preview_title", inline = TRUE)),
+            cd_spinner(reactableOutput("data_preview"), i18n = i18n)
+          ),
+
+          cd_card(
+            title = "Execution logs",
+            i18n = i18n,
+            collapsible = TRUE,
+            tags$pre(class = "cd-log", textOutput("log_output"))
+          )
+        )
       )
-    },
-    radioButtons('dataset_type', 'Select Domain:',
-                 choices = c('RMNCAH' = 'rmncah', 'Immunization (VAXX)' = 'vaccine')),
-
-    if (is.null(pre_loaded_dir)) {
-      fileInput('rds_files', '1. Upload RDS Files:',
-                multiple = TRUE,
-                accept = c('.rds', '.RDS'))
-    },
-
-    # Step 1: Explicit load button
-    actionButton('load_btn', '2. Load Caches', class = 'btn-warning', icon = icon('folder-open')),
-
-    hr(),
-
-    # Step 2: Select and Process dynamically
-    selectInput('target_dataset', '3. Select Dataset to Process:', choices = NULL),
-    actionButton('process_btn', '4. Process Selected', class = 'btn-primary', icon = icon('cogs')),
-
-    hr(),
-    h5('Downloads'),
-    downloadButton('download_single', 'Download Current (CSV)', class = 'btn-outline-secondary w-100 mb-2'),
-    downloadButton('download_full', 'Download All as Excel', class = 'btn-success w-100')
-  ),
-
-  # Replaced standard card with a tabbed interface for Logs
-  navset_card_underline(
-    id = "main_tabs",
-    title = textOutput('preview_title'),
-
-    nav_panel(
-      title = "Data Preview",
-      icon = icon("table"),
-      DTOutput('data_preview')
-    ),
-
-    nav_panel(
-      title = "Execution Logs",
-      icon = icon("rectangle-list"),
-      verbatimTextOutput('log_output')
     )
   )
 )
 
 server <- function(input, output, session) {
 
-  # Added 'logs' to reactiveValues to track errors and warnings
+  cd_shell_server(output, cd_nav_sections, initial_tab = "pooling", data_ready = reactive(TRUE), i18n = i18n)
+
+  show_language <- function(lang) {
+    update_lang(lang)
+    cd_set_language(session, lang)
+  }
+  observeEvent(input$selected_language, show_language(input$selected_language))
+
+  # 'logs' track errors and warnings shown on the Execution logs card
   rv <- reactiveValues(caches = list(), current_data = NULL, logs = character())
 
   # Helper function to push messages to the log screen
@@ -88,30 +139,26 @@ server <- function(input, output, session) {
     rv$logs <- c(rv$logs, paste0("[", timestamp, "] ", msg))
   }
 
-  # --- Update UI Dropdown based on Domain ---
-  observeEvent(input$dataset_type, {
-    base_choices <- c(
-      'Parameters',
-      'Overall Score',
-      'Indicator Coverage - National',
-      'Indicator Coverage - Admin 1',
-      'Indicator Coverage - District',
-      'Coverage - National',
-      'Coverage - Admin 1'
-    )
+  domain <- reactive(input$dataset_type %||% "rmncah")
 
-    if (input$dataset_type == 'rmncah') {
-      updateSelectInput(session, 'target_dataset', choices = c(base_choices, 'National Mortality', 'Admin 1 Mortality', 'National Service Utilization', 'Admin Service Utilization'))
-    } else {
-      updateSelectInput(session, 'target_dataset', choices = base_choices)
-    }
+  # The table picker follows the domain: the RMNCAH-only tables are not offered for vaccine data.
+  output$target_ui <- shiny.react::renderReact({
+    choices <- datasets_for(domain())
+    cd_field_select("target_dataset", "2. Table to build", i18n = i18n, options = cd_plain_options(choices),
+                    value = choices[[1]])
+  })
+
+  output$header_pill <- renderUI({
+    req(length(rv$caches) > 0)
+    tags$span(
+      class = "cd-dataset-pill",
+      tags$span(class = "cd-dataset-pill__dot"),
+      tags$span(class = "cd-dataset-pill__country", paste(length(rv$caches), "datasets loaded"))
+    )
   })
 
   # --- Step 1: LOAD ONLY (With Error Catching) ---
   observeEvent(input$load_btn, {
-
-    # Check if we are using the local pre-loaded files or the UI uploads
-    using_local_files <- (pre_loaded_dir != "")
 
     if (!using_local_files) {
       req(input$rds_files) # Only require the UI upload if we aren't using local files
@@ -128,7 +175,6 @@ server <- function(input, output, session) {
 
       # Determine paths based on the source
       if (using_local_files) {
-        # Use the global pooled_files variable
         rds_files_paths <- pooled_files
         append_log("Using pre-configured local directory.")
       } else {
@@ -149,7 +195,8 @@ server <- function(input, output, session) {
       # Safely load each cache
       loaded_caches <- map(rds_files_paths, function(path) {
         tryCatch({
-          cache <- init_CacheConnection(path, indicator_group = input$dataset_type)
+          cache <- init_CacheConnection(path, indicator_group = domain())
+          set_selected_group(domain()) # loading a dataset sets the session group to the dataset's own
           if (is.null(cache$adjusted_data) && !cache$adjusted_flag) {
             append_log(paste0("WARNING: ", cache$country %||% basename(path), " has not been processed/adjusted."))
           }
@@ -170,6 +217,7 @@ server <- function(input, output, session) {
 
   # --- Core Processing Logic Engine (With Per-Country Error Catching) ---
   process_dataset <- function(caches, dataset_name, log_func) {
+    set_selected_group(domain())
 
     # Define the core extraction logic based on the requested dataset
     extract_func <- switch(dataset_name,
@@ -305,19 +353,17 @@ server <- function(input, output, session) {
         showNotification('Failed to generate dataset. Check logs.', type = 'error')
       }
 
-      # Automatically switch to the Preview tab if data was generated
-      nav_select("main_tabs", "Data Preview")
     })
   })
 
   # --- UI Renderers ---
   output$preview_title <- renderText({
-    if (is.null(rv$current_data)) 'Dataset Preview (Awaiting Processing)' else paste('Preview:', input$target_dataset)
+    if (is.null(rv$current_data)) 'Awaiting processing' else input$target_dataset
   })
 
-  output$data_preview <- renderDT({
+  output$data_preview <- renderReactable({
     req(rv$current_data)
-    datatable(rv$current_data, options = list(pageLength = 10, scrollX = TRUE), rownames = FALSE, class = 'cell-border stripe')
+    reactable(rv$current_data, defaultPageSize = 10, searchable = TRUE, striped = TRUE, highlight = TRUE, compact = TRUE)
   })
 
   # Renders the collected logs
@@ -336,14 +382,14 @@ server <- function(input, output, session) {
   )
 
   output$download_full <- downloadHandler(
-    filename = function() paste0('pooled_', input$dataset_type, '_data_', Sys.Date(), '.xlsx'),
+    filename = function() paste0('pooled_', domain(), '_data_', Sys.Date(), '.xlsx'),
     content = function(file) {
       req(length(rv$caches) > 0)
       append_log("--- Generating Full Excel Export ---")
       wb <- createWorkbook()
 
       sheets_to_build <- c('Parameters', 'Overall Score', 'Indicator Coverage - National', 'Indicator Coverage - Admin 1', 'Indicator Coverage - District', 'Coverage - National', 'Coverage - Admin 1')
-      if (input$dataset_type == 'rmncah') sheets_to_build <- c(sheets_to_build, 'National Mortality', 'Admin 1 Mortality', 'National Service Utilization', 'Admin 1 Service Utilization')
+      if (identical(domain(), 'rmncah')) sheets_to_build <- c(sheets_to_build, rmncah_datasets)
 
       withProgress(message = 'Generating Full Excel Workbook...', value = 0, {
         for (i in seq_along(sheets_to_build)) {
@@ -364,4 +410,4 @@ server <- function(input, output, session) {
   )
 }
 
-shinyApp(ui, server)
+shinyApp(ui = ui, server = server)

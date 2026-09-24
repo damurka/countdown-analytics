@@ -8,7 +8,7 @@ import type { LocalText } from "../lang";
 // "This chart only" options that every chart supports, whatever it plots: which way round it is drawn, the
 // text size and where the legend sits. Only what differs from the default is reported to Shiny, as an
 // object, or null when nothing differs. Orientation is "auto" by default: a chart with many regions on its
-// horizontal axis is turned so the regions run down the side (R decides; see apply_chart_options()).
+// horizontal axis is turned so the regions run down the side (R decides; see cd_apply_chart_options()).
 
 export interface ChartViewValue {
   /** null/undefined = automatic. */

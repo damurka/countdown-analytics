@@ -1,0 +1,2431 @@
+/* ---- Base reset: the browser defaults this stylesheet relies on, stated so no framework has to supply them. rem
+   units resolve against a 10px root, every box is border-box, body text is 14px/1.43, headings and paragraphs keep
+   their default margins, and form controls inherit the page font. ---- */
+html { font-size: 10px; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; font-size: 14px; line-height: 1.42857143; }
+*, *::before, *::after { box-sizing: border-box; }
+main { display: block; }
+h1, h2, h3, h4, h5, h6 { font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; margin-top: 20px; margin-bottom: 10px; }
+h4, h5, h6 { margin-top: 10px; }
+h1 { font-size: 36px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 14px; } h6 { font-size: 12px; }
+p { margin: 0 0 10px; }
+ul, ol { margin-top: 0; margin-bottom: 10px; }
+b, strong { font-weight: 700; }
+small { font-size: 85%; }
+img { vertical-align: middle; border: 0; }
+svg:not(:root) { overflow: hidden; }
+table { border-collapse: collapse; border-spacing: 0; }
+th { text-align: left; }
+label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+button, input, select, textarea { font-family: inherit; font-size: inherit; line-height: inherit; margin: 0; }
+button { overflow: visible; text-transform: none; }
+textarea { overflow: auto; }
+[hidden], template { display: none !important; }
+
+/* Countdown app shell. Tokens and layout follow the "Countdown App Shell" design
+   (project/ShellParts.dc.html, project/Main.dc.html); see also the React component tokens further down. */
+:root {
+  --cd-primary: #9b5758;
+  --cd-primary-hover: #874a4b;
+  --cd-primary-rgb: 155, 87, 88;
+  --cd-secondary: #cfaa50;
+  --cd-green: #009c6f;
+  --cd-success-ink: #007a57;
+  --cd-success-tint: #e8f5f0;
+  --cd-lime: #b9d988;
+
+  --cd-ink: #1f2328;
+  --cd-ink-2: #3d444b;
+  --cd-muted: #5c6670;
+  --cd-bg: #f5f6f7;
+  --cd-surface: #ffffff;
+  --cd-surface-2: #f2f4f5;
+  --cd-border: #d7dce0;
+  --cd-warning-border: #e6d08f;
+  --cd-warning-tint: #fbf3dc;
+  --cd-warning-ink: #6b5316;
+  /* The "Not set" field token (ShellParts.dc.html/Patterns.dc.html) is its own pair, not --cd-warning-border/
+     -tint: --cd-secondary already equals its border color exactly (#cfaa50, so reused directly, not duplicated
+     here), but its background (#fffdf6) has no existing var -- distinct from the generic warning banner tint. */
+  --cd-secondary-tint: #fffdf6;
+  --cd-danger: #b3261e;
+  --cd-danger-border: #e9b5b1;
+  --cd-danger-tint: #fbeceb;
+  --cd-shadow: 0 1px 2px rgba(31, 35, 40, 0.05);
+  --cd-sidebar-w: 272px;
+  --cd-sidebar-w-collapsed: 64px;
+  --cd-font-serif: "Source Serif 4", Georgia, serif;
+  --cd-font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+}
+
+body,
+.cd-shell__content,
+.cd-shell__page {
+  background: var(--cd-bg) !important;
+  color: var(--cd-ink) !important;
+  font-family: var(--cd-font-sans) !important;
+}
+
+/* The design's own base link reset (ShellParts.dc.html/Patterns.dc.html's own <helmet><style>): was missing
+   entirely, so a plain <a> anywhere not already covered by one of the more specific rules further down (nav
+   links, sidebar footer, etc.) fell back to the browser default -- blue, underlined. --cd-primary-ink already
+   equals the design's own hover color (#7d3f40) exactly, just declared as a var further down (React component
+   tokens) rather than duplicated here. */
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--cd-primary-ink); }
+
+.cd-shell {
+  position: relative;
+  min-height: 100vh;
+  /* Without this, .cd-shell__content's margin-top: 64px below (it's .cd-shell's only in-flow child --
+     header/sidebar are both position:fixed, out of flow) collapses straight through .cd-shell and <body>
+     into <html>, since neither has any top border/padding to stop it. Confirmed live: document.documentElement.
+     scrollHeight was 64px MORE than both window.innerHeight and .cd-shell's own offsetHeight -- an invisible
+     64px gap sitting above <body>, making the whole page one screen taller than its actual visible content and
+     showing a scrollbar that had nothing to scroll to (user report). display:flow-root gives .cd-shell its own
+     block formatting context, which stops that collapse, with no other layout effect here. */
+  display: flow-root;
+}
+.cd-shell__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  display: flex;
+  align-items: stretch;
+  height: 64px;
+}
+
+/* ---- sidebar (React: js/src/components/Sidebar.tsx, mounted into <aside class="cd-shell__sidebar"> --
+   see ui/react/cd-shell.R) -------------------------------------------------------------------------------- */
+.cd-shell__sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  /* Explicit, not left to default: per the CSS overflow spec, an axis left as "visible" while the other isn't
+     is instead treated as "auto" -- so overflow-y:auto alone would silently make overflow-x:auto too, and any
+     child even a pixel wider than the rail (padding/icon-centering rounding, a long untranslated label, ...)
+     would add an unwanted horizontal scrollbar. */
+  overflow-x: hidden;
+  z-index: 810;
+  width: var(--cd-sidebar-w) !important;
+  background: var(--cd-surface) !important;
+  color: var(--cd-ink) !important;
+  border-right: 1px solid var(--cd-border);
+}
+.cd-shell__content {
+  margin-left: var(--cd-sidebar-w) !important;
+  margin-top: 64px;
+  min-height: calc(100vh - 64px);
+}
+
+/* the fixed-width cell to the left of the top bar: the brand block, plain HTML (it has no interactive state,
+   so it does not need to be a React root) */
+.cd-shell__brand {
+  width: var(--cd-sidebar-w) !important;
+  height: 64px !important;
+  line-height: normal !important;
+  padding: 0 20px !important;
+  box-sizing: border-box;
+  background: var(--cd-surface) !important;
+  border-right: 1px solid var(--cd-border) !important;
+  border-bottom: 1px solid var(--cd-border) !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  flex-shrink: 0;
+}
+.cd-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--cd-ink);
+}
+.cd-brand__mark {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.cd-brand__name {
+  font-family: var(--cd-font-serif);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 22px;
+  color: var(--cd-ink);
+  display: block;
+}
+.cd-brand__version {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--cd-muted);
+  display: block;
+}
+
+.cd-navbar {
+  background: var(--cd-surface) !important;
+  border-bottom: 1px solid var(--cd-border);
+  display: grid;
+  /* minmax(0, 1fr), not bare 1fr: bare 1fr tracks still respect their item's min-content as an implicit floor,
+     so at a narrow width they don't actually shrink -- the auto (centered) track loses the space fight instead
+     and its content (the dataset pill) effectively disappears. minmax(0, ...) removes that floor. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 64px;
+  padding-right: 20px;
+}
+.cd-header-crumb {
+  justify-self: start;
+  min-width: 0; /* lets the grid column shrink below the breadcrumb's natural content width, so
+                   .cd-breadcrumb__current's text-overflow:ellipsis can actually kick in on a long page title */
+}
+.cd-header-pill-slot {
+  justify-self: center;
+}
+.cd-header-right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+/* the two uiOutput() wrappers around HeaderBreadcrumb/HeaderActions (js/src/components/HeaderBar.tsx) --
+   not one component with its own internal flex-grow spacer: that only pushed content to the edge of its own
+   box, one level short of .cd-navbar's real right edge, nested one Shiny-uiOutput layer too deep to work. */
+.cd-header-crumb,
+.cd-header-actions {
+  display: flex;
+  align-items: center;
+}
+.cd-header-crumb-inner,
+.cd-header-actions-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cd-header-crumb-inner {
+  padding: 0 24px;
+}
+.cd-shell__toggle {
+  color: var(--cd-ink) !important;
+  height: 64px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cd-shell__toggle:hover {
+  background: var(--cd-surface-2) !important;
+}
+/* the dataset pill and Download report (each its own uiOutput) -- display:flex so each centers its own content
+   vertically (a block <span>'s content otherwise just flows top-aligned) */
+.cd-header-pill-slot,
+.cd-header-download-slot {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cd-nav {
+  padding: 4px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cd-nav__section {
+  padding: 16px 10px 6px;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cd-muted);
+}
+.cd-nav__list, .cd-nav__children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cd-nav__children { padding: 2px 0 2px 20px; }
+.cd-nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  color: var(--cd-ink);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cd-nav__group > .cd-nav__link { height: 38px; }
+.cd-nav__children .cd-nav__link { height: 34px; font-size: 14.5px; }
+.cd-nav__link:hover { background: var(--cd-surface-2); text-decoration: none; }
+.cd-nav__link:hover .cd-nav__icon { color: var(--cd-primary); }
+.cd-nav__icon { color: var(--cd-muted); display: inline-flex; width: 20px; justify-content: center; flex-shrink: 0; }
+.cd-nav__text { overflow: hidden; text-overflow: ellipsis; }
+.cd-nav__chev { margin-left: auto; color: var(--cd-muted); flex-shrink: 0; transition: transform 0.15s ease; }
+.cd-nav__group--open > .cd-nav__link .cd-nav__chev { transform: rotate(90deg); }
+.cd-nav__dot {
+  position: absolute;
+  left: -12px;
+  top: 9px;
+  width: 3px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  background: var(--cd-secondary);
+}
+.cd-nav__link--active {
+  color: var(--cd-primary-ink);
+  background: var(--cd-primary-tint);
+  font-weight: 600;
+}
+.cd-nav__link--active .cd-nav__icon { color: var(--cd-primary); }
+.cd-nav__link:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+/* Phase 9 (sidebar locking, apps/rmncah/app.R's own data_ready condition): a locked item stays visible (so
+   the user can still see what unlocking gets them, and clicking it explains why -- see err_nav_locked) but
+   reads as clearly inert, same visual language as .cd-wizard-rail__item--locked above uses for the wizard's
+   own locked steps. !important on color/background beats .cd-nav__link--active's own higher-specificity
+   rules when a locked item also happens to be the initial/active tab (e.g. the very first page load, before
+   any data exists) -- confirmed a plain locked-only rule lost to --active there otherwise. */
+.cd-nav__link--locked { cursor: not-allowed; opacity: 0.55; }
+.cd-nav__link--locked.cd-nav__link--active { color: var(--cd-ink) !important; background: transparent !important; font-weight: 500 !important; }
+.cd-nav__link--locked .cd-nav__icon { color: var(--cd-muted) !important; }
+.cd-nav__rail-btn--locked { cursor: not-allowed; opacity: 0.55; }
+.cd-nav__rail-btn--locked.cd-nav__rail-btn--active { color: var(--cd-ink) !important; background: transparent !important; }
+.cd-nav__flyout-link--locked { cursor: not-allowed; opacity: 0.55; }
+/* The lock glyph itself (Sidebar.tsx's own LockIcon) -- sits where .cd-nav__chev normally would (margin-left:
+   auto pushes it flush right, same as the chevron it replaces on a locked group), or right after the label on
+   a locked leaf link/flyout item. Explicit user request: dimming alone read as "just unavailable right now,
+   maybe a loading state", not clearly "locked until you load a dataset" -- a real padlock glyph is unambiguous
+   either way, group headers included (those previously showed no locked treatment of any kind, the one
+   inconsistent-looking item in an otherwise fully dimmed sidebar). */
+.cd-nav__lock { color: var(--cd-muted); flex-shrink: 0; margin-left: auto; }
+.cd-nav__flyout-link--locked .cd-nav__lock { margin-left: 8px; }
+/* The rail's own compact badge version (RailItem, icon-only, no room for an inline label+lock row) -- a small
+   circular chip pinned to the button's bottom-right corner, over its main icon, the same corner convention a
+   notification-count badge would use. */
+.cd-nav__rail-lock {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cd-surface);
+  border: 1.5px solid var(--cd-border);
+  color: var(--cd-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cd-nav__rail-lock .cd-nav__lock { width: 9px; height: 9px; margin-left: 0; }
+
+.cd-sidebar__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--cd-border);
+  color: var(--cd-ink-2);
+  font-size: 14px;
+}
+.cd-sidebar__footer a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+}
+.cd-sidebar__footer a:hover { color: var(--cd-primary-ink); }
+.cd-sidebar__footer a svg { flex-shrink: 0; }
+
+/* ---- collapsed / narrow rail (Narrow.dc.html): body.sidebar-collapse is toggled by nav.ts's
+   setSidebarCollapsed(), both automatically (the window narrows past COLLAPSE_QUERY) and manually (HeaderBar's
+   cd-shell__toggle button). Scoped to the sidebar/brand only -- collapsing the sidebar *frees up* width, so a
+   manual click has no business also shrinking the header's own buttons (see body.header-compact below, which
+   the manual toggle deliberately never touches). ------------------------------------------------------------ */
+body.sidebar-collapse .cd-shell__sidebar {
+  width: var(--cd-sidebar-w-collapsed) !important;
+}
+/* the hover-preview drawer (nav.ts's openSidebarHoverPreview()/closeSidebarHoverPreview(), set on hovering
+   either the rail or the header's toggle button): the sidebar widens back to its full width and floats above
+   the content on its own shadow, WITHOUT .cd-shell__content's margin-left changing -- it's an overlay, not a
+   layout change, so the page underneath doesn't reflow while it's open. */
+body.sidebar-collapse.sidebar-hover-open .cd-shell__sidebar {
+  width: var(--cd-sidebar-w) !important;
+  box-shadow: 0 12px 32px rgba(31, 35, 40, 0.16);
+  z-index: 900;
+}
+body.sidebar-collapse .cd-shell__content {
+  margin-left: var(--cd-sidebar-w-collapsed) !important;
+}
+body.sidebar-collapse .cd-shell__brand {
+  width: var(--cd-sidebar-w-collapsed) !important;
+  padding: 0 !important;
+  justify-content: center !important;
+}
+body.sidebar-collapse .cd-shell__brand .cd-brand__name,
+body.sidebar-collapse .cd-shell__brand .cd-brand__version {
+  display: none;
+}
+body.sidebar-collapse .cd-sidebar__footer { justify-content: center; padding: 12px 0; }
+
+/* ---- compact header: body.header-compact is set ONLY by nav.ts's responsive matchMedia listener (never by
+   the manual sidebar toggle) -- this is purely "is the window itself too narrow for the full header", so it
+   stays independent of whatever state the user has manually left the sidebar in. ---------------------------- */
+body.header-compact .cd-page-header > .cd-page-heading > h1 {
+  font-size: 26px;
+  line-height: 32px;
+}
+/* header action buttons drop to icon-only, matching Narrow.dc.html */
+body.header-compact .cd-hdr-btn {
+  width: 36px;
+  padding: 0;
+  gap: 0;
+}
+/* .cd-hdr-btn__label specifically, not a bare "span": the language button's flag is itself a <span
+   className="cd-flag"> (see HeaderBar.tsx), which a bare "span" selector matched too, hiding the flag right
+   along with the text -- the same bug the Download report button had with its own icon-wrapping span. */
+body.header-compact .cd-hdr-btn__label { display: none; }
+/* Download report the same way -- but "span" alone is too broad a selector here: this Shiny version's
+   actionLink() auto-wraps the icon itself in <span class="action-icon">, not just the label in
+   <span class="action-label"> (which is what ui/download_report.R's own tags$span() label sits inside, doubly
+   nested) -- "a.action-button span" matched BOTH, so display:none hid the icon along with the text, leaving an
+   empty square. Scoped to .action-label specifically, it only hides the text. */
+body.header-compact .cd-header-download-slot .cd-header-download {
+  width: 36px;
+  padding: 0;
+  gap: 0;
+}
+body.header-compact .cd-header-download-slot .cd-header-download .cd-button__label { display: none; }
+/* the dataset pill: drop the filename first (the less essential half), so the centered column shrinks enough
+   to stop losing the fight for space against the breadcrumb/action-button columns and disappearing entirely */
+body.header-compact .cd-dataset-pill__file { display: none; }
+
+.cd-nav--collapsed {
+  align-items: center;
+  padding: 8px 0;
+}
+.cd-nav__list--collapsed {
+  align-items: center;
+  gap: 4px;
+}
+.cd-nav__rail-item { position: relative; }
+.cd-nav__rail-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cd-ink);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.cd-nav__rail-btn:hover { background: var(--cd-surface-2); text-decoration: none; color: var(--cd-primary-ink); }
+.cd-nav__rail-btn--active { color: var(--cd-primary-ink); background: var(--cd-primary-tint); }
+.cd-nav__rail-btn:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+.cd-nav__rail-btn .cd-nav__dot { left: -12px; }
+
+/* the rail's per-group flyout (js/src/components/Sidebar.tsx): portalled to document.body, not nested inside
+   .cd-shell__sidebar -- its left/top come from the trigger icon's getBoundingClientRect() as an inline style
+   (position:fixed uses the same viewport-relative coordinate space that returns), computed in JS rather than
+   fixed in CSS, since which icon opened it changes where it needs to sit. Being portalled out, rather than an
+   absolutely-positioned descendant of the sidebar, is what keeps it from ever affecting the sidebar's own
+   overflow/scrollbar (see .cd-shell__sidebar's overflow-x:hidden above, and nav.ts's retainSidebarHoverPreview()
+   for the unrelated full-drawer overlay this is not the same thing as). */
+.cd-nav__flyout {
+  position: fixed;
+  width: 232px;
+  box-sizing: border-box;
+  padding: 8px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(31, 35, 40, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 1000;
+}
+.cd-nav__flyout-label {
+  padding: 6px 10px 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cd-muted);
+}
+.cd-nav__flyout-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  color: var(--cd-ink);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+.cd-nav__flyout-link:hover { background: var(--cd-surface-2); text-decoration: none; }
+.cd-nav__flyout-link--active { color: var(--cd-primary-ink); background: var(--cd-primary-tint); font-weight: 600; }
+.cd-nav__flyout-link .cd-nav__dot { left: -6px; top: 7px; height: 18px; }
+.cd-nav__flyout-link:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+/* A nested group inside the flyout (>1 level deep -- see FlyoutItem in Sidebar.tsx): its own small sub-label,
+   plus its children's links indented under it so they read as belonging to that sub-group rather than as more
+   siblings of the flyout's own top-level items. */
+.cd-nav__flyout-group { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+.cd-nav__flyout-sublabel {
+  padding: 6px 10px 2px 18px;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cd-muted);
+}
+.cd-nav__flyout-group .cd-nav__flyout-link { padding-left: 18px; }
+
+/* ---- top bar: breadcrumb (React) -- the dataset pill and Download report keep their own Shiny logic and sit
+   in their own flex slots (.cd-header-pill-slot/.cd-header-download-slot above), not inside this ------------ */
+.cd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.cd-breadcrumb__part { color: var(--cd-muted); font-weight: 500; }
+.cd-breadcrumb__sep { color: var(--cd-muted); display: inline-flex; }
+.cd-breadcrumb__current { color: var(--cd-ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+
+.cd-header-spacer { flex-grow: 1; }
+
+.cd-dataset-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border: 1px solid var(--cd-border);
+  border-radius: 18px;
+  background: var(--cd-surface-2);
+  font-size: 14px;
+  color: var(--cd-ink-2);
+  white-space: nowrap;
+}
+.cd-dataset-pill__dot { width: 8px; height: 8px; border-radius: 4px; background: var(--cd-green); flex-shrink: 0; }
+.cd-dataset-pill__country { font-weight: 600; color: var(--cd-ink); }
+.cd-dataset-pill__file {
+  color: var(--cd-muted);
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.cd-hdr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none !important;
+}
+.cd-hdr-btn--outline { border: 1px solid var(--cd-border); background: var(--cd-surface); color: var(--cd-ink); }
+.cd-hdr-btn--outline:hover { background: var(--cd-surface-2); }
+.cd-hdr-btn--accent { border: 1px solid var(--cd-primary); background: var(--cd-surface); color: var(--cd-primary-ink); }
+.cd-hdr-btn--accent:hover { background: var(--cd-primary-tint); }
+.cd-hdr-btn--primary { border: 1px solid var(--cd-primary); background: var(--cd-primary); color: #fff; }
+.cd-hdr-btn--primary:hover { background: var(--cd-primary-hover); }
+.cd-hdr-btn svg { flex-shrink: 0; }
+
+/* ---- page header: eyebrow / title / subtitle -------------------------------------------------------------- */
+.cd-page-header {
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+body.header-compact .cd-page-header {
+  margin-bottom: 12px;
+}
+.cd-page-header > .cd-page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.cd-page-header .cd-page-eyebrow {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cd-primary-ink);
+}
+.cd-page-header > .cd-page-heading > h1 {
+  margin: 0;
+  font-family: var(--cd-font-serif);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+  color: var(--cd-ink);
+}
+.cd-page-header .cd-page-subtitle {
+  margin: 0;
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--cd-muted);
+}
+
+.cd-page-header > .right-buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* "Download report", in the top bar (downloadReportUI() is a plain shiny::actionLink(); give it the solid
+   primary-button look from the design instead of Shiny's default blue-link style. This selector previously
+   read ".cd-report-slot a.action-button" -- ".cd-report-slot" was never actually applied to any element in the
+   real markup (the link just sits in .cd-header-download-slot, the uiOutput() wrapper in cd-shell.R), so this
+   rule silently never matched and the button rendered as a bare link the whole time. */
+.cd-header-download-slot .cd-header-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--cd-primary);
+  background: var(--cd-primary);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none !important;
+}
+.cd-header-download-slot .cd-header-download:hover { background: var(--cd-primary-hover); }
+/* shiny::icon("download") renders <i class="fas fa-download">, never literally class="fa" -- ".fa" alone never
+   matched this (or anything downstream that assumed it did, like the old narrow-mode font-size:0 attempt). */
+.cd-header-download-slot .cd-header-download i { margin-right: 0; }
+
+.cd-shell__page {
+  padding: 32px 40px;
+}
+body.header-compact .cd-shell__page {
+  padding: 16px 18px;
+}
+
+.content-body {
+  min-height: 250px;
+  padding: 0;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.content-body > .wrapper-content {
+  padding: 15px 0 0;
+}
+
+.cd-card {
+  border: 1px solid var(--cd-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--cd-shadow) !important;
+  background: var(--cd-surface) !important;
+  overflow: hidden;
+  /* cd_card() (cd-dashboard.R) renders as a plain block div, not a shared .row with a gutter, so stacked cards
+     had no vertical space between them at all -- this is what the design's own `gap: 20px`/16px between cards
+     (its <main> is a flex column with that gap) comes out to for a component that isn't itself a flex child
+     of anything that could apply a gap. Harmless trailing margin below the last card on a page -- reads as
+     normal bottom whitespace before .cd-shell__page's own padding. */
+  margin-bottom: 20px;
+}
+/* Overrides the shared overflow:hidden above -- confirmed live: a chart/table toolbar's own flyout
+   (ToolFrame.tsx's .cd-pop, e.g. the Year dropdown, the "This chart only" settings panel) is a child of the
+   card and positions itself correctly relative to the VIEWPORT (usePopover.ts already flips it to stay
+   on-screen), but overflow:hidden on this ancestor clipped it at the CARD's own edge regardless, cutting the
+   popover off mid-content whenever it needed to extend past the card's own box. Nothing in this card's own
+   chrome actually relies on the clip (header/body have no edge-to-edge fill color of their own to keep inside
+   the rounded corners -- confirmed by reading every .cd-card__header/__body/__footer rule before removing
+   this), so this is a plain, safe override, not a masked corner. */
+.cd-card { overflow: visible; }
+body.header-compact .cd-card {
+  margin-bottom: 16px;
+}
+
+.cd-card.cd-card--success,
+.cd-card.cd-card--solid.cd-card--success {
+  border-top-color: var(--cd-border) !important;
+  border-color: var(--cd-border) !important;
+}
+
+.cd-card.cd-card--success > .cd-card__header,
+.cd-card.cd-card--solid.cd-card--success > .cd-card__header {
+  background: var(--cd-surface) !important;
+  color: var(--cd-ink) !important;
+}
+
+.cd-card__header {
+  padding: 16px 20px !important;
+  border-bottom: 1px solid var(--cd-border);
+}
+.cd-card__body { padding: 20px; }
+.cd-card__header .cd-card__title {
+  margin: 0 !important;
+  font-size: 16px !important;
+  line-height: 22px !important;
+  font-weight: 600 !important;
+  color: var(--cd-ink) !important;
+  /* Explicit user request, "the title has one line" -- without this, a flex item's own implicit min-width
+     defaults to its content's min-content size (the longest unbreakable run of characters), which is usually
+     still wide enough to let the browser wrap the title across two lines rather than actually shrink the box,
+     whenever the header's other flex item (.cd-card__header-actions, flex-shrink: 0, never shrinks) leaves it
+     less room than its full text wants. min-width: 0 removes that floor so the title's own box can actually
+     shrink; overflow/text-overflow then truncate the now-too-long text with an ellipsis instead of wrapping. */
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* cd_card(icon=)'s own icon (CardHeader.tsx) -- a plain Font Awesome <i>, same convention DownloadButtonStatus.tsx
+   already uses, not shiny::icon()'s <svg> (only the collapse toggle button still uses that). */
+.cd-card__title > i { margin-right: 8px; }
+/* cd_card(title=, subtitle=) (cd-dashboard.R): title + a smaller muted line under it, both stacked in one wrapper
+   so .cd-card__header's own flex row (title block vs. the header's own tool buttons) still treats them as one
+   item -- matches the card-header pattern in the design boards (e.g. NationalCoverage.dc.html). */
+.cd-card__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cd-card__subtitle {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--cd-muted);
+}
+
+/* Load Data step 1 (modules/0_upload_data.R): the Dataset upload and the "Additional reference data" section
+   sit inside ONE shared card now, not two separately bordered .cd-card's of the same width stacked on top of
+   each other -- this thin rule is the only seam between them, matching the design's single-card layout. */
+.cd-card-divider { border: none; border-top: 1px solid var(--cd-border); margin: 24px 0 4px; }
+
+/* Load Data's National Rates card (modules/0_upload_data/national_rates.R): labeled field groups, each field
+   with a small hint line under it giving its expected range/unit. Spacing values (group-to-group 28px,
+   head-to-grid 12px, head's own title/subtitle gap 10px) match the reference markup exactly, not a guess. */
+.cd-field-group { margin-bottom: 28px; }
+.cd-field-group:last-child { margin-bottom: 0; }
+.cd-field-group__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.cd-field-group__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--cd-ink); }
+.cd-field-group__subtitle { font-size: 13px; color: var(--cd-muted); }
+.cd-field-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 20px;
+  /* between rows, not .cd-field-hint's own bottom margin (a field is one flex column now -- see
+     .cd-field-stack -- so its own gap already spaces label/input/hint apart; this is what spaces one row of
+     fields from the next) */
+  row-gap: 16px;
+  align-items: start;
+}
+@media (max-width: 991px) {
+  .cd-field-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575px) {
+  .cd-field-grid { grid-template-columns: 1fr; }
+}
+.cd-stack { display: flex; flex-direction: column; gap: 16px; }
+.cd-row { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.cd-cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.cd-form-centered { max-width: 820px; margin: 0 auto; }
+/* .cd-field-stack is a <label> in FieldNumber.tsx's React markup (and a plain wrapping <div> for the couple
+   of non-numeric fields that reuse the class, e.g. file_upload.R) -- <label> is display:inline by default, so
+   without this its three children (the label text, the input, the hint) tried to lay out side by side/wrap
+   inline instead of stacking, which is what made inputs across the grid come out inconsistent widths/heights
+   depending on how much horizontal room a given field's own label text left. */
+.cd-field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+/* Was reserving a full 2 lines' height (min-height: 2.6em) here to keep every input in a grid row starting at
+   the same y position even when one neighbor's label wrapped ("Institutional Delivery Coverage (%)" vs. a
+   one-line "ANC1 Coverage (%)") -- with the "(%)"/"(proportion)" suffixes trimmed from every label since, that
+   wrap is now the rare exception rather than routine, so reserving 2 lines everywhere just left a visible gap
+   of dead space above almost every input. A single line's worth is enough for the normal case; the rare
+   still-long label (Institutional Delivery Coverage) can wrap and make its own row very slightly taller
+   without that being worth paying for on every other field. */
+.cd-field-stack .cd-field-label,
+.cd-field-stack > .cd-field-label { display: block; min-height: 1.3em; margin: 0; }
+/* .control-label is app-wide font-weight:700 (see the plain .control-label rule further down) -- correct
+   elsewhere, but heavier than the design's 600 for these field labels specifically; scoped to .cd-field-stack
+   only (higher specificity wins over the plain rule) so it doesn't touch any other page's labels. */
+.cd-field-stack .cd-field-label { font-weight: 600; }
+/* Explicit, consistent size for every field's input -- there was no dedicated rule for this at all before,
+   so it fell back to whatever .form-control's own (unset) height happened to compute to, which is exactly
+   the kind of thing that ends up inconsistent across instances. Matches the design's own reference value. */
+.cd-field-input {
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+/* FieldNumber.tsx's unit prop ("%"): the design's own "Number with unit" token (Patterns.dc.html). The
+   border/radius/background/focus-ring move to this group wrapper instead of the <input> -- the input inside a
+   unit group is borderless/transparent (.cd-field-input-group__control), since it's the group, not the input,
+   that reads as "the field" once a trailing unit box is attached to it. */
+.cd-field-input-group {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--cd-border);
+  background: var(--cd-surface);
+  overflow: hidden;
+}
+.cd-field-input-group:focus-within {
+  border-color: var(--cd-primary);
+  outline: 2px solid var(--cd-primary);
+  outline-offset: 2px;
+}
+.cd-field-input-group__control {
+  flex-grow: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.cd-field-input-group__unit {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 12px;
+  border-left: 1px solid var(--cd-border);
+  color: var(--cd-muted);
+  font-size: 14px;
+  background: var(--cd-surface-2);
+  flex-shrink: 0;
+}
+/* Explicit, not left to inherit: both were relying on the browser's own default (normal) for a <label>'s
+   children, which is fragile -- a stray ancestor rule setting the label itself bold would silently carry into
+   both. Matches .cd-field-input's own weight exactly, same as the design's own tokens (neither the input nor
+   the hint in Patterns.dc.html/ShellParts.dc.html sets a font-weight of its own, i.e. plain 400). */
+.cd-field-hint { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--cd-muted); margin: 0; }
+/* FieldNumber.tsx: live out-of-range validation -- an invalid value swaps the hint for an error message and
+   puts a danger border on the input, instead of silently accepting (or silently clamping) whatever was typed.
+   .cd-field-input.cd-field-input--bad, not plain .cd-field-input--bad: a plain (non-unit) field's <input> always
+   carries "form-control" alongside this class, and the global ".form-control{border:...!important}" rule
+   (further down) has the SAME specificity (one class) and also !important -- with both sides tied, the LATER
+   rule in the file wins regardless of which one is "supposed" to apply, and .form-control being later was
+   silently winning, so an invalid/missing plain field showed the ordinary gray border instead of red/amber
+   (confirmed visually: a unit-group field, whose <input> never carries "form-control" at all so this collision
+   never applied to it, showed the correct color while every plain field next to it didn't). Two classes beats
+   one regardless of source order, the same fix already used for .btn.cd-btn earlier. */
+.cd-field-input.cd-field-input--bad, .cd-field-input-group.cd-field-input--bad { border-color: var(--cd-danger) !important; background: var(--cd-danger-tint); }
+.cd-field-hint--bad { color: var(--cd-danger); font-weight: 600; }
+/* FieldSelect.tsx's own <select> (js/src/components/FieldSelect.tsx, mounted via cdFieldSelect() -- Survey
+   reference group's second field, survey_start_ui in national_rates.R, is the first user). Matches the design's
+   own "Select" token (Patterns.dc.html) exactly: appearance:none to drop the native arrow, a background-image
+   chevron in its place (same #5c6670/--cd-muted color as the design's own SVG, just as a CSS background instead
+   of a separate DOM element -- pixel-identical result, no extra markup needed), padding-right widened to clear it. */
+.cd-field-stack select.cd-field-input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235c6670' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+/* required + empty: the design's own warning treatment (amber, not red -- distinct from an out-of-range
+   *value*, this is the absence of one) */
+/* The design's own "Not set" input token (ShellParts.dc.html), not the generic --cd-warning-border/-tint pair
+   used elsewhere for banners -- those are a lighter, separate warning color; this field state matches the
+   design's exact border/background for a required-but-empty value.
+   .cd-field-input.cd-field-input--warn, not plain .cd-field-input--warn -- same .form-control specificity/
+   !important collision as .cd-field-input--bad above (see its comment): a plain field's border was silently
+   losing to the global .form-control rule, which is exactly the "border not applied uniformly" bug -- a
+   unit-group field's border (no .form-control class on its <input>) was never affected by this collision, so
+   only fields WITHOUT a unit box showed the wrong (default gray) border while empty/required. */
+.cd-field-input.cd-field-input--warn, .cd-field-input-group.cd-field-input--warn { border-color: var(--cd-secondary) !important; background: var(--cd-secondary-tint); }
+.cd-field-hint--warn { color: var(--cd-ink-2); font-weight: 600; }
+
+/* The one shared icon+title+description status banner (StatusBanner.tsx), used both standalone (upload_box.R's
+   "Dataset" card, via cdStatusBanner()) and stacked (messageBoxUI()'s feedback list, via cdMessageBox() ->
+   MessageBoxStatus.tsx) -- was two separate implementations until they were consolidated into this one:
+   upload_box.R used to build its own copy directly as R-rendered SVG+div markup
+   (cd_icon_check_circle()/cd_icon_alert_circle(), now removed), and MessageBoxStatus.tsx very nearly grew a
+   second, near-identical one (.messages-stack .msg/.msg__title/.msg__desc, since merged into this).
+   white-space:pre-wrap + word-break:break-word on __desc: a long local file path or error message (both
+   callers show these) often has no spaces at all, so pre-wrap alone would let it overflow the box sideways --
+   word-break lets it wrap mid-word instead. */
+.cd-status-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.cd-status-banner svg { flex-shrink: 0; margin-top: 1px; }
+.cd-status-banner--success { border-color: #9fd3bf; background: var(--cd-success-tint); color: var(--cd-success-ink); }
+.cd-status-banner--error { border-color: var(--cd-danger-border); background: var(--cd-danger-tint); color: var(--cd-danger); }
+.cd-status-banner--warning { border-color: var(--cd-warning-border); background: var(--cd-warning-tint); color: var(--cd-warning-ink); }
+.cd-status-banner--info { border-color: var(--cd-border); background: var(--cd-surface-2); color: var(--cd-ink-2); }
+.cd-status-banner__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+/* title has no color of its own -- it inherits the per-status color set above */
+.cd-status-banner__title { font-size: 14.5px; font-weight: 600; line-height: 20px; }
+.cd-status-banner__desc {
+  margin: 0;
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 19px;
+  font-weight: 400;
+  color: var(--cd-ink-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.cd-status-banner__file { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12.5px; }
+
+.cd-message-box { margin-bottom: 15px; }
+/* mapping_steps.R's own trigger-button wrapper (the "Match Region Names" button + its own "restore default"
+   link, mapSurveyUI()/mapShapefileUI()) sitting directly above the status message box below it (.cd-message-box's
+   own margin-bottom does nothing for the gap ABOVE it) -- confirmed live, the button and the message box were
+   touching, no breathing room between them at all. */
+.cd-wizard-mapping-trigger { margin-bottom: 16px; }
+.messages-stack { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow: auto; }
+
+/* "Restore default"/"Clear mapping" (file_upload.R's restore_default_control()) -- a plain actionLink(), shown
+   only while a field currently holds a user override, right under its message box. */
+.cd-restore-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cd-primary-ink) !important;
+  text-decoration: none !important;
+}
+.cd-restore-link:hover { text-decoration: underline !important; }
+.cd-restore-link .fa,
+.cd-restore-link .fas,
+.cd-restore-link .far { font-size: 11px; }
+
+/* FileUploadZone.tsx (file_upload.R's UN estimates/WUENIC/survey folder uploads) -- the visible chrome only.
+   The wrapping "input-group" class is NOT decorative: Shiny's own file-input binding hardcodes
+   `.closest("div.input-group")` to find the drag-and-drop zone and toggles shiny-file-input-active/-over onto
+   it during a drag, so this class name has to stay even though none of Bootstrap's own .input-group styling is
+   wanted here -- these rules override it rather than working within it. */
+.cd-upload-zone-wrap { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cd-upload-zone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px dashed var(--cd-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: var(--cd-surface);
+  color: var(--cd-muted);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.cd-upload-zone:hover { border-color: var(--cd-primary); }
+/* shiny-file-input-active: a file is being dragged anywhere on the page (every drop zone highlights at once,
+   Shiny's own page-wide affordance). shiny-file-input-over: the drag is over THIS zone specifically. */
+.cd-upload-zone.shiny-file-input-active { border-color: var(--cd-border); background: var(--cd-surface-2); }
+.cd-upload-zone.shiny-file-input-over { border-color: var(--cd-primary); background: var(--cd-primary-tint); }
+.cd-upload-zone svg { flex-shrink: 0; }
+.cd-upload-zone__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cd-upload-zone__text strong { font-size: 14px; font-weight: 600; color: var(--cd-ink); overflow-wrap: anywhere; }
+.cd-upload-zone__hint { font-size: 12px; line-height: 16px; color: var(--cd-muted); }
+/* Same off-screen technique fileInput()/directoryInput() already used -- clicking anywhere on the wrapping
+   <label> still opens the picker (standard HTML label/input association), this just keeps the native,
+   browser-styled control itself invisible so only this component's own chrome shows. */
+.cd-upload-zone__input {
+  position: absolute !important;
+  top: -99999px !important;
+  left: -99999px !important;
+}
+/* Already-uploaded state (FileUploadZone.tsx: fileNames.length > 0, whether from a real pick or a server-pushed
+   cdSetFileUpload()) -- solid success-tinted border instead of the empty state's dashed one, a filled check
+   instead of the plain upload icon, and a small round Reset button anchored to the shell (not the <label>
+   itself, so a click on it doesn't also forward to the native <input> and reopen the picker -- see
+   FileUploadZone.tsx's own handleReset() comment for why). */
+.cd-upload-zone-shell { position: relative; }
+.cd-upload-zone-shell--filled .cd-upload-zone {
+  border-style: solid;
+  border-color: var(--cd-success-ink);
+  background: var(--cd-success-tint);
+  padding-right: 44px;
+}
+.cd-upload-zone-shell--filled .cd-upload-zone:hover { border-color: var(--cd-success-ink); }
+.cd-upload-zone__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--cd-success-ink);
+  color: #fff;
+  flex-shrink: 0;
+}
+.cd-upload-zone__reset {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--cd-muted);
+  cursor: pointer;
+}
+.cd-upload-zone__reset:hover { background: rgba(0, 0, 0, 0.06); color: var(--cd-ink); }
+/* Nested inside .cd-upload-zone-shell now (FileUploadZone.tsx), not a separate line below the box with its
+   own margin -- absolutely positioned against the shell's own bottom edge, inside its rounded corners, so an
+   in-flight upload reads as part of the box instead of a disconnected bar underneath it. */
+.cd-upload-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+  background: var(--cd-border);
+  visibility: hidden;
+}
+.cd-upload-progress .progress-bar { height: 100%; background: var(--cd-primary); width: 0; }
+.cd-upload-checklist { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+.cd-upload-checklist__item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--cd-muted); }
+.cd-upload-checklist__item--found { color: var(--cd-success-ink); }
+.cd-upload-checklist__dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--cd-border);
+  flex-shrink: 0;
+  color: transparent;
+}
+.cd-upload-checklist__item--found .cd-upload-checklist__dot {
+  border-color: var(--cd-success-ink);
+  background: var(--cd-success-tint);
+  color: var(--cd-success-ink);
+}
+
+/* MappingModal.tsx (modal_helpers.R's mapping button + modal) -- a portal to document.body (createPortal, same
+   technique Sidebar.tsx's own flyout uses), not Shiny's showModal()/modalDialog(): that had no custom CSS
+   applied anywhere in this app before this, so there was nothing established to preserve by keeping it. */
+.cd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(31, 35, 40, 0.5);
+  padding: 24px;
+}
+.cd-modal {
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: var(--cd-surface);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(31, 35, 40, 0.28);
+  overflow: hidden;
+}
+.cd-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--cd-border);
+  flex-shrink: 0;
+}
+.cd-modal__title { margin: 0; font-size: 17px; font-weight: 600; color: var(--cd-ink); }
+.cd-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--cd-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.cd-modal__close:hover { background: var(--cd-surface-2); color: var(--cd-ink); }
+.cd-modal__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--cd-border);
+  flex-shrink: 0;
+}
+.cd-map-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-grow: 1;
+  max-width: 280px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  color: var(--cd-muted);
+}
+.cd-map-search input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  flex-grow: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--cd-ink);
+}
+.cd-map-progress { font-size: 13px; font-weight: 600; color: var(--cd-secondary); white-space: nowrap; flex-shrink: 0; }
+.cd-map-progress--done { color: var(--cd-success-ink); }
+/* MappingModal.tsx's own "N regions were matched automatically" note -- explicit user request, communicating
+   the auto-match that otherwise silently pre-fills the whole list. Same info-banner color language
+   .alert-info (above) already uses elsewhere in this app, not a new one. */
+.cd-map-automatch-note {
+  margin: 12px 22px 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #5f4a0d;
+  background-color: rgba(207, 170, 80, 0.16);
+  border: 1px solid rgba(207, 170, 80, 0.32);
+}
+.cd-modal__body { flex-grow: 1; overflow-y: auto; padding: 4px 22px; }
+.cd-map-empty { padding: 32px 0; text-align: center; color: var(--cd-muted); font-size: 14px; }
+.cd-map-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cd-border);
+}
+.cd-map-row:last-child { border-bottom: 0; }
+.cd-map-row__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--cd-success-ink);
+}
+.cd-map-row__name { flex: 0 0 42%; min-width: 0; font-size: 14px; font-weight: 600; color: var(--cd-ink); overflow-wrap: anywhere; }
+.cd-map-row__select { flex-grow: 1; min-width: 0; height: 36px !important; }
+.cd-map-row--warn {
+  background: var(--cd-secondary-tint);
+  margin: 0 -12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-bottom-color: transparent;
+}
+.cd-map-row__warn-text { flex-shrink: 0; font-size: 12px; font-weight: 600; color: var(--cd-secondary); white-space: nowrap; }
+/* Per-row "why this was auto-matched" tag (MappingModal.tsx) -- neutral/informational, deliberately NOT the
+   same warning color as .cd-map-row__warn-text above: a case/accent/spelling auto-match isn't a problem to fix,
+   just something the user should be able to tell apart from a match they picked themselves. */
+.cd-map-row__match-tag {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cd-muted);
+  background: var(--cd-surface-2);
+  border: 1px solid var(--cd-border);
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+.cd-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--cd-border);
+  flex-shrink: 0;
+}
+.cd-modal__footer-actions { display: flex; align-items: center; gap: 10px; }
+.cd-map-confirm { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 13.5px; color: var(--cd-warning-ink); }
+
+.cd-upload-actions { display: flex; gap: 8px; margin-top: 16px; }
+.cd-button.disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+.cd-button--busy { pointer-events: none; opacity: 0.75; }
+.cd-button__content { display: inline-flex; align-items: center; gap: 8px; }
+.cd-button__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--cd-border);
+  border-top-color: var(--cd-ink);
+  animation: cd-spin 0.6s linear infinite;
+}
+@keyframes cd-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Was a stale border-radius/color (7px, #cfd5db) predating --cd-border -- every "Default" input/select token in
+   both ShellParts.dc.html and Patterns.dc.html is 8px / #d7dce0 (== --cd-border exactly). This is the base rule
+   every .form-control in the app inherits from, so the fix reaches every text input, select and slider, not
+   just Load Data's own fields. */
+.cd-field-input{
+  border-radius: 8px !important;
+  border: 1px solid var(--cd-border) !important;
+  box-shadow: none !important;
+}
+
+/* Was --cd-secondary (gold) + a soft box-shadow glow -- ShellParts.dc.html/Patterns.dc.html's own "Focused"
+   input/select tokens both show --cd-primary (#9b5758) as the border color, with a solid 2px outline (not a
+   shadow) offset 2px. Matches every focusable form control now, not just this card. */
+.cd-field-input:focus{
+  border-color: var(--cd-primary) !important;
+  outline: 2px solid var(--cd-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+.cd-field-label {
+  color: #202830 !important;
+  font-weight: 700;
+}
+
+.cd-plot-wrap {
+  position: relative;
+  padding-top: 12px;
+}
+
+.cd-toolbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 50;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background: transparent;
+}
+
+/* .cd-card__toolbar (cd_card()'s own header toolbar, further down) needs these same normalizing rules for the
+   exact same content -- cdChartLabels()/cdChartView()/downloadButtonUI() render identically wherever they're
+   placed (plotDownloadsToolbarUI(), ui/download/plot_download.R, is the SAME markup either way), so both
+   containers share one set of rules rather than a second, duplicate copy. .cd-download-wrap only ever wraps
+   ONE button, so inline-block is enough for it; .shiny-html-output is different for a TABBED card's toolbar
+   (1a_checks_reporting_rate.R's own output$subnational_toolbar) -- that's a uiOutput(), so its whole tool row
+   (all 4 widgets) sits INSIDE one shiny-html-output div, one level deeper than .cd-toolbox's own direct
+   children. Confirmed live: making that div merely inline-block did nothing, because .cd-card__toolbar's own
+   flex layout only ever governs its DIRECT children's positions -- a flex container has zero effect on
+   grandchildren. inline-flex here is what makes the div's OWN children line up in a row too. */
+.cd-toolbox .shiny-html-output,
+.cd-card__toolbar .shiny-html-output {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.cd-toolbox .cd-download-wrap,
+.cd-card__toolbar .cd-download-wrap {
+  display: inline-block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cd-toolbox .cd-tool-btn,
+.cd-card__toolbar .cd-tool-btn {
+  padding: 4px 6px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 0;
+  line-height: 1;
+  width: auto;
+  min-height: 0;
+}
+
+.cd-toolbox .cd-tool-btn i,
+.cd-card__toolbar .cd-tool-btn i {
+  font-size: 16px;
+  color: #6b778c;
+}
+
+.cd-toolbox .cd-tool-btn:hover i,
+.cd-toolbox .cd-tool-btn:focus i,
+.cd-toolbox .cd-tool-btn:active i,
+.cd-card__toolbar .cd-tool-btn:hover i,
+.cd-card__toolbar .cd-tool-btn:focus i,
+.cd-card__toolbar .cd-tool-btn:active i {
+  color: var(--cd-primary);
+}
+
+/* LoadingSkeleton.tsx (cdLoadingSkeleton(), ui/react/cd-react.R) -- project/Patterns.dc.html's own "Empty and
+   loading" pattern card, second example (the bar-skeleton one), replacing shinycssloaders' default spinner
+   (explicit user request). Values (border/radius/padding/bar sizes/gaps) are that mockup's own, read from its
+   raw markup, not approximated. */
+.cd-skeleton {
+  border: 1px solid var(--cd-border);
+  border-radius: 10px;
+  padding: 16px;
+  /* --cd-skel-h (cdSpinner(min_height =)) -- as tall as the finished content will be, bars centred, so the swap
+     from skeleton to chart doesn't resize the card. */
+  box-sizing: border-box;
+  min-height: var(--cd-skel-h, 0);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cd-skeleton__bars {
+  /* Only as wide as the bars: the baseline is the bars' own ground line, not a rule across the whole card. */
+  width: fit-content;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  height: 120px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--cd-border);
+}
+.cd-skeleton__bar {
+  width: 36px;
+  border-radius: 6px 6px 0 0;
+  background: var(--cd-surface-2);
+  position: relative;
+  overflow: hidden;
+}
+/* A light sweep across each bar, not a plain opacity pulse -- the common "skeleton loader" shimmer (GitHub/
+   LinkedIn-style), reads as more active/alive than a uniform fade for something that's meant to feel like
+   real content is about to arrive. One shared ::after per bar, gradient-based so it costs nothing to repeat
+   across all 7 -- staggered slightly (nth-child) so they don't all sweep in exact unison, which read as more
+   mechanical/less organic in a live check. */
+.cd-skeleton__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: cd-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+.cd-skeleton__bar:nth-child(2)::after { animation-delay: 0.1s; }
+.cd-skeleton__bar:nth-child(3)::after { animation-delay: 0.2s; }
+.cd-skeleton__bar:nth-child(4)::after { animation-delay: 0.3s; }
+.cd-skeleton__bar:nth-child(5)::after { animation-delay: 0.15s; }
+.cd-skeleton__bar:nth-child(6)::after { animation-delay: 0.25s; }
+.cd-skeleton__bar:nth-child(7)::after { animation-delay: 0.35s; }
+@keyframes cd-skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cd-skeleton__bar::after { animation: none; }
+}
+.cd-skeleton__caption {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cd-muted);
+}
+
+/* EmptyState.tsx (cdEmptyState(), ui/react/cd-react.R) -- the same "Empty and loading" pattern card's first
+   example: an icon, a title, a muted message, and an optional single action. */
+.cd-empty {
+  border: 1px solid var(--cd-border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 230px;
+  padding: 24px;
+  text-align: center;
+}
+.cd-empty__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: var(--cd-surface-2);
+  color: var(--cd-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cd-empty__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cd-ink);
+}
+.cd-empty__message {
+  max-width: 440px;
+  font-size: 14.5px;
+  line-height: 21px;
+  color: var(--cd-muted);
+}
+.cd-empty__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--cd-border);
+  background: var(--cd-surface);
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cd-empty__action:hover { background: var(--cd-surface-2); }
+
+.cd-spinner-wrap { position: relative; min-height: var(--cd-skel-h, 0); }
+.cd-spinner-overlay { display: none; }
+.cd-spinner-wrap--busy > .cd-spinner-overlay,
+.cd-spinner-wrap--init > .cd-spinner-overlay { display: block; }
+/* First paint, before Shiny has reported anything for the output: skeleton on top, the (still laid-out, so still
+   "visible" to Shiny) output invisible underneath. */
+
+/* The output underneath is taken out of flow and made invisible, NOT display:none: display:none gives it a width of
+   0, Shiny reports that back as a size change and redraws the chart at the real width the moment it is shown
+   again -- the flicker of every chart drawing twice. Absolute + width:100% keeps the width it is drawn at. */
+.cd-spinner-wrap--busy > :not(.cd-spinner-overlay),
+.cd-spinner-wrap--init > :not(.cd-spinner-overlay) {
+  position: absolute; top: 0; left: 0; width: 100%; visibility: hidden; pointer-events: none;
+}
+
+.cd-tabpane { display: none; }
+.cd-tabpane--active { display: block; }
+
+.cd-page { display: none; }
+.cd-page--active { display: block; }
+
+/* cd_card()'s own card chrome (ui/react/cd-dashboard.R, .cd-card/.cd-card__header/.cd-card__body -- see that
+   block's own comment further up) extended for a page that has moved to the new design system (first user:
+   1a_checks_reporting_rate.R), following project/ReportingRate.dc.html (the "compact filter bar" mockup) --
+   NOT a competing card component: reusing cd_card()'s own existing classes is what a first pass at this got wrong,
+   introducing a second, colliding `.cd-card`/`.cd-card__body`/`.cd-card__title` definition (confirmed live: two
+   separate rule blocks fighting over the exact same class names, one of them this app's ALREADY-established,
+   ~15-file-wide card skin). `.cd-card__toolbar`/`.cd-card__tabs`/`.cd-card__tab` below are the genuinely new
+   pieces cd_card() didn't have yet -- a toolbar (Ask AI/edit-labels/view/download/expand icons) beside the title,
+   and a tab strip under the header -- both optional `cd_card()` arguments now (`toolbar`, `tabs`). */
+.cd-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.cd-card__header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.cd-card__toolbar { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.cd-card__askai {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--cd-primary);
+  background: var(--cd-surface);
+  color: var(--cd-primary-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cd-card__askai:hover { background: var(--cd-primary-tint); }
+/* Narrow-card collapse -- project/ReportingRate.dc.html's half-width "National reporting rate" card: only the
+   download-image button and a collapse chevron stay in the header; Ask AI, the divider, view/label options, the
+   data download and expand fold away (cd_chart_toolbar()/plotDownloadsToolbarContent() tag them
+   .cd-tool-optional). A container query on the card itself, not a viewport one -- a half-width card is narrow
+   on a wide screen too. The chevron is always in the markup, hidden until then. */
+.cd-card { container-type: inline-size; }
+.cd-tool-optional { display: contents; }
+.cd-card__toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 32px; width: 32px; padding: 0; box-sizing: border-box;
+  border: 1px solid transparent; border-radius: 8px; background: transparent;
+  color: var(--cd-ink-2); cursor: pointer;
+}
+.cd-card__toggle:hover { background: var(--cd-primary-tint); color: var(--cd-ink); }
+.cd-card__toggle--chevron, .cd-card__more { display: none; }
+.cd-card__toggle--chevron i { transition: transform 150ms ease; }
+.cd-card--collapsed .cd-card__toggle--chevron i { transform: rotate(180deg); }
+.cd-card--collapsed > .cd-card__body,
+.cd-card--collapsed > .cd-card__footer,
+.cd-card--collapsed > .cd-card__tabs { display: none; }
+.cd-card--collapsed > .cd-card__header { border-bottom: none; }
+/* Collapsed by default whenever the window is not full width too (explicit user request) -- the same rules,
+   keyed on the viewport as well as the card, so a card that has room on its own still starts collapsed in a
+   smaller window. */
+@container (max-width: 700px) {
+  .cd-card__toolbar .cd-tool-optional { display: none; }
+  .cd-card__toggle--chevron, .cd-card__more { display: inline-flex; }
+  /* "More tools" open: the hidden tools come back, on their own row under the title (the header wraps). */
+  .cd-card--tools-open > .cd-card__header { flex-wrap: wrap; padding-bottom: 12px !important; }
+  .cd-card--tools-open > .cd-card__header .cd-card__header-actions { flex-basis: 100%; justify-content: flex-end; }
+  .cd-card--tools-open .cd-card__toolbar { flex-wrap: wrap; justify-content: flex-end; }
+  .cd-card--tools-open .cd-card__toolbar .cd-tool-optional { display: contents; }
+  .cd-card--tools-open .cd-card__more { background: var(--cd-primary-tint); color: var(--cd-primary-ink); }
+}
+@media (max-width: 1279px) {
+  .cd-card__toolbar .cd-tool-optional { display: none; }
+  .cd-card__toggle--chevron, .cd-card__more { display: inline-flex; }
+  /* "More tools" open: the hidden tools come back, on their own row under the title (the header wraps). */
+  .cd-card--tools-open > .cd-card__header { flex-wrap: wrap; padding-bottom: 12px !important; }
+  .cd-card--tools-open > .cd-card__header .cd-card__header-actions { flex-basis: 100%; justify-content: flex-end; }
+  .cd-card--tools-open .cd-card__toolbar { flex-wrap: wrap; justify-content: flex-end; }
+  .cd-card--tools-open .cd-card__toolbar .cd-tool-optional { display: contents; }
+  .cd-card--tools-open .cd-card__more { background: var(--cd-primary-tint); color: var(--cd-primary-ink); }
+}
+/* Collapsed mode -- project/Narrow.dc.html ("Narrow editor pane"): the same width where nav.ts's own
+   COLLAPSE_QUERY folds the sidebar to its icon rail (max-width: 1099px, keep the two in step), Ask AI drops its
+   label and becomes a 32x32 icon button like the tools beside it. The label is visually hidden, not removed, so
+   the button keeps its accessible name. */
+@media (max-width: 1099px) {
+  .cd-card__askai { position: relative; width: 32px; padding: 0; justify-content: center; gap: 0; }
+  .cd-card__askai > span {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+.cd-card__toolbar-divider { width: 1px; height: 20px; background: var(--cd-border); margin: 0 2px; flex-shrink: 0; }
+.cd-card-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+/* Below tablet width the two side-by-side cards get too narrow to read (a 2x2 facet chart squeezed under ~330px
+   per column, a table's columns wrapping/truncating) -- stack them full-width instead, same breakpoint
+   .cd-field-grid already uses elsewhere in this file for the same reason. */
+@media (max-width: 991px) {
+  .cd-card-row { grid-template-columns: 1fr; }
+}
+/* A tabs row sits directly under the header, its own top padding instead of the body's, so the tab strip's
+   bottom border reads as part of the header block, not the body -- matches the mockup's own spacing exactly
+   (4px 20px 0, the tablist's own border-bottom immediately below it). */
+/* A card with a tab strip: the header sheds its own bottom border and bottom padding so the strip's own
+   border-bottom is the single divider under the header block (matches the mockup's header markup). */
+.cd-card--tabbed > .cd-card__header {
+  padding: 12px 20px 0 !important;
+  border-bottom: none;
+}
+.cd-card__tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px 20px 0 20px;
+  border-bottom: 1px solid var(--cd-border);
+  overflow-x: auto;
+}
+.cd-card__tab {
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--cd-ink-2);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+    border-radius: 0 !important;
+}
+.cd-card__tab:hover:not(.cd-card__tab--active) { color: var(--cd-ink); }
+.cd-card__tab:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: -2px; }
+.cd-card__tab--active { border-bottom-color: var(--cd-secondary); color: var(--cd-primary-ink); font-weight: 600 !important; }
+.cd-card__tab:not(.cd-card__tab--active) { font-weight: 500 !important; }
+/* ExpandButton.tsx -- toggles this on its own closest .cd-card. Fixed to the viewport, above everything else
+   on the page (Sidebar/header/filterbar all sit below 1000 -- see their own z-index values), body scroll
+   locked via :has() so the page behind it can't also scroll. */
+.cd-card--expanded {
+  position: fixed;
+  inset: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+}
+.cd-card--expanded .cd-card__body { flex-grow: 1; overflow: auto; }
+body:has(.cd-card--expanded) { overflow: hidden; }
+
+a.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cd-shell__page,
+.cd-card {
+  /* `backwards`, not `both` -- confirmed live: `both` keeps this animation's own `to { transform:
+     translateY(0) }` permanently applied as the element's "used" transform value even long after the 200ms
+     entrance finishes (translateY(0) LOOKS like no transform, but per spec an element with any active or
+     fill-mode-retained transform, identity or not, still establishes its own stacking context). That silently
+     trapped every popover opened from inside a card (ToolFrame.tsx's .cd-pop, z-index:900) inside the CARD's
+     own local stacking context, so it could never actually paint above a sibling card that comes later in the
+     DOM (e.g. cd_card_row()'s two-up layout) no matter how high its own z-index was set -- it rendered
+     UNDERNEATH the neighbour instead. `backwards` still applies the `from` state before the animation starts
+     (no flash of the unanimated card), but stops retaining anything once it ends, so transform reverts to
+     this element's normal (none) cascade value -- same end appearance as `both` gave, just without leaving a
+     permanent stacking context behind. */
+  animation: cd-fade-up 200ms ease-out backwards;
+}
+
+@keyframes cd-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  /* body.header-compact is already active at anything below 1099px (see nav.ts), so plain ".cd-shell__page"
+     here would lose the specificity fight against "body.header-compact .cd-shell__page" above and never apply
+     -- scoped the same way, it wins by source order instead, for an even tighter phone-width padding. */
+  body.header-compact .cd-shell__page {
+    padding: 16px;
+  }
+  body.header-compact .cd-filterbar {
+    margin: -16px -16px 16px -16px;
+    padding: 10px 16px;
+  }
+
+  .cd-card {
+    border-radius: 8px !important;
+  }
+}
+
+/* Selected denominator presentation */
+.denominator-display {
+  width: 100%;
+}
+
+.denominator-title {
+  margin-bottom: 8px;
+}
+
+.denominator-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.denominator-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #d8dde2;
+  background: #fff;
+  max-width: 100%;
+}
+
+.denominator-chip .denom-kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+  color: #5b6670;
+  font-weight: 700;
+}
+
+.denominator-chip .denom-value {
+  font-size: 13px;
+  color: #232d36;
+  font-weight: 700;
+}
+
+.denominator-chip.denom-vax {
+  border-color: rgba(0, 156, 111, 0.35);
+  background: rgba(0, 156, 111, 0.08);
+}
+
+.denominator-chip.denom-maternal {
+  border-color: rgba(var(--cd-primary-rgb), 0.35);
+  background: rgba(var(--cd-primary-rgb), 0.08);
+}
+
+@media (max-width: 767px) {
+  .denominator-chip {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ---- React components (js/src/components, built to www/cd-react) ---------------------------------------- */
+:root {
+  --cd-primary-ink: #7d3f40;
+  --cd-primary-tint: #f4eaea;
+}
+
+/* filter bar: one line, stays visible just below the fixed header while the page scrolls (top matches
+   .cd-shell__header's own height -- at top:0 it would stick to the viewport's top edge too, right behind the
+   header, which sits above it at a higher z-index) */
+/* Full-bleed and flush against the fixed app header above it (see .cd-shell__header), not an inset card
+   floating in the page's own padding: the negative top/side margins exactly cancel .cd-shell__page's own
+   padding (28px 40px, 24px in body.header-compact below), which is safe here specifically because that padding
+   is what stops the negative margin from collapsing through into .cd-shell__page's own parent. Its own
+   horizontal padding matches the page's, so the chips line up with the title/cards below rather than sitting
+   flush against the viewport edge themselves. countdownDashboard() (content_dashboard.R) is what puts this
+   first in the page, ahead of the page title, so "attached, then the title below it" holds. */
+.cd-filterbar {
+  position: sticky;
+  top: 64px;
+  z-index: 800;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  margin: -32px -40px 16px -40px;
+  padding: 10px 40px;
+  box-sizing: border-box;
+  background: var(--cd-surface);
+  border: 0;
+  border-bottom: 1px solid var(--cd-border);
+  border-radius: 0;
+  box-shadow: 0 1px 2px rgba(31, 35, 40, 0.05);
+}
+body.header-compact .cd-filterbar {
+  margin: -16px -18px 12px -18px;
+  padding: 10px 18px;
+}
+.cd-filterbar__lead {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  margin-right: 4px;
+  padding-right: 14px;
+  border-right: 1px solid var(--cd-border);
+  font-size: 12.5px;
+  color: var(--cd-muted);
+  white-space: nowrap;
+}
+
+/* A filter bar that belongs to one card group on the page (cd_map_options()): in the page flow above its charts, a
+   plain bordered strip -- not the sticky, full-bleed bar under the app header. */
+.cd-filterbar.cd-filterbar--inline,
+body.header-compact .cd-filterbar.cd-filterbar--inline {
+  position: static;
+  margin: 0 0 16px 0;
+  padding: 8px 14px;
+  min-height: 48px;
+  border: 1px solid var(--cd-border);
+  border-radius: 10px;
+  box-shadow: var(--cd-shadow);
+}
+
+/* chip */
+.cd-chipwrap { position: relative; display: inline-flex; }
+.cd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px 0 12px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  border: 1px solid var(--cd-border);
+  background: var(--cd-surface);
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cd-chip:hover:not(:disabled) { background: var(--cd-surface-2); }
+.cd-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.cd-chip--open, .cd-chip--open:hover { border-color: var(--cd-primary); background: var(--cd-primary-tint); }
+.cd-chip:focus-visible, .cd-opt:focus-visible, .cd-reset:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+.cd-chip__key { color: var(--cd-muted); }
+.cd-chip__value { font-weight: 600; color: var(--cd-ink); }
+.cd-chip--open .cd-chip__value { color: var(--cd-primary-ink); }
+.cd-chip__chev { display: inline-flex; color: var(--cd-muted); }
+.cd-chip__dot { width: 6px; height: 6px; border-radius: 3px; background: var(--cd-secondary); flex-shrink: 0; }
+
+/* popover */
+.cd-pop {
+  position: absolute;
+  z-index: 900;
+  top: 40px;
+  left: 0;
+  min-width: 260px;
+  max-width: 340px;
+  max-height: 60vh;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 12px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(31, 35, 40, 0.16);
+  text-align: left;
+}
+.cd-pop--right { left: auto; right: 0; }
+.cd-pop__title { font-size: 14px; font-weight: 600; color: var(--cd-ink); }
+.cd-pop__hint { margin-top: 2px; font-size: 12.5px; line-height: 17px; color: var(--cd-muted); }
+
+/* Tooltip.tsx -- a small info trigger (Data Quality's own per-check "what does this measure and how"
+   explanations), reusing .cd-pop's own card styling above for its popover. Used two ways: as the row's
+   OWN pass/fail glyph (cd-wizard-dq-row's leading icon, status="pass"/"warn" -- flex-shrink/margin-top
+   here match the plain, non-interactive .cd-wizard-dq-row__icon fallback's own alignment exactly, so a
+   row looks identical whichever one it renders), or as a plain trailing "i" inline with text elsewhere
+   (inline-flex keeps it on the same line as the text beside it, not wrapped below). */
+.cd-tooltip { position: relative; display: inline-flex; vertical-align: middle; }
+.cd-wizard-dq-row > .cd-tooltip { flex-shrink: 0; margin-top: 2px; }
+.cd-tooltip__trigger {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; padding: 0; border: none; border-radius: 50%;
+  background: transparent; color: var(--cd-muted); cursor: pointer;
+}
+.cd-tooltip__trigger:hover, .cd-tooltip__trigger:focus-visible { background: var(--cd-surface-2); }
+.cd-tooltip__trigger:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+.cd-tooltip__trigger--pass { color: var(--cd-success-ink); }
+.cd-tooltip__trigger--warn { color: var(--cd-warning-ink); }
+.cd-tooltip__pop { top: 24px; min-width: 220px; max-width: 320px; font-size: 13px; line-height: 18px; color: var(--cd-ink-2); }
+/* usePopover()'s own vAlign flip (js/src/usePopover.ts) -- opens upward instead when there's no room
+   below the trigger (confirmed live: a tick low in a long checklist got cut off at the bottom of the
+   viewport with nowhere to go otherwise). */
+.cd-tooltip__pop--above { top: auto; bottom: 24px; }
+.cd-list { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; }
+.cd-group {
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cd-muted);
+}
+.cd-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 14.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.cd-opt:hover { background: var(--cd-surface-2); }
+.cd-opt--on, .cd-opt--on:hover { background: var(--cd-primary-tint); color: var(--cd-primary-ink); font-weight: 600; }
+.cd-opt__check { display: inline-flex; color: var(--cd-primary); }
+/* language switcher (HeaderBar.tsx's HeaderActions): a leading flag + text as one flex item, since .cd-opt's
+   own justify-content:space-between (needed elsewhere for a trailing checkbox/checkmark, see OptionList.tsx)
+   would otherwise push a bare flag span away from the text instead of sitting next to it. */
+.cd-opt__lead { display: inline-flex; align-items: center; gap: 8px; }
+.cd-flag {
+  display: inline-flex;
+  font-size: 15px;
+  line-height: 1;
+  /* Windows renders regional-indicator flag emoji as plain two-letter codes ("GB"/"FR"/"PT") rather than actual
+     flag glyphs, unlike macOS/most mobile OSes -- Segoe UI Emoji just doesn't have the flag glyphs. Still
+     legible either way (it degrades to the ISO country code, not empty space), so no fallback image is worth
+     the added complexity for a header button. */
+}
+.cd-pop__foot { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--cd-border); }
+.cd-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cd-muted);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cd-reset:hover { background: var(--cd-surface-2); }
+
+/* ---- React components: search, multi, number, chart tools ------------------------------------------------ */
+.cd-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 10px 0 0 0;
+}
+.cd-search svg { position: absolute; left: 10px; color: var(--cd-muted); pointer-events: none; }
+.cd-search input {
+  width: 100%;
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 10px 0 32px;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  background: var(--cd-surface);
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 14px;
+}
+.cd-search input:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.cd-empty { padding: 12px 10px; font-size: 13.5px; color: var(--cd-muted); }
+.cd-list { max-height: 320px; overflow-y: auto; }
+
+/* multi-choice rows */
+.cd-opt--multi { justify-content: flex-start; }
+.cd-opt--multi.cd-opt--on, .cd-opt--multi.cd-opt--on:hover { background: transparent; font-weight: 500; color: var(--cd-ink); }
+.cd-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--cd-border);
+  border-radius: 4px;
+  background: var(--cd-surface);
+  color: #fff;
+}
+.cd-box--on { background: var(--cd-primary); border-color: var(--cd-primary); }
+
+/* number chip */
+.cd-number { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.cd-number__field {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  box-sizing: border-box;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  background: var(--cd-surface);
+  overflow: hidden;
+}
+.cd-number__field:focus-within { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.cd-number__field--bad { border-color: #b3261e; background: #fbeceb; }
+.cd-number__field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 12px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.cd-number__unit { display: inline-flex; align-items: center; height: 100%; padding: 0 12px; border-left: 1px solid var(--cd-border); background: var(--cd-surface-2); color: var(--cd-muted); font-size: 14px; }
+.cd-number__error { font-size: 12.5px; color: #b3261e; }
+.cd-picks { display: flex; gap: 6px; flex-wrap: wrap; }
+.cd-pick {
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--cd-border);
+  border-radius: 14px;
+  background: var(--cd-surface);
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.cd-pick:hover { background: var(--cd-surface-2); }
+.cd-pick--on, .cd-pick--on:hover { border-color: var(--cd-primary); background: var(--cd-primary-tint); color: var(--cd-primary-ink); }
+
+/* chart tools: the same quiet grey icon as the camera and table buttons beside them */
+.cd-toolbox .cd-chipwrap { align-items: center; }
+.cd-tool {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b778c;
+  cursor: pointer;
+}
+.cd-tool:hover, .cd-tool:focus-visible { color: var(--cd-primary); }
+.cd-tool:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.cd-tool--open, .cd-tool--open:hover { background: var(--cd-primary-tint); color: var(--cd-primary-ink); }
+.cd-tool__dot { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 4px; background: var(--cd-secondary); border: 1.5px solid #fff; }
+.cd-pop--tool { width: 320px; max-width: 320px; top: 34px; font-size: 14px; }
+.cd-pop--tool .cd-pop__foot { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.cd-reset:disabled { opacity: 0.4; cursor: default; }
+.cd-note { font-size: 12.5px; line-height: 17px; color: var(--cd-muted); }
+
+/* label editor fields */
+.cd-fields { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.cd-field { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.cd-field__label { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--cd-ink); }
+.cd-field__reset { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-left: auto; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--cd-muted); cursor: pointer; }
+.cd-field__reset:hover { background: var(--cd-surface-2); color: var(--cd-primary); }
+.cd-input {
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  background: var(--cd-surface);
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+}
+.cd-input::placeholder { color: #7b858e; }
+.cd-input:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.cd-input--edited { border-color: var(--cd-primary); }
+
+/* segmented options in the view popover */
+.cd-seg-row { margin-top: 12px; }
+.cd-seg-row__label { margin-bottom: 4px; font-size: 12.5px; font-weight: 600; color: var(--cd-ink); }
+.cd-seg-row__note { font-weight: 400; color: var(--cd-muted); }
+.cd-seg { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--cd-border); border-radius: 8px; background: var(--cd-surface-2); }
+.cd-seg__btn { height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: var(--cd-ink); font: inherit; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
+.cd-seg__btn--on { background: var(--cd-surface); font-weight: 600; box-shadow: 0 1px 2px rgba(31, 35, 40, 0.14); }
+
+.cd-wizard-rail-card {
+  border: 1px solid var(--cd-border);
+  border-radius: 12px;
+  background: var(--cd-surface);
+  box-shadow: var(--cd-shadow);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.cd-wizard-rail { display: flex; align-items: flex-start; min-width: min-content; }
+.cd-wizard-rail-card { overflow-x: auto; }
+.cd-wizard-rail__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 104px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.cd-wizard-rail__item--locked { cursor: not-allowed; }
+.cd-wizard-rail__circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid var(--cd-border);
+  color: var(--cd-ink-2);
+  background: var(--cd-surface);
+}
+.cd-wizard-rail__item--current .cd-wizard-rail__circle {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--cd-primary);
+  color: var(--cd-primary);
+  box-shadow: 0 0 0 4px var(--cd-primary-tint);
+}
+.cd-wizard-rail__item--complete .cd-wizard-rail__circle { border: none; background: var(--cd-primary); color: #fff; }
+.cd-wizard-rail__item--locked .cd-wizard-rail__circle { border: 1.5px dashed var(--cd-border); background: var(--cd-surface-2); color: var(--cd-muted); }
+.cd-wizard-rail__label { margin-top: 8px; font-size: 12.5px; text-align: center; color: var(--cd-ink-2); font-weight: 500; }
+.cd-wizard-rail__item--current .cd-wizard-rail__label { color: var(--cd-primary-ink); font-weight: 700; }
+.cd-wizard-rail__item--complete .cd-wizard-rail__label { color: var(--cd-ink); font-weight: 600; }
+.cd-wizard-rail__item--locked .cd-wizard-rail__label { color: var(--cd-muted); }
+.cd-wizard-rail__line { flex: 1 1 0; min-width: 16px; height: 2px; background: var(--cd-border); margin-top: 18px; }
+.cd-wizard-rail__line--filled { background: var(--cd-primary); }
+
+.cd-wizard-footer { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; width: 100%; }
+/* margin-left: auto, not just the parent's justify-content: space-between -- space-between only pushes this
+   group to the right when there's a sibling on the left (the "Back" link) to split the space against. Step 1
+   has no Back link (it's the first step), so with only one flex child, space-between places it at flex-start
+   (the LEFT edge) instead -- confirmed live, not a guess. margin-left: auto pushes it right unconditionally,
+   whether or not the Back link is actually rendered next to it. */
+.cd-wizard-footer__right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.cd-wizard-footer__hint { font-size: 13px; color: var(--cd-warning-ink); font-weight: 600; }
+.cd-wizard-footer__back { font-size: 13.5px; font-weight: 600; color: var(--cd-ink-2); }
+.cd-wizard-footer__cta { border: none; border-radius: 8px; padding: 11px 20px; font-size: 14px; font-weight: 700; background: var(--cd-primary); color: #fff !important; }
+.cd-wizard-footer__cta:hover:not(:disabled) { background: var(--cd-primary-hover) !important; color: #fff !important; }
+/* Disabled state: a real greyed-out BUTTON (same shape/padding as the enabled one, just muted fill/border/
+   text), not flat link text -- an earlier pass tried the flat-link look on purpose (no fill, no box, same
+   visual language as .cd-wizard-footer__back's own actionLink), but that read as a plain text label sitting
+   in the footer with no button affordance at all, not "a step that isn't ready yet", so it's reverted here. */
+.cd-wizard-footer__cta:disabled {
+  background: var(--cd-surface-2) !important;
+  background-image: none !important;
+  border: 1px solid var(--cd-border);
+  color: var(--cd-muted) !important;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Placeholder content: mapping_steps.R's "nothing to map yet" and the Shapefile step's "coming soon" note --
+   the same muted, low-emphasis treatment for both. */
+.cd-wizard-placeholder,
+.cd-wizard-coming-soon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: var(--cd-surface-2);
+  color: var(--cd-ink-2);
+  font-size: 13.5px;
+}
+
+/* The .rds landing view (wizard_landing.R). */
+.cd-wizard-landing-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--cd-success-tint);
+  background: var(--cd-success-tint);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.cd-wizard-landing-banner__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cd-success-ink);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.cd-wizard-landing-banner__text { flex: 1; min-width: 0; }
+.cd-wizard-landing-banner__title { font-size: 16.5px; font-weight: 700; color: var(--cd-success-ink); }
+.cd-wizard-landing-banner__desc { font-size: 13.5px; color: var(--cd-ink-2); margin-top: 2px; }
+.cd-wizard-landing-banner__cta { border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: 700; background: var(--cd-primary); color: #fff !important; flex-shrink: 0; }
+.cd-wizard-landing-banner__cta:hover { background: var(--cd-primary-hover) !important; color: #fff !important; }
+
+.cd-wizard-landing-card { border: 1px solid var(--cd-border); border-radius: 12px; background: var(--cd-surface); box-shadow: var(--cd-shadow); padding: 4px 24px; }
+.cd-wizard-landing-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--cd-border); }
+.cd-wizard-landing-row:last-child { border-bottom: none; }
+.cd-wizard-landing-row__text { min-width: 0; }
+.cd-wizard-landing-row__label { font-size: 14.5px; font-weight: 700; color: var(--cd-ink); }
+.cd-wizard-landing-row__optional { font-weight: 500; color: var(--cd-muted); margin-left: 6px; }
+.cd-wizard-landing-row__summary { font-size: 12.5px; color: var(--cd-ink-2); margin-top: 2px; }
+.cd-wizard-landing-row__edit { font-size: 13px; font-weight: 700; color: var(--cd-primary-ink); border: 1px solid var(--cd-border); border-radius: 7px; padding: 7px 14px; flex-shrink: 0; white-space: nowrap; }
+.cd-wizard-landing-row__edit:hover { background: var(--cd-primary-tint); border-color: var(--cd-primary-tint); text-decoration: none; }
+
+/* Step 2's checklist (data_quality.R) */
+.cd-wizard-dq-banner { display: flex; align-items: center; gap: 10px; border: 1px solid var(--cd-success-tint); background: var(--cd-success-tint); color: var(--cd-success-ink); border-radius: 10px; padding: 12px 18px; font-size: 13.5px; font-weight: 700; margin-bottom: 18px; }
+/* The 3 blocking checks (district consistency, missing/mismatched months) can now genuinely fail --
+   load_cache_data() runs with validate = FALSE, so a data-quality problem no longer stops the file
+   from reaching this step at all. This is what that state looks like instead of the plain green banner. */
+.cd-wizard-dq-banner--warn { border-color: var(--cd-danger-border); background: var(--cd-danger-tint); color: var(--cd-danger); }
+.cd-wizard-dq-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; font-size: 13.5px; }
+.cd-wizard-dq-row__icon { flex-shrink: 0; margin-top: 2px; }
+.cd-wizard-dq-row__icon--pass { color: var(--cd-success-ink); }
+.cd-wizard-dq-row__icon--pending { color: var(--cd-muted); }
+/* Phase 2's dynamic informational/mapping checks (data_quality.R's dq_row()) -- a real, live
+   result (not the always-passed static rows above), so it gets its own warn state rather than
+   reusing --pending's muted "hasn't happened yet" treatment. */
+.cd-wizard-dq-row__icon--warn { color: var(--cd-warning-ink); }
+.cd-wizard-dq-row--warn { color: var(--cd-ink); font-weight: 600; }
+.cd-wizard-dq-row--upcoming { color: var(--cd-muted); padding: 6px 0; }
+.cd-wizard-dq-upcoming { border-top: 1px solid var(--cd-border); padding-top: 16px; margin-top: 6px; }
+.cd-wizard-dq-upcoming__label { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--cd-muted); margin-bottom: 8px; }
+.cd-wizard-dq-upcoming-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 24px; }
+
+/* ---- Tables (project/ReportingRate.dc.html's table card): every table in the app is a reactable() built by
+   tableDownloadsServer() (ui/download/table_download.R), so this restyles them all at once. Small grey semibold
+   headers over a single rule, quiet row dividers, 14.5px tabular figures, no zebra/hover fill; numeric columns are
+   right-aligned by the server (align = "right"), and a status cell (cd_rate_status_cell()) is a shape + bold
+   value, never colour alone. */
+.cd-table-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cd-table-hint { font-size: 12.5px; color: var(--cd-muted); }
+.cd-card .reactable {
+  font-family: var(--cd-font-sans); font-size: 14.5px; color: var(--cd-ink);
+  font-variant-numeric: tabular-nums; border: 0;
+}
+.cd-card .reactable .rt-thead,
+.cd-card .reactable .rt-thead .rt-tr { background: transparent; box-shadow: none; }
+.cd-card .reactable .rt-th {
+  padding: 10px 12px; font-size: 12.5px; font-weight: 600; color: var(--cd-muted);
+  background: transparent; border: 0; border-bottom: 1px solid var(--cd-border); white-space: nowrap;
+}
+.cd-card .reactable .rt-th:hover, .cd-card .reactable .rt-th-sort:hover { background: transparent; color: var(--cd-ink); }
+.cd-card .reactable .rt-td {
+  padding: 11px 12px; border: 0; border-bottom: 1px solid #eceef0; color: var(--cd-ink);
+}
+.cd-card .reactable .rt-tr-group { border: 0; }
+.cd-card .reactable .rt-tr:hover, .cd-card .reactable .rt-tr-striped { background: transparent; }
+.cd-status-cell { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; font-weight: 600; }
+.cd-status-cell svg { flex-shrink: 0; }
+
+/* The table-download icon, drawn like the design's (project/ReportingRate.dc.html: a rounded frame with a header
+   rule and a column divider) instead of Font Awesome's filled grid -- one glyph everywhere a card's toolbar
+   offers "download the data". */
+.cd-card__toolbar i.fa-table::before {
+  content: ""; display: block; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='M3 10h18M9 5v14'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='M3 10h18M9 5v14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Analysis pages' denominator row (cdDenominatorRow(), ui/content_header.R) -- project/NationalCoverage.dc.html:
+   "Denominator", one pill per denominator with a status dot, then a muted pointer to where it is set. */
+.cd-denominator-slot { display: block; }
+.cd-denominator-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+}
+.cd-denominator-row__label { font-size: 13px; font-weight: 600; color: var(--cd-muted); }
+.cd-denom-chip {
+  display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; box-sizing: border-box;
+  border-radius: 15px; border: 1px solid var(--cd-border); background: var(--cd-surface-2);
+  color: var(--cd-ink-2); font-size: 14px; white-space: nowrap;
+}
+.cd-denom-chip__dot { width: 8px; height: 8px; border-radius: 4px; background: #009c6f; flex-shrink: 0; }
+.cd-denom-chip__kind { color: var(--cd-muted); }
+.cd-denominator-row__note { font-size: 13px; color: var(--cd-muted); }
+
+/* A card that is already collapsible (cd_card(collapsible = TRUE), its own minus/plus toggle) doesn't also get the
+   narrow-card chevron -- two collapse buttons side by side. */
+.cd-card__header-actions:has(.cd-card__toggle:not(.cd-card__toggle--chevron)) .cd-card__toggle--chevron { display: none !important; }
+
+/* ---- CdButton.tsx (cdButton(), ui/react/cd-react.R). :where() keeps every rule at zero specificity, so a caller's own class
+   (.cd-wizard-footer__cta, .cd-restore-link, ...) always wins over the base look no matter where it sits in
+   this file. */
+:where(.cd-button) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 36px; padding: 0 14px; box-sizing: border-box;
+  border: 1px solid var(--cd-border); border-radius: 8px; background: var(--cd-surface); color: var(--cd-ink);
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; cursor: pointer; white-space: nowrap;
+  text-decoration: none;
+}
+:where(.cd-button:hover:not(:disabled)) { background: var(--cd-surface-2); }
+:where(.cd-button:focus-visible) { outline: 2px solid var(--cd-primary); outline-offset: 2px; }
+:where(.cd-button:disabled) { opacity: 0.55; cursor: not-allowed; }
+:where(.cd-button--sm) { min-height: 32px; padding: 0 12px; font-size: 13.5px; }
+:where(.cd-button--primary) { background: var(--cd-primary); border-color: var(--cd-primary); color: #fff; }
+:where(.cd-button--primary:hover:not(:disabled)) { background: var(--cd-primary-hover); }
+:where(.cd-button--link) { border-color: transparent; background: none; min-height: 0; padding: 0; color: var(--cd-primary-ink); }
+:where(.cd-button--link:hover:not(:disabled)) { background: none; text-decoration: underline; }
+:where(.cd-button--bare) { border: 0; background: none; min-height: 0; padding: 0; border-radius: 0; color: inherit; }
+:where(.cd-button--bare:hover:not(:disabled)) { background: none; }
+:where(.cd-button--block) { width: 100%; }
+.cd-button i { flex-shrink: 0; }
+.cd-action-block { margin-top: 15px; }
+
+/* An icon-only .cd-button (download buttons with just a glyph): square, like the other tools in a card header. */
+:where(.cd-button--icon) { width: 36px; padding: 0; }
+.cd-card__toolbar .cd-button--icon { width: 32px; height: 32px; min-height: 32px; }
+.cd-button--icon i { margin: 0; }
+
+/* ---- cd_dialog() (ui/react/cd-react.R + dialog.ts): the app's own replacement for shiny::modalDialog(). ---- */
+.cd-dialog-backdrop {
+  position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(31, 35, 40, 0.45);
+}
+.cd-dialog {
+  display: flex; flex-direction: column; width: 100%; max-height: calc(100vh - 48px);
+  background: var(--cd-surface); border: 1px solid var(--cd-border); border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(31, 35, 40, 0.25);
+}
+.cd-dialog--md { max-width: 520px; }
+.cd-dialog--lg { max-width: 860px; }
+.cd-dialog__header { padding: 18px 24px; border-bottom: 1px solid var(--cd-border); }
+.cd-dialog__title { margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: var(--cd-ink); }
+.cd-dialog__body { padding: 20px 24px; overflow-y: auto; }
+.cd-dialog__footer {
+  display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+  padding: 14px 24px; border-top: 1px solid var(--cd-border);
+}
+.cd-dialog__centered { text-align: center; }
+.cd-dialog__icon { font-size: 44px; color: var(--cd-primary); margin-bottom: 12px; }
+.cd-dialog__icon--ok { color: #1b7f5a; }
+.cd-dialog__lead { font-size: 16px; color: var(--cd-ink-2); }
+.cd-ring {
+  width: 28px; height: 28px; margin: 12px auto 0; border-radius: 50%;
+  border: 3px solid var(--cd-border); border-top-color: var(--cd-primary); animation: cd-spin 0.7s linear infinite;
+}
+.cd-row { display: flex; align-items: center; gap: 8px; }
+/* the checkbox and text area (CdCheckbox.tsx / CdTextArea.tsx) */
+.cd-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--cd-ink); }
+.cd-check input { width: 16px; height: 16px; margin: 0; accent-color: var(--cd-primary); }
+.cd-check--disabled { cursor: not-allowed; opacity: 0.7; }
+.cd-field-stack .cd-field-label { display: block; margin: 0; font-weight: 600; }
+.cd-textarea { width: 100%; padding: 8px 10px; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; }
+
+/* Text for screen readers only. */
+.cd-visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Plain text logs and captions (pooled app's Execution logs / preview caption). */
+.cd-log { margin: 0; padding: 12px 14px; max-height: 320px; overflow: auto; font-size: 12.5px; line-height: 1.5; background: var(--cd-surface-2); border: 1px solid var(--cd-border); border-radius: 8px; color: var(--cd-ink-2); white-space: pre-wrap; }
+.cd-log-caption { font-size: 13px; color: var(--cd-muted); margin-bottom: 10px; }
+
+/* ---- App themes ------------------------------------------------------------------------------------------
+   The default (no class) is the rmncah maroon defined in :root above. An app picks another with
+   cd_app_ui(theme = "vaccine" | "pooled"), which puts .cd-theme-<name> on <body>. A theme only re-declares the
+   primary colour family; every component reads these tokens, so nothing else changes. Keep a new theme to
+   these five values (+ --cd-primary-rgb, used for translucent tints). */
+body.cd-theme-vaccine {
+  --cd-primary: #2f6db5;
+  --cd-primary-hover: #255b9c;
+  --cd-primary-rgb: 47, 109, 181;
+  --cd-primary-ink: #1f4f86;
+  --cd-primary-tint: #e8f0fa;
+}
+body.cd-theme-pooled {
+  --cd-primary: #1f8a5f;
+  --cd-primary-hover: #187350;
+  --cd-primary-rgb: 31, 138, 95;
+  --cd-primary-ink: #146447;
+  --cd-primary-tint: #e5f4ed;
+}
+
+/* ---- Startup cover (cd_startup_loader(), _shared/R/layout/startup-loader.R) -------------------------------- */
+.cd-startup {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cd-surface);
+  transition: opacity 0.35s ease;
+}
+.cd-startup--done { opacity: 0; pointer-events: none; }
+.cd-startup__box { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 0 24px; }
+.cd-startup__spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid var(--cd-primary-tint);
+  border-top-color: var(--cd-primary);
+  animation: cd-startup-spin 0.9s linear infinite;
+}
+.cd-startup__text { margin: 0; font-size: 14px; font-weight: 600; color: var(--cd-ink-2); }
+@keyframes cd-startup-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cd-startup__spinner { animation-duration: 3s; } }
