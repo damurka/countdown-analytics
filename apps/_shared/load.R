@@ -14,8 +14,9 @@
 # It is laid out like an R package on purpose (R/ and www/), so it can be promoted to a real package later:
 # R/ becomes the package's R/ and www/ becomes inst/www/.
 
-cd_ui_load <- function(env = globalenv()) {
-  dir <- Find(dir.exists, c(file.path("..", "_shared"), "_shared"))
+# `dir`: the shared folder itself, for a caller that is not an app beside it (the component gallery in docs/gallery).
+cd_ui_load <- function(env = globalenv(), dir = NULL) {
+  if (is.null(dir)) dir <- Find(dir.exists, c(file.path("..", "_shared"), "_shared"))
   if (is.null(dir)) stop("The shared UI folder (_shared) was not found next to this app.", call. = FALSE)
   dir <- normalizePath(dir, winslash = "/")
   options(cd2030.ui_dir = dir)

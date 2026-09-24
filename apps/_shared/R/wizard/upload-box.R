@@ -86,7 +86,11 @@ upload_box_server <- function(id, i18n, cdsuite_file, is_electron = FALSE) {
         dir
       }
 
-      load_file <- function(path, display_name) {
+      # `use_saved = FALSE` ignores the saved copy: what load_file() falls back to when the saved copy exists but cannot be read
+      # (a half-written or corrupt .rds) -- the original file is still there, so the upload must not fail over it.
+      load_file <- function(path, display_name, use_saved = TRUE) {
+        original_path <- path
+        used_saved <- FALSE
         tryCatch(
           {
             # Whatever an earlier load left cd2030.core on, this app's group is the one to work in.
@@ -96,8 +100,9 @@ upload_box_server <- function(id, i18n, cdsuite_file, is_electron = FALSE) {
             stem <- tools::file_path_sans_ext(basename(display_name))
             saved_copy <- file.path(dataset_dir(), cd_saved_copy_name(stem))
             original_ext <- tolower(tools::file_ext(display_name))
-            if (original_ext %in% c("xls", "xlsx", "dta") && file.exists(saved_copy)) {
+            if (use_saved && original_ext %in% c("xls", "xlsx", "dta") && file.exists(saved_copy)) {
               path <- saved_copy
+              used_saved <- TRUE
             }
             ext <- tolower(tools::file_ext(path))
             is_rds <- identical(ext, "rds")
@@ -148,6 +153,10 @@ upload_box_server <- function(id, i18n, cdsuite_file, is_electron = FALSE) {
           },
           error = function(e) {
             initial_cache(NULL)
+            if (used_saved) {
+              message("The saved copy of ", display_name, " could not be read (", clean_error_message(e), "); loading the original file instead.")
+              return(load_file(original_path, display_name, use_saved = FALSE))
+            }
             status(list(state = "error", message = tr_err(clean_error_message(e))))
           }
         )

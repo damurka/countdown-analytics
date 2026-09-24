@@ -1,5 +1,7 @@
 # Naming conventions
 
+See also `README.md` (architecture), `docs/COMPONENTS.md` (function reference) and `docs/HOWTO.md` (recipes).
+
 Status: **applied** to `_shared`, rmncah and vaxx. Where the table below differs, the code wins: `countdownDashboard` became `cd_page_body` and `countdownBody` became `cd_page_content` (not folded into `cd_page_ui`).
 
 Originally written as a proposal, from an inventory of every function in `_shared/R` (128) and the
