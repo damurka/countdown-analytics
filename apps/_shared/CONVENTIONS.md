@@ -55,7 +55,7 @@ app modules (~110). Today the same job is named four different ways:
 | `cdButton` `cdExpandButton` `cd_ask_ai_button` | `cd_button` `cd_expand_button` `cd_ask_ai_button` |
 | `cdChipSelect` `cdChipMulti` `cdChipNumber` `cdFieldSelect` `cdFieldNumber` | `cd_chip_select` `cd_chip_multi` `cd_chip_number` `cd_field_select` `cd_field_number` |
 | `cdCheckbox` `cdTextArea` `cdFilterBar` (+ `countdownOptions`) | `cd_checkbox` `cd_text_area` `cd_filter_bar` |
-| `cdChartLabels` `cdChartView` | `cd_chart_labels` `cd_chart_view` |
+| `cdChartCustomize` | `cd_chart_customize` |
 | `cdMessageBox` `cdStatusBanner` `cdTooltip` `cdLoadingSkeleton` `cdSpinner` `cdEmptyState` | `cd_message_box` `cd_status_banner` `cd_tooltip` `cd_loading_skeleton` `cd_spinner` `cd_empty_state` |
 | `cdFileUpload` `cdResetFileUpload` `cdSetFileUpload` `cdDirectoryUpload` `cdMappingModal` `cdWizardSteps` | `cd_file_upload` `cd_reset_file_upload` `cd_set_file_upload` `cd_directory_upload` `cd_mapping_modal` `cd_wizard_steps` |
 | `cdText` `cdOptions` `cdPlainOptions` `cdChipTexts` `i18n_plain` | `cd_text` `cd_options` `cd_plain_options` `cd_chip_texts` `cd_plain_text` |

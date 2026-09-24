@@ -2650,6 +2650,12 @@
       "pt": "Título"
     },
     {
+      "key": "lbl_chart_f_subtitle",
+      "en": "Subtitle",
+      "fr": "Sous-titre",
+      "pt": "Subtítulo"
+    },
+    {
       "key": "lbl_chart_f_caption",
       "en": "Caption",
       "fr": "Note",
@@ -3440,6 +3446,1110 @@
       "en": "Checks that every region (admin-1) name in your dataset has a close match among the region names in the shapefile being used, so every region can actually be shown on a map.",
       "fr": "Vérifie que chaque nom de région (admin-1) de votre ensemble de données a une correspondance proche parmi les noms de région du fichier de forme utilisé, afin que chaque région puisse réellement être affichée sur une carte.",
       "pt": "Verifica se cada nome de região (admin-1) do seu conjunto de dados tem uma correspondência próxima entre os nomes de região do ficheiro de forma utilizado, para que cada região possa ser efetivamente apresentada num mapa."
+    },
+    {
+      "key": "lbl_chart_tool_style",
+      "en": "Style options for this chart",
+      "fr": "Options de style de ce graphique",
+      "pt": "Opções de estilo deste gráfico"
+    },
+    {
+      "key": "lbl_chart_style_title",
+      "en": "Chart style",
+      "fr": "Style du graphique",
+      "pt": "Estilo do gráfico"
+    },
+    {
+      "key": "lbl_chart_style_hint",
+      "en": "Fonts, colours, angles, legend, axes, grid and background of this chart only.",
+      "fr": "Polices, couleurs, angles, légende, axes, grille et fond de ce graphique uniquement.",
+      "pt": "Fontes, cores, ângulos, legenda, eixos, grelha e fundo apenas deste gráfico."
+    },
+    {
+      "key": "lbl_chart_style_note",
+      "en": "Empty means as the chart draws it. Saved with the dataset.",
+      "fr": "Vide signifie tel que dessiné. Enregistré avec les données.",
+      "pt": "Vazio significa como o gráfico o desenha. Guardado com os dados."
+    },
+    {
+      "key": "lbl_chart_style_as_drawn",
+      "en": "As drawn",
+      "fr": "Par défaut",
+      "pt": "Predefinido"
+    },
+    {
+      "key": "lbl_chart_style_yes",
+      "en": "Yes",
+      "fr": "Oui",
+      "pt": "Sim"
+    },
+    {
+      "key": "lbl_chart_style_no",
+      "en": "No",
+      "fr": "Non",
+      "pt": "Não"
+    },
+    {
+      "key": "lbl_chart_style_min",
+      "en": "From",
+      "fr": "De",
+      "pt": "De"
+    },
+    {
+      "key": "lbl_chart_style_max",
+      "en": "To",
+      "fr": "À",
+      "pt": "Até"
+    },
+    {
+      "key": "lbl_chart_style_legend_entries",
+      "en": "Legend entries (colour and text)",
+      "fr": "Entrées de la légende (couleur et texte)",
+      "pt": "Entradas da legenda (cor e texto)"
+    },
+    {
+      "key": "lbl_chart_style_category_entries",
+      "en": "Category labels",
+      "fr": "Libellés des catégories",
+      "pt": "Rótulos das categorias"
+    },
+    {
+      "key": "lbl_chart_style_entry_text",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_chart_style_entry_color",
+      "en": "Colour",
+      "fr": "Couleur",
+      "pt": "Cor"
+    },
+    {
+      "key": "lbl_style_s_titles",
+      "en": "Titles",
+      "fr": "Titres",
+      "pt": "Títulos"
+    },
+    {
+      "key": "lbl_style_s_fonts",
+      "en": "Font",
+      "fr": "Police",
+      "pt": "Fonte"
+    },
+    {
+      "key": "lbl_style_s_axes",
+      "en": "Axes",
+      "fr": "Axes",
+      "pt": "Eixos"
+    },
+    {
+      "key": "lbl_style_s_legend",
+      "en": "Legend",
+      "fr": "Légende",
+      "pt": "Legenda"
+    },
+    {
+      "key": "lbl_style_s_grid",
+      "en": "Grid",
+      "fr": "Grille",
+      "pt": "Grelha"
+    },
+    {
+      "key": "lbl_style_s_panel",
+      "en": "Panel and background",
+      "fr": "Panneau et fond",
+      "pt": "Painel e fundo"
+    },
+    {
+      "key": "lbl_style_s_marks",
+      "en": "Lines, points and labels",
+      "fr": "Lignes, points et étiquettes",
+      "pt": "Linhas, pontos e etiquetas"
+    },
+    {
+      "key": "lbl_style_f_tag",
+      "en": "Tag",
+      "fr": "Étiquette",
+      "pt": "Etiqueta"
+    },
+    {
+      "key": "lbl_style_f_title_wrap",
+      "en": "Wrap titles after (characters)",
+      "fr": "Couper les titres après (caractères)",
+      "pt": "Quebrar títulos após (caracteres)"
+    },
+    {
+      "key": "lbl_style_f_title_size",
+      "en": "Title size",
+      "fr": "Taille du titre",
+      "pt": "Tamanho do título"
+    },
+    {
+      "key": "lbl_style_f_title_face",
+      "en": "Title style",
+      "fr": "Style du titre",
+      "pt": "Estilo do título"
+    },
+    {
+      "key": "lbl_style_f_title_color",
+      "en": "Title colour",
+      "fr": "Couleur du titre",
+      "pt": "Cor do título"
+    },
+    {
+      "key": "lbl_style_f_title_align",
+      "en": "Title alignment",
+      "fr": "Alignement du titre",
+      "pt": "Alinhamento do título"
+    },
+    {
+      "key": "lbl_style_f_subtitle_size",
+      "en": "Subtitle size",
+      "fr": "Taille du sous-titre",
+      "pt": "Tamanho do subtítulo"
+    },
+    {
+      "key": "lbl_style_f_subtitle_face",
+      "en": "Subtitle style",
+      "fr": "Style du sous-titre",
+      "pt": "Estilo do subtítulo"
+    },
+    {
+      "key": "lbl_style_f_subtitle_color",
+      "en": "Subtitle colour",
+      "fr": "Couleur du sous-titre",
+      "pt": "Cor do subtítulo"
+    },
+    {
+      "key": "lbl_style_f_subtitle_align",
+      "en": "Subtitle alignment",
+      "fr": "Alignement du sous-titre",
+      "pt": "Alinhamento do subtítulo"
+    },
+    {
+      "key": "lbl_style_f_caption_size",
+      "en": "Caption size",
+      "fr": "Taille de la note",
+      "pt": "Tamanho da nota"
+    },
+    {
+      "key": "lbl_style_f_caption_face",
+      "en": "Caption style",
+      "fr": "Style de la note",
+      "pt": "Estilo da nota"
+    },
+    {
+      "key": "lbl_style_f_caption_color",
+      "en": "Caption colour",
+      "fr": "Couleur de la note",
+      "pt": "Cor da nota"
+    },
+    {
+      "key": "lbl_style_f_caption_align",
+      "en": "Caption alignment",
+      "fr": "Alignement de la note",
+      "pt": "Alinhamento da nota"
+    },
+    {
+      "key": "lbl_style_f_title_position",
+      "en": "Title aligned to",
+      "fr": "Titre aligné sur",
+      "pt": "Título alinhado a"
+    },
+    {
+      "key": "lbl_style_f_caption_position",
+      "en": "Caption aligned to",
+      "fr": "Note alignée sur",
+      "pt": "Nota alinhada a"
+    },
+    {
+      "key": "lbl_style_f_font_family",
+      "en": "Font",
+      "fr": "Police",
+      "pt": "Fonte"
+    },
+    {
+      "key": "lbl_style_f_line_height",
+      "en": "Line spacing",
+      "fr": "Interligne",
+      "pt": "Espaçamento entre linhas"
+    },
+    {
+      "key": "lbl_style_f_text_color",
+      "en": "Text colour (all text)",
+      "fr": "Couleur du texte (tout)",
+      "pt": "Cor do texto (tudo)"
+    },
+    {
+      "key": "lbl_style_f_x_title_size",
+      "en": "Horizontal axis title size",
+      "fr": "Taille du titre de l'axe x",
+      "pt": "Tamanho do título do eixo x"
+    },
+    {
+      "key": "lbl_style_f_y_title_size",
+      "en": "Vertical axis title size",
+      "fr": "Taille du titre de l'axe y",
+      "pt": "Tamanho do título do eixo y"
+    },
+    {
+      "key": "lbl_style_f_axis_title_size",
+      "en": "Both axis titles size",
+      "fr": "Taille des titres des deux axes",
+      "pt": "Tamanho dos títulos dos dois eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_title_face",
+      "en": "Axis title style",
+      "fr": "Style des titres d'axe",
+      "pt": "Estilo dos títulos dos eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_title_color",
+      "en": "Axis title colour",
+      "fr": "Couleur des titres d'axe",
+      "pt": "Cor dos títulos dos eixos"
+    },
+    {
+      "key": "lbl_style_f_x_text_size",
+      "en": "Horizontal axis labels size",
+      "fr": "Taille des libellés de l'axe x",
+      "pt": "Tamanho dos rótulos do eixo x"
+    },
+    {
+      "key": "lbl_style_f_y_text_size",
+      "en": "Vertical axis labels size",
+      "fr": "Taille des libellés de l'axe y",
+      "pt": "Tamanho dos rótulos do eixo y"
+    },
+    {
+      "key": "lbl_style_f_axis_text_size",
+      "en": "Both axis labels size",
+      "fr": "Taille des libellés des deux axes",
+      "pt": "Tamanho dos rótulos dos dois eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_text_face",
+      "en": "Axis labels style",
+      "fr": "Style des libellés d'axe",
+      "pt": "Estilo dos rótulos dos eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_text_color",
+      "en": "Axis labels colour",
+      "fr": "Couleur des libellés d'axe",
+      "pt": "Cor dos rótulos dos eixos"
+    },
+    {
+      "key": "lbl_style_f_x_text_angle",
+      "en": "Horizontal axis labels angle (°)",
+      "fr": "Angle des libellés de l'axe x (°)",
+      "pt": "Ângulo dos rótulos do eixo x (°)"
+    },
+    {
+      "key": "lbl_style_f_y_text_angle",
+      "en": "Vertical axis labels angle (°)",
+      "fr": "Angle des libellés de l'axe y (°)",
+      "pt": "Ângulo dos rótulos do eixo y (°)"
+    },
+    {
+      "key": "lbl_style_f_x_labels",
+      "en": "Horizontal axis numbers",
+      "fr": "Nombres de l'axe x",
+      "pt": "Números do eixo x"
+    },
+    {
+      "key": "lbl_style_f_y_labels",
+      "en": "Vertical axis numbers",
+      "fr": "Nombres de l'axe y",
+      "pt": "Números do eixo y"
+    },
+    {
+      "key": "lbl_style_f_x_limits",
+      "en": "Horizontal axis range",
+      "fr": "Plage de l'axe x",
+      "pt": "Intervalo do eixo x"
+    },
+    {
+      "key": "lbl_style_f_y_limits",
+      "en": "Vertical axis range",
+      "fr": "Plage de l'axe y",
+      "pt": "Intervalo do eixo y"
+    },
+    {
+      "key": "lbl_style_f_axis_line",
+      "en": "Axis lines",
+      "fr": "Lignes d'axe",
+      "pt": "Linhas dos eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_line_color",
+      "en": "Axis line colour",
+      "fr": "Couleur des lignes d'axe",
+      "pt": "Cor das linhas dos eixos"
+    },
+    {
+      "key": "lbl_style_f_axis_ticks",
+      "en": "Tick marks",
+      "fr": "Repères",
+      "pt": "Marcas"
+    },
+    {
+      "key": "lbl_style_f_category_label_wrap",
+      "en": "Wrap category labels after (characters)",
+      "fr": "Couper les libellés après (caractères)",
+      "pt": "Quebrar rótulos após (caracteres)"
+    },
+    {
+      "key": "lbl_style_f_legend_direction",
+      "en": "Legend direction",
+      "fr": "Direction de la légende",
+      "pt": "Direção da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_justification",
+      "en": "Legend alignment",
+      "fr": "Alignement de la légende",
+      "pt": "Alinhamento da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_ncol",
+      "en": "Legend columns",
+      "fr": "Colonnes de la légende",
+      "pt": "Colunas da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_nrow",
+      "en": "Legend rows",
+      "fr": "Lignes de la légende",
+      "pt": "Linhas da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_reverse",
+      "en": "Reverse legend order",
+      "fr": "Inverser l'ordre de la légende",
+      "pt": "Inverter a ordem da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_key_size",
+      "en": "Legend key size (mm)",
+      "fr": "Taille des repères (mm)",
+      "pt": "Tamanho das chaves (mm)"
+    },
+    {
+      "key": "lbl_style_f_legend_title_size",
+      "en": "Legend title size",
+      "fr": "Taille du titre de la légende",
+      "pt": "Tamanho do título da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_title_face",
+      "en": "Legend title style",
+      "fr": "Style du titre de la légende",
+      "pt": "Estilo do título da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_title_color",
+      "en": "Legend title colour",
+      "fr": "Couleur du titre de la légende",
+      "pt": "Cor do título da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_text_size",
+      "en": "Legend text size",
+      "fr": "Taille du texte de la légende",
+      "pt": "Tamanho do texto da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_text_face",
+      "en": "Legend text style",
+      "fr": "Style du texte de la légende",
+      "pt": "Estilo do texto da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_text_color",
+      "en": "Legend text colour",
+      "fr": "Couleur du texte de la légende",
+      "pt": "Cor do texto da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_background",
+      "en": "Legend background",
+      "fr": "Fond de la légende",
+      "pt": "Fundo da legenda"
+    },
+    {
+      "key": "lbl_style_f_legend_label_wrap",
+      "en": "Wrap legend text after (characters)",
+      "fr": "Couper le texte après (caractères)",
+      "pt": "Quebrar texto após (caracteres)"
+    },
+    {
+      "key": "lbl_style_f_grid",
+      "en": "Grid lines",
+      "fr": "Lignes de la grille",
+      "pt": "Linhas da grelha"
+    },
+    {
+      "key": "lbl_style_f_grid_minor",
+      "en": "Minor grid lines",
+      "fr": "Lignes secondaires",
+      "pt": "Linhas secundárias"
+    },
+    {
+      "key": "lbl_style_f_grid_color",
+      "en": "Grid colour",
+      "fr": "Couleur de la grille",
+      "pt": "Cor da grelha"
+    },
+    {
+      "key": "lbl_style_f_grid_linewidth",
+      "en": "Grid line width",
+      "fr": "Épaisseur de la grille",
+      "pt": "Espessura da grelha"
+    },
+    {
+      "key": "lbl_style_f_grid_linetype",
+      "en": "Grid line type",
+      "fr": "Type de ligne de la grille",
+      "pt": "Tipo de linha da grelha"
+    },
+    {
+      "key": "lbl_style_f_panel_color",
+      "en": "Plot area colour",
+      "fr": "Couleur de la zone de tracé",
+      "pt": "Cor da área do gráfico"
+    },
+    {
+      "key": "lbl_style_f_panel_border",
+      "en": "Plot area border",
+      "fr": "Bordure de la zone de tracé",
+      "pt": "Borda da área do gráfico"
+    },
+    {
+      "key": "lbl_style_f_panel_border_color",
+      "en": "Border colour",
+      "fr": "Couleur de la bordure",
+      "pt": "Cor da borda"
+    },
+    {
+      "key": "lbl_style_f_background_color",
+      "en": "Chart background",
+      "fr": "Fond du graphique",
+      "pt": "Fundo do gráfico"
+    },
+    {
+      "key": "lbl_style_f_strip_text_size",
+      "en": "Facet title size",
+      "fr": "Taille du titre des facettes",
+      "pt": "Tamanho do título das facetas"
+    },
+    {
+      "key": "lbl_style_f_strip_text_face",
+      "en": "Facet title style",
+      "fr": "Style du titre des facettes",
+      "pt": "Estilo do título das facetas"
+    },
+    {
+      "key": "lbl_style_f_strip_text_color",
+      "en": "Facet title colour",
+      "fr": "Couleur du titre des facettes",
+      "pt": "Cor do título das facetas"
+    },
+    {
+      "key": "lbl_style_f_strip_background",
+      "en": "Facet title background",
+      "fr": "Fond du titre des facettes",
+      "pt": "Fundo do título das facetas"
+    },
+    {
+      "key": "lbl_style_f_plot_margin",
+      "en": "Margin around chart (pt)",
+      "fr": "Marge autour du graphique (pt)",
+      "pt": "Margem em redor do gráfico (pt)"
+    },
+    {
+      "key": "lbl_style_f_theme_preset",
+      "en": "Overall look",
+      "fr": "Aspect général",
+      "pt": "Aspeto geral"
+    },
+    {
+      "key": "lbl_style_f_line_scale",
+      "en": "Line width (× as drawn)",
+      "fr": "Épaisseur des lignes (× défaut)",
+      "pt": "Espessura das linhas (× predefinido)"
+    },
+    {
+      "key": "lbl_style_f_point_scale",
+      "en": "Point size (× as drawn)",
+      "fr": "Taille des points (× défaut)",
+      "pt": "Tamanho dos pontos (× predefinido)"
+    },
+    {
+      "key": "lbl_style_f_alpha",
+      "en": "Transparency (0-1, 1 = solid)",
+      "fr": "Transparence (0-1, 1 = plein)",
+      "pt": "Transparência (0-1, 1 = sólido)"
+    },
+    {
+      "key": "lbl_style_f_label_size",
+      "en": "Data label size",
+      "fr": "Taille des étiquettes de données",
+      "pt": "Tamanho das etiquetas de dados"
+    },
+    {
+      "key": "lbl_style_f_label_angle",
+      "en": "Data label angle (°)",
+      "fr": "Angle des étiquettes de données (°)",
+      "pt": "Ângulo das etiquetas de dados (°)"
+    },
+    {
+      "key": "lbl_style_f_label_color",
+      "en": "Data label colour",
+      "fr": "Couleur des étiquettes de données",
+      "pt": "Cor das etiquetas de dados"
+    },
+    {
+      "key": "lbl_style_c_plain",
+      "en": "Plain",
+      "fr": "Normal",
+      "pt": "Normal"
+    },
+    {
+      "key": "lbl_style_c_bold",
+      "en": "Bold",
+      "fr": "Gras",
+      "pt": "Negrito"
+    },
+    {
+      "key": "lbl_style_c_italic",
+      "en": "Italic",
+      "fr": "Italique",
+      "pt": "Itálico"
+    },
+    {
+      "key": "lbl_style_c_bold.italic",
+      "en": "Bold italic",
+      "fr": "Gras italique",
+      "pt": "Negrito itálico"
+    },
+    {
+      "key": "lbl_style_c_left",
+      "en": "Left",
+      "fr": "Gauche",
+      "pt": "Esquerda"
+    },
+    {
+      "key": "lbl_style_c_center",
+      "en": "Centre",
+      "fr": "Centre",
+      "pt": "Centro"
+    },
+    {
+      "key": "lbl_style_c_right",
+      "en": "Right",
+      "fr": "Droite",
+      "pt": "Direita"
+    },
+    {
+      "key": "lbl_style_c_panel",
+      "en": "Plot area",
+      "fr": "Zone de tracé",
+      "pt": "Área do gráfico"
+    },
+    {
+      "key": "lbl_style_c_plot",
+      "en": "Whole chart",
+      "fr": "Graphique entier",
+      "pt": "Gráfico inteiro"
+    },
+    {
+      "key": "lbl_style_c_horizontal",
+      "en": "Horizontal",
+      "fr": "Horizontal",
+      "pt": "Horizontal"
+    },
+    {
+      "key": "lbl_style_c_vertical",
+      "en": "Vertical",
+      "fr": "Vertical",
+      "pt": "Vertical"
+    },
+    {
+      "key": "lbl_style_c_top",
+      "en": "Top",
+      "fr": "Haut",
+      "pt": "Topo"
+    },
+    {
+      "key": "lbl_style_c_bottom",
+      "en": "Bottom",
+      "fr": "Bas",
+      "pt": "Base"
+    },
+    {
+      "key": "lbl_style_c_both",
+      "en": "Both",
+      "fr": "Les deux",
+      "pt": "Ambas"
+    },
+    {
+      "key": "lbl_style_c_none",
+      "en": "None",
+      "fr": "Aucune",
+      "pt": "Nenhuma"
+    },
+    {
+      "key": "lbl_style_c_solid",
+      "en": "Solid",
+      "fr": "Continu",
+      "pt": "Contínuo"
+    },
+    {
+      "key": "lbl_style_c_dashed",
+      "en": "Dashed",
+      "fr": "Tirets",
+      "pt": "Tracejado"
+    },
+    {
+      "key": "lbl_style_c_dotted",
+      "en": "Dotted",
+      "fr": "Pointillé",
+      "pt": "Pontilhado"
+    },
+    {
+      "key": "lbl_style_c_dotdash",
+      "en": "Dot-dash",
+      "fr": "Point-tiret",
+      "pt": "Ponto-traço"
+    },
+    {
+      "key": "lbl_style_c_longdash",
+      "en": "Long dash",
+      "fr": "Tirets longs",
+      "pt": "Traço longo"
+    },
+    {
+      "key": "lbl_style_c_twodash",
+      "en": "Two dash",
+      "fr": "Deux tirets",
+      "pt": "Dois traços"
+    },
+    {
+      "key": "lbl_style_c_number",
+      "en": "1234.5",
+      "fr": "1234.5",
+      "pt": "1234.5"
+    },
+    {
+      "key": "lbl_style_c_comma",
+      "en": "1,234.5",
+      "fr": "1,234.5",
+      "pt": "1,234.5"
+    },
+    {
+      "key": "lbl_style_c_percent",
+      "en": "Percent (0.5 → 50%)",
+      "fr": "Pourcentage (0.5 → 50%)",
+      "pt": "Percentagem (0.5 → 50%)"
+    },
+    {
+      "key": "lbl_style_c_percent_points",
+      "en": "Add % (50 → 50%)",
+      "fr": "Ajouter % (50 → 50%)",
+      "pt": "Adicionar % (50 → 50%)"
+    },
+    {
+      "key": "lbl_style_c_scientific",
+      "en": "Scientific",
+      "fr": "Scientifique",
+      "pt": "Científico"
+    },
+    {
+      "key": "lbl_style_c_compact",
+      "en": "Compact (1.2K)",
+      "fr": "Compact (1,2K)",
+      "pt": "Compacto (1,2K)"
+    },
+    {
+      "key": "lbl_style_c_grey",
+      "en": "Grey (standard)",
+      "fr": "Gris (standard)",
+      "pt": "Cinza (padrão)"
+    },
+    {
+      "key": "lbl_style_c_minimal",
+      "en": "Minimal",
+      "fr": "Minimal",
+      "pt": "Mínimo"
+    },
+    {
+      "key": "lbl_style_c_classic",
+      "en": "Classic",
+      "fr": "Classique",
+      "pt": "Clássico"
+    },
+    {
+      "key": "lbl_style_c_bw",
+      "en": "Black and white",
+      "fr": "Noir et blanc",
+      "pt": "Preto e branco"
+    },
+    {
+      "key": "lbl_style_c_light",
+      "en": "Light",
+      "fr": "Clair",
+      "pt": "Claro"
+    },
+    {
+      "key": "lbl_style_c_linedraw",
+      "en": "Line drawing",
+      "fr": "Dessin au trait",
+      "pt": "Desenho a traço"
+    },
+    {
+      "key": "lbl_style_c_dark",
+      "en": "Dark",
+      "fr": "Sombre",
+      "pt": "Escuro"
+    },
+    {
+      "key": "lbl_style_c_void",
+      "en": "Empty",
+      "fr": "Vide",
+      "pt": "Vazio"
+    },
+    {
+      "key": "lbl_chart_style_reset_all",
+      "en": "Reset all style changes",
+      "fr": "Réinitialiser tout le style",
+      "pt": "Repor todo o estilo"
+    },
+    {
+      "key": "lbl_cc_tool",
+      "en": "Customize this chart",
+      "fr": "Personnaliser ce graphique",
+      "pt": "Personalizar este gráfico"
+    },
+    {
+      "key": "lbl_cc_title",
+      "en": "Customize chart",
+      "fr": "Personnaliser le graphique",
+      "pt": "Personalizar gráfico"
+    },
+    {
+      "key": "lbl_cc_scope_chart",
+      "en": "This chart",
+      "fr": "Ce graphique",
+      "pt": "Este gráfico"
+    },
+    {
+      "key": "lbl_cc_scope_dataset",
+      "en": "All charts",
+      "fr": "Tous les graphiques",
+      "pt": "Todos os gráficos"
+    },
+    {
+      "key": "lbl_cc_dataset_note",
+      "en": "Dataset defaults: every chart uses these unless it has its own value.",
+      "fr": "Valeurs par défaut du jeu de données : chaque graphique les utilise sauf valeur propre.",
+      "pt": "Predefinições do conjunto de dados: cada gráfico usa-as, salvo valor próprio."
+    },
+    {
+      "key": "lbl_cc_inherited",
+      "en": "shared",
+      "fr": "partagé",
+      "pt": "partilhado"
+    },
+    {
+      "key": "lbl_cc_search",
+      "en": "Search: angle, grid, font, colour",
+      "fr": "Rechercher : angle, grille, police, couleur",
+      "pt": "Pesquisar: ângulo, grelha, fonte, cor"
+    },
+    {
+      "key": "lbl_cc_no_results",
+      "en": "No option matches this search.",
+      "fr": "Aucune option ne correspond.",
+      "pt": "Nenhuma opção corresponde."
+    },
+    {
+      "key": "lbl_cc_reset_group",
+      "en": "Reset group",
+      "fr": "Réinitialiser le groupe",
+      "pt": "Repor grupo"
+    },
+    {
+      "key": "lbl_cc_reset_all",
+      "en": "Reset all",
+      "fr": "Tout réinitialiser",
+      "pt": "Repor tudo"
+    },
+    {
+      "key": "lbl_cc_promote",
+      "en": "Use for all charts",
+      "fr": "Utiliser pour tous",
+      "pt": "Usar para todos"
+    },
+    {
+      "key": "lbl_cc_changed",
+      "en": "changed",
+      "fr": "modifié(s)",
+      "pt": "alterado(s)"
+    },
+    {
+      "key": "lbl_cc_t_text",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_cc_t_axes",
+      "en": "Axes",
+      "fr": "Axes",
+      "pt": "Eixos"
+    },
+    {
+      "key": "lbl_cc_t_legend",
+      "en": "Legend",
+      "fr": "Légende",
+      "pt": "Legenda"
+    },
+    {
+      "key": "lbl_cc_t_grid",
+      "en": "Grid",
+      "fr": "Grille",
+      "pt": "Grelha"
+    },
+    {
+      "key": "lbl_cc_t_marks",
+      "en": "Marks",
+      "fr": "Marques",
+      "pt": "Marcas"
+    },
+    {
+      "key": "lbl_cc_t_layout",
+      "en": "Layout",
+      "fr": "Disposition",
+      "pt": "Disposição"
+    },
+    {
+      "key": "lbl_cc_g_titles",
+      "en": "Titles",
+      "fr": "Titres",
+      "pt": "Títulos"
+    },
+    {
+      "key": "lbl_cc_g_font",
+      "en": "Font",
+      "fr": "Police",
+      "pt": "Fonte"
+    },
+    {
+      "key": "lbl_cc_g_title_style",
+      "en": "Title style",
+      "fr": "Style du titre",
+      "pt": "Estilo do título"
+    },
+    {
+      "key": "lbl_cc_g_subtitle_style",
+      "en": "Subtitle style",
+      "fr": "Style du sous-titre",
+      "pt": "Estilo do subtítulo"
+    },
+    {
+      "key": "lbl_cc_g_caption_style",
+      "en": "Caption style",
+      "fr": "Style de la note",
+      "pt": "Estilo da nota"
+    },
+    {
+      "key": "lbl_cc_g_axis_titles",
+      "en": "Axis titles",
+      "fr": "Titres des axes",
+      "pt": "Títulos dos eixos"
+    },
+    {
+      "key": "lbl_cc_g_tick_labels",
+      "en": "Tick labels",
+      "fr": "Libellés des axes",
+      "pt": "Rótulos dos eixos"
+    },
+    {
+      "key": "lbl_cc_g_range",
+      "en": "Range",
+      "fr": "Plage",
+      "pt": "Intervalo"
+    },
+    {
+      "key": "lbl_cc_g_lines",
+      "en": "Lines",
+      "fr": "Lignes",
+      "pt": "Linhas"
+    },
+    {
+      "key": "lbl_cc_g_legend_layout",
+      "en": "Layout",
+      "fr": "Disposition",
+      "pt": "Disposição"
+    },
+    {
+      "key": "lbl_cc_g_legend_text",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_cc_g_entries",
+      "en": "Entries",
+      "fr": "Entrées",
+      "pt": "Entradas"
+    },
+    {
+      "key": "lbl_cc_g_grid_lines",
+      "en": "Grid lines",
+      "fr": "Lignes de la grille",
+      "pt": "Linhas da grelha"
+    },
+    {
+      "key": "lbl_cc_g_panel",
+      "en": "Panel and background",
+      "fr": "Panneau et fond",
+      "pt": "Painel e fundo"
+    },
+    {
+      "key": "lbl_cc_g_facets",
+      "en": "Facet titles",
+      "fr": "Titres des facettes",
+      "pt": "Títulos das facetas"
+    },
+    {
+      "key": "lbl_cc_g_lines_points",
+      "en": "Lines and points",
+      "fr": "Lignes et points",
+      "pt": "Linhas e pontos"
+    },
+    {
+      "key": "lbl_cc_g_data_labels",
+      "en": "Data labels",
+      "fr": "Étiquettes de données",
+      "pt": "Etiquetas de dados"
+    },
+    {
+      "key": "lbl_cc_g_orientation",
+      "en": "Orientation",
+      "fr": "Orientation",
+      "pt": "Orientação"
+    },
+    {
+      "key": "lbl_cc_g_spacing",
+      "en": "Space around chart",
+      "fr": "Espace autour du graphique",
+      "pt": "Espaço em redor do gráfico"
+    },
+    {
+      "key": "lbl_style_f_text_scale",
+      "en": "Text size (all text)",
+      "fr": "Taille du texte (tout)",
+      "pt": "Tamanho do texto (tudo)"
+    },
+    {
+      "key": "lbl_style_f_legend_position",
+      "en": "Position",
+      "fr": "Position",
+      "pt": "Posição"
+    },
+    {
+      "key": "lbl_style_f_flip",
+      "en": "Swap axes",
+      "fr": "Inverser les axes",
+      "pt": "Trocar eixos"
+    },
+    {
+      "key": "lbl_cc_scope_card",
+      "en": "This card",
+      "fr": "Cette carte",
+      "pt": "Este cartão"
+    },
+    {
+      "key": "lbl_cc_scope_type",
+      "en": "This graph type",
+      "fr": "Ce type de graphique",
+      "pt": "Este tipo de gráfico"
+    },
+    {
+      "key": "lbl_cc_group_note_card",
+      "en": "Applies to every chart in this card (all its tabs) unless a chart has its own value.",
+      "fr": "S'applique à tous les graphiques de cette carte (tous ses onglets), sauf valeur propre.",
+      "pt": "Aplica-se a todos os gráficos deste cartão (todos os separadores), salvo valor próprio."
+    },
+    {
+      "key": "lbl_cc_group_note_type",
+      "en": "Applies to every chart of this type of graph, on any page, unless a chart has its own value.",
+      "fr": "S'applique à tous les graphiques de ce type, sur toutes les pages, sauf valeur propre.",
+      "pt": "Aplica-se a todos os gráficos deste tipo, em todas as páginas, salvo valor próprio."
+    },
+    {
+      "key": "lbl_cc_promote_card",
+      "en": "Use for the whole card",
+      "fr": "Utiliser pour toute la carte",
+      "pt": "Usar para todo o cartão"
+    },
+    {
+      "key": "lbl_cc_promote_type",
+      "en": "Use for this graph type",
+      "fr": "Utiliser pour ce type",
+      "pt": "Usar para este tipo"
+    },
+    {
+      "key": "lbl_cc_apply_to",
+      "en": "Apply to",
+      "fr": "Appliquer à",
+      "pt": "Aplicar a"
+    },
+    {
+      "key": "lbl_cc_target_screen",
+      "en": "Screen",
+      "fr": "Écran",
+      "pt": "Ecrã"
+    },
+    {
+      "key": "lbl_cc_target_report",
+      "en": "Report",
+      "fr": "Rapport",
+      "pt": "Relatório"
+    },
+    {
+      "key": "lbl_cc_target_both",
+      "en": "Both",
+      "fr": "Les deux",
+      "pt": "Ambos"
+    },
+    {
+      "key": "lbl_cc_report_note",
+      "en": "Used for this chart in the generated report (found by its id). The chart on screen does not change.",
+      "fr": "Utilisé pour ce graphique dans le rapport généré (retrouvé par son id). Le graphique à l'écran ne change pas.",
+      "pt": "Usado para este gráfico no relatório gerado (encontrado pelo seu id). O gráfico no ecrã não muda."
+    },
+    {
+      "key": "lbl_cc_both_note",
+      "en": "Changes apply to this chart on screen and to it in the generated report.",
+      "fr": "Les modifications s'appliquent à ce graphique à l'écran et dans le rapport généré.",
+      "pt": "As alterações aplicam-se a este gráfico no ecrã e no relatório gerado."
+    },
+    {
+      "key": "lbl_cc_chart_id",
+      "en": "Chart id",
+      "fr": "Id du graphique",
+      "pt": "Id do gráfico"
+    },
+    {
+      "key": "lbl_cc_chart_id_hint",
+      "en": "Reports use this id to find this chart's report settings.",
+      "fr": "Les rapports utilisent cet id pour retrouver les réglages de ce graphique.",
+      "pt": "Os relatórios usam este id para encontrar as definições deste gráfico."
     }
   ]
 }

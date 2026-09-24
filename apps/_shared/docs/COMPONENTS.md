@@ -487,21 +487,21 @@ cd_plot_server("ratios", i18n = i18n,
   plot_filename = reactive("ratio_plot"), excel_sheet = "ratio_plot")
 ```
 
-The tools, each its own popover, act on **this chart only** and also apply to the downloaded image:
+The **Customize** tool (the sliders icon) is one panel for everything about how a chart looks. It edits **this chart only**, and an **Apply to** switch says where: **Screen** (this chart, also used for its downloaded image), **Report** (the generated report), or **Both**.
 
-![Label editor](img/cd_chart_labels_popover.png)
+- **Chart ids.** Every chart has an id made from the data it draws: `cd2030.core::cd_chart_id()` = kind of data . admin level . indicator, e.g. `coverage_filtered.national.anc4`. The panel shows it under its title. Ids are grouped by their parts: everything starting `coverage_filtered.national` is the national coverage charts. The app and the reports build the id the same way (every `plot()` method passes the data it was given to `cd_finish_plot(.source = )`), so a **Report** setting saved for a chart reaches the same chart in a generated report, with no chart id written in the template. A chart whose data does not say what it is (no admin level or indicator) is identified by its data kind alone, and one with no kind by its type of graph (`cd_chart_type()`).
+- **Tabs:** Text, Axes, Legend, Grid, Marks, Layout, each with a dot when something in it is changed. **Search** finds an option across all tabs by its name or a related word ("angle", "font", "colour", "percent").
+- **Text:** titles, fonts and text size, title/subtitle/caption style. **Axes:** axis titles, label angle and size, number format, range, axis lines. **Legend:** position, direction, columns, order, and a colour and a text box for every legend entry and category. **Grid:** grid lines, plot area, border, background, overall look. **Marks:** line width, point size, transparency, data labels. **Layout:** orientation (auto / swap), margin.
+- Every changed option has a gold dot and its own reset; each option group has *Reset group*; the footer has *Reset all* (for the target selected). The count and the values shown are the report's when *Report* is selected, the screen's otherwise.
+- The panel is a wide popover **fixed to the window** (under 720px wide it is a bottom sheet), so it never adds to the page's scroll.
 
-*Labels* (the **T** icon): edit the title, caption and axis titles; an empty field keeps the chart's own text; "Reset all labels".
+**Adding an option:** one line in `CHART_FIELDS` (`_shared/R/charts/chart-schema.R`: key, tab, group, control) and its translation key `lbl_style_f_<key>`. The panel (`ChartCustomize.tsx`, `ChartCustomizeFields.tsx`) draws whatever is listed there.
 
-![View options](img/cd_chart_view_popover.png)
+**Stored in the dataset.** The panel's values are `cd2030.core::cd_chart_options()`, kept by `cache$set_chart_options(<chart id>, options)` for the screen (the chart's module path) and `cache$set_chart_options("report/<chart id>", options)` for reports, saved with the dataset. `generate_report(use_chart_options = TRUE)` renders every chart with the dataset-wide `"default"` options (set from R) then those saved for its type of graph, then those saved for the chart itself; options a report template passes to `plot()` win. Every `plot()` method takes `options =` (and any chart option by name in `...`): `plot(x, options = cd_chart_options(x_text_angle = 45, grid = "horizontal"))`. See `?cd_chart_options`.
 
-*View* (the sliders icon): orientation (Auto / Swap axes / Keep), text size (S/M/L), legend position (Right / Bottom / Hidden), Reset. The camera downloads the image, the table
-icon the data, the arrows toggle full-screen.
-
-**How it works.** `plot_fun` runs once per data change to build the ggplot; the label and view options are applied on top of it (`cd_apply_chart_options()`, `cd_chart_layout()`,
-`cd_chart_axes()`, `cd_chart_label_defaults()`), never inside `plot_fun`. The renderer `cd_render_plot()` shows a skeleton while calculating, rethrows errors (a red message in the card, never a silent blank)
+**How it works.** `plot_fun` runs once per data change to build the ggplot; the chart options are applied on top of it (`cd_apply_chart_options()` in `chart-state.R`; `cd_chart_layout()`, `cd_chart_axes()` and `cd_chart_label_defaults()` in `chart-layout.R`), never inside `plot_fun`. The renderer `cd_render_plot()` shows a skeleton while calculating, rethrows errors (a red message in the card, never a silent blank)
 and grows the plot when the card is expanded (`cd_plot_client_height()`). `cd_plot_output(id)` is the plain output. **Note:** `str_glue(i18n$t("template"))` inside `plot_fun` reads `{names}` from the function around it, so
-define the variables the template uses (e.g. `vacc1`, `vacc2`) in `plot_fun` first. **Related:** React `ChartLabels`, `ChartView`, `ExpandButton`, `ToolFrame`; `cd_chart_labels()`, `cd_chart_view()`, `cd_expand_button()`, `cd_ask_ai_button()`.
+define the variables the template uses (e.g. `vacc1`, `vacc2`) in `plot_fun` first. **Related:** React `ChartCustomize`, `ExpandButton`, `ToolFrame`; `cd_chart_customize()`, `cd_expand_button()`, `cd_ask_ai_button()`.
 
 ### `cd_tab_strip()`, `cd_tab_panes()`, `cd_update_tab_panes()`
 
@@ -927,7 +927,7 @@ R function -> React component (`js/src/components/*.tsx`), all registered in `js
 | `cd_mapping_modal` | `MappingModal` | uses `matching.ts` |
 | `cd_status_banner`, `cd_message_box` | `StatusBanner`, `MessageBoxStatus` | share `StatusIcon` |
 | `cd_tooltip`, `cd_loading_skeleton`, `cd_empty_state` | `Tooltip`, `LoadingSkeleton`, `EmptyState` | |
-| `cd_chart_labels`, `cd_chart_view`, `cd_expand_button` | `ChartLabels`, `ChartView`, `ExpandButton` | share `ToolFrame` |
+| `cd_chart_customize`, `cd_expand_button` | `ChartCustomize`, `ExpandButton` | share `ToolFrame` |
 | `cd_card_header` | `CardHeader` | |
 | `cd_wizard_steps` | `WizardSteps` | |
 | `cd_download_status` | `DownloadButtonStatus` | |

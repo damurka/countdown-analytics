@@ -42,6 +42,8 @@ cd_app <- function(app_name, app_version, theme, nav_sections, registry, i18n, l
     # back to Load Data" apart from "the user is still sitting on Load Data" -- see its own comment there.
     upload_data_dt <- upload_data_server("upload_data", i18n, selected_file, active = reactive(identical(input$tabs, "upload_data")))
     cache <- upload_data_dt$cache
+  # Charts keep what the user changed about their look in the dataset (cd_plot_server() reads this).
+  session$userData$cd_cache <- cache
     uploadDataRequiresWalkthrough <- upload_data_dt$requires_walkthrough
 
     # The one shared "has a dataset actually finished loading" condition -- countdown_data, not quality_confirmed

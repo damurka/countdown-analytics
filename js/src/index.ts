@@ -2,8 +2,7 @@ import "./lang";
 import "./spinner";
 import "./tabswitch";
 import "./dialog";
-import ChartLabels from "./components/ChartLabels";
-import ChartView from "./components/ChartView";
+import ChartCustomize from "./components/ChartCustomize";
 import ChipMulti from "./components/ChipMulti";
 import ChipNumber from "./components/ChipNumber";
 import ChipSelect from "./components/ChipSelect";
@@ -31,8 +30,7 @@ import Sidebar from "./components/Sidebar";
 window.jsmodule = {
   ...window.jsmodule,
   "@/countdown": {
-    ChartLabels,
-    ChartView,
+    ChartCustomize,
     ChipMulti,
     ChipNumber,
     ChipSelect,
