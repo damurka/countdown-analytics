@@ -403,7 +403,7 @@ run_app <- function(pre_loaded_dir = Sys.getenv("CDSUITE_SHINY_SELECTED_FILE", u
             class = "pooled-file",
             tags$span(class = "pooled-file__icon", tags$i(class = "fa fa-database")),
             div(class = "pooled-file__main", tags$span(class = "pooled-mono", basename(rv$pooled_path)),
-                tags$span(class = "pooled-muted", paste0(pooled_size(file.size(rv$pooled_path)), " · ", paste(p$countries$country, collapse = ", ")))),
+                tags$span(class = "pooled-muted", paste0(pooled_size(file.size(rv$pooled_path)), " \u00b7 ", paste(p$countries$country, collapse = ", ")))),
             tags$a(id = "download_rds", class = "shiny-download-link cd-button", href = "", target = "_blank", download = NA, tags$i(class = "fa fa-download"), " Download .rds"),
             pooled_btn("explore_this", "Explore this file", icon = "arrow-right", primary = TRUE)
           ),

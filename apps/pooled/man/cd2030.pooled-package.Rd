@@ -8,6 +8,14 @@
 \description{
 The Countdown to 2030 Pooled Shiny app: build one file from several countries' saved datasets, then explore it, compare countries and export tables. Run it with run_app().
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/damurka/cd2030.pooled}
+  \item Report bugs at \url{https://github.com/damurka/cd2030.pooled/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: David Kariuki \email{hello@damurka.com} (\href{https://orcid.org/0009-0003-6159-1107}{ORCID})
 

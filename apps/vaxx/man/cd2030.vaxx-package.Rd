@@ -6,7 +6,15 @@
 \alias{cd2030.vaxx-package}
 \title{cd2030.vaxx: The Countdown to 2030 Vaxx App}
 \description{
-The Countdown to 2030 Vaxx Shiny app: load and check a country's health facility data, choose denominators, analyse coverage, equity, mortality, service use and the health system, and build reports. Run it with run_app().
+The Countdown to 2030 Vaxx Shiny app: load and check a country's health facility data, choose denominators, analyse immunization coverage, dropout and equity, and build reports. Run it with run_app().
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/damurka/cd2030.vaxx}
+  \item Report bugs at \url{https://github.com/damurka/cd2030.vaxx/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: David Kariuki \email{hello@damurka.com} (\href{https://orcid.org/0009-0003-6159-1107}{ORCID})

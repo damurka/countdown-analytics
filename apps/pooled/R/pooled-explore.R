@@ -128,7 +128,7 @@ pooled_kind_server <- function(id, kind_key, pooled, file_name, just_built, shar
         pooled_graph_grid(ns, kind, d, m, pooled()$datasets),
         div(
           class = "pooled-card",
-          div(class = "pooled-card__head", tags$h3("Data"), tags$span(class = "pooled-muted", paste0(dname(), " · ", format(nrow(dff()), big.mark = ","), " rows"))),
+          div(class = "pooled-card__head", tags$h3("Data"), tags$span(class = "pooled-muted", paste0(dname(), " \u00b7 ", format(nrow(dff()), big.mark = ","), " rows"))),
           cd_spinner(reactableOutput(ns("table")), i18n = i18n)
         )
       )
@@ -201,7 +201,7 @@ pooled_file_chip <- function(name, n_countries, n_datasets, just_built) {
   div(
     class = "pooled-filechip",
     tags$i(class = "fa fa-database"), tags$strong(class = "pooled-mono", name),
-    tags$span(class = "pooled-muted", paste0(n_countries, " countries · ", n_datasets, " datasets")),
+    tags$span(class = "pooled-muted", paste0(n_countries, " countries \u00b7 ", n_datasets, " datasets")),
     if (isTRUE(just_built)) tags$span(class = "pooled-badge", "Just built")
   )
 }
@@ -244,7 +244,7 @@ pooled_open_server <- function(id, built, open_file) {
         div(class = "pooled-file",
             tags$span(class = "pooled-file__icon", tags$i(class = "fa fa-database")),
             div(class = "pooled-file__main", tags$span(class = "pooled-mono", basename(b$path)),
-                tags$span(class = "pooled-muted", paste0(pooled_size(file.size(b$path)), " · ", nrow(p$countries), " countries · ", length(p$datasets), " datasets")))),
+                tags$span(class = "pooled-muted", paste0(pooled_size(file.size(b$path)), " \u00b7 ", nrow(p$countries), " countries \u00b7 ", length(p$datasets), " datasets")))),
         div(class = "pooled-muted", paste(p$countries$country, collapse = ", "), if (nrow(p$left_out)) paste0(". ", nrow(p$left_out), " files were left out when it was built.")),
         div(pooled_btn(ns("use_built"), "Explore this file", icon = "arrow-right", primary = TRUE))
       )
@@ -383,7 +383,7 @@ pooled_extract_server <- function(id, pooled, file_name, just_built, open_piece,
     output$output_card <- renderUI({
       pc <- piece()
       p <- plan()
-      yrs <- if (is.null(years_used())) "All" else paste(range(years_used()), collapse = "–")
+      yrs <- if (is.null(years_used())) "All" else paste(range(years_used()), collapse = "\u2013")
       div(
         class = "pooled-stack",
         div(class = "pooled-strip", style = "margin: 0;",

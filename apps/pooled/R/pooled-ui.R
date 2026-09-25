@@ -117,10 +117,10 @@ POOLED_STATUS_TEXT <- c(ok = "Loaded", warn = "Loaded with a warning", error = "
 pooled_load_row <- function(r, running) {
   icon <- switch(r$status, ok = "circle-check", warn = "triangle-exclamation", error = "circle-xmark", skipped = "ban", loading = "spinner fa-spin", waiting = "clock")
   detail <- if (r$status %in% c("ok")) {
-    paste0(r$country, " · ", length(r$tables), " tables")
+    paste0(r$country, " \u00b7 ", length(r$tables), " tables")
   } else if (r$status == "loading") {
     "Reading tables..."
-  } else if (r$status == "waiting") NULL else paste0(if (!is.na(r$country)) paste0(r$country, " · "), r$message)
+  } else if (r$status == "waiting") NULL else paste0(if (!is.na(r$country)) paste0(r$country, " \u00b7 "), r$message)
   tags$li(
     class = paste("pooled-load", paste0("pooled-load--", r$status)),
     tags$i(class = paste0("fa fa-", icon, " pooled-load__icon")),

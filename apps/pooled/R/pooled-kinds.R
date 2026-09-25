@@ -62,7 +62,7 @@ pooled_default_measure <- function(df, prefer = NULL) {
 
 # ---- what is in a page's summary strip ---------------------------------------------------------------------------------
 pooled_strip <- function(df) {
-  yrs <- if ("year" %in% names(df) && any(!is.na(df$year))) paste(range(df$year, na.rm = TRUE), collapse = "–") else "–"
+  yrs <- if ("year" %in% names(df) && any(!is.na(df$year))) paste(range(df$year, na.rm = TRUE), collapse = "\u2013") else "\u2013"
   list(
     Rows = format(nrow(df), big.mark = ","),
     Countries = as.character(dplyr::n_distinct(df$country)),
