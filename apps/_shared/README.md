@@ -1,5 +1,11 @@
 # Shared Countdown UI (`apps/_shared`)
 
+> **Moving (2026-09):** the interface kit (components, page frame, charts, chart options, the report builder, the
+> React source in `js/` and the assets in `www/`) is now the **datasuite.ui** package (github.com/damurka/datasuite.ui),
+> which `load.R` attaches. What is left here is Countdown's (pages, wizard, filters, `cd_app()`) and moves into
+> cd2030.core next; the sections below still describe the old layout and move with the kit's docs.
+
+
 The UI that every Countdown Shiny app is built from: **rmncah**, **vaxx** and **pooled** today, and any app on a custom
 indicator group tomorrow. An app loads it, says what is particular to it, and writes only its own analysis pages.
 
