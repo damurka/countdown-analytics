@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputAdapter } from "@/shiny.react";
 import { IconReset } from "./ChipFrame";
 import { IconSliders, ToolFrame } from "./ToolFrame";
 import { FieldControl } from "./ChartCustomizeFields";
+import { ChartElements } from "./ChartElements";
 import type { CustomizeField, CustomizeEntries, CustomizeValues } from "./ChartCustomizeFields";
 import { tr, useLang } from "../lang";
 import type { LocalText } from "../lang";
@@ -20,6 +21,8 @@ export interface CustomizeTab {
   label: LocalText;
   /** Up to three SVG path strings for the tab icon. */
   icon: string[];
+  /** The chart option that shows or hides this element (its switch). */
+  show?: string;
 }
 
 export interface CustomizeValue {
@@ -28,6 +31,9 @@ export interface CustomizeValue {
 }
 
 export interface ChartCustomizeTexts {
+  /** An element's switch, and what an element hidden says. */
+  show: LocalText;
+  hidden: LocalText;
   tool: LocalText;
   title: LocalText;
   applyTo: LocalText;
@@ -96,7 +102,6 @@ function ChartCustomize({ id, value, chartId, tabs, fields, entries, defaults = 
   const [screen, setScreen] = useState<CustomizeValues>(value?.screen || {});
   const [report, setReport] = useState<CustomizeValues>(value?.report || {});
   const [target, setTarget] = useState<"screen" | "report" | "both">("screen");
-  const [tab, setTab] = useState<string>(tabs[0]?.key || "");
   const [query, setQuery] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -144,11 +149,6 @@ function ChartCustomize({ id, value, chartId, tabs, fields, entries, defaults = 
 
   const visibleFields = fields.filter((f) => f.type !== "entries" || (entries?.legend?.length || entries?.categories?.length));
   const tabLabel = (key: string) => tr(tabs.find((t) => t.key === key)?.label, lang);
-  const counts = useMemo(() => {
-    const c: Record<string, number> = {};
-    tabs.forEach((t) => (c[t.key] = visibleFields.filter((f) => f.tab === t.key && changedField(f)).length));
-    return c;
-  }, [JSON.stringify(bag), target, fields.length]);
   const total = visibleFields.filter(changedField).length;
   const totalAny = fields.filter((f) => keysOf(f).some((k) => isSet(screen[k]) || isSet(report[k]))).length;
 
@@ -157,29 +157,10 @@ function ChartCustomize({ id, value, chartId, tabs, fields, entries, defaults = 
     const hay = [tr(f.label, lang), tr(f.group, lang), tabLabel(f.tab), f.keywords || ""].join(" ").toLowerCase();
     return q.split(/\s+/).every((word) => hay.indexOf(word) >= 0);
   };
-  const list = q ? visibleFields.filter(matches) : visibleFields.filter((f) => f.tab === tab);
+  const list = q ? visibleFields.filter(matches) : [];
 
-  // rows: a heading whenever the group changes (not while searching, where the tab is shown instead)
-  const rows: React.ReactNode[] = [];
-  let lastGroup = "";
-  list.forEach((f) => {
-    const groupKey = typeof f.group === "string" ? f.group : JSON.stringify(f.group);
-    if (!q && groupKey !== lastGroup) {
-      lastGroup = groupKey;
-      const same = list.filter((g) => (typeof g.group === "string" ? g.group : JSON.stringify(g.group)) === groupKey);
-      const groupChanged = same.some(changedField);
-      rows.push(
-        <div key={`g-${groupKey}`} className="cd-cc__group">
-          <span>{tr(f.group, lang)}</span>
-          {groupChanged && (
-            <button type="button" className="cd-cc__link" onClick={() => drop(same.flatMap(keysOf))}>
-              {tr(texts.resetGroup, lang)}
-            </button>
-          )}
-        </div>
-      );
-    }
-    rows.push(
+  // one setting: its label (with a dot and a reset when changed; its element while searching) and its control
+  const fieldRow = (f: CustomizeField) => (
       <div key={f.key} className="cd-cc__field">
         <div className="cd-cc__label">
           <span>{tr(f.label, lang)}</span>
@@ -204,8 +185,9 @@ function ChartCustomize({ id, value, chartId, tabs, fields, entries, defaults = 
         />
         {f.key === "flip" && !own("flip") && autoNote ? <div className="cd-cc__hint">{tr(autoNote, lang)}</div> : null}
       </div>
-    );
-  });
+  );
+  // while searching: the settings found, each with its element; else the chart's elements (ChartElements)
+  const rows: React.ReactNode[] = q ? list.map(fieldRow) : [];
 
   return (
     <ToolFrame id={id} icon={<IconSliders />} tooltip={texts.tool} changed={totalAny > 0} title={texts.title} wide bare>
@@ -243,36 +225,14 @@ function ChartCustomize({ id, value, chartId, tabs, fields, entries, defaults = 
           <input type="search" value={query} placeholder={tr(texts.search, lang)} aria-label={tr(texts.search, lang)} onChange={(e) => setQuery(e.target.value)} />
         </label>
 
-        {!q && (
-          <div role="tablist" aria-label={tr(texts.title, lang)} className="cd-cc__tabs">
-            {tabs.map((t) => {
-              const on = tab === t.key;
-              const n = counts[t.key] || 0;
-              return (
-                <button
-                  key={t.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  aria-label={`${tr(t.label, lang)}${n ? `, ${n} ${tr(texts.changed, lang)}` : ""}`}
-                  className={on ? "cd-cc__tab cd-cc__tab--on" : "cd-cc__tab"}
-                  onClick={() => setTab(t.key)}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    {t.icon.filter(Boolean).map((d, i) => (
-                      <path key={i} d={d} />
-                    ))}
-                  </svg>
-                  {on && <span>{tr(t.label, lang)}</span>}
-                  {!on && n > 0 && <span className="cd-cc__tabdot" />}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
         <div className="cd-cc__list">
-          {rows.length === 0 ? <div className="cd-cc__empty">{tr(texts.noResults, lang)}</div> : rows}
+          {!q ? (
+            <ChartElements tabs={tabs} fields={visibleFields} bag={bag} put={put} changed={changedField} renderField={fieldRow} lang={lang} texts={{ show: texts.show, hidden: texts.hidden, changed: texts.changed }} />
+          ) : rows.length === 0 ? (
+            <div className="cd-cc__empty">{tr(texts.noResults, lang)}</div>
+          ) : (
+            rows
+          )}
         </div>
 
         <div className="cd-cc__foot">

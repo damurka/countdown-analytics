@@ -170,6 +170,15 @@ cd_page_registry <- list(
     help = c("national-inequality", "interpretation-of-equiplots"),
     denominator = TRUE,
     report = "national_inequality"
+  ),
+  cd_page_def(
+    id = "reports",
+    ui = reports_ui,
+    server = reports_server,
+    title = "title_reports",
+    section = "lbl_nav_section_output",
+    subtitle = "sub_reports",
+    help = c("12-dissemination")
   )
 )
 

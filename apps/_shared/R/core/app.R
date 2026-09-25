@@ -160,7 +160,7 @@ cd_app <- function(app_name, app_version, theme, nav_sections, registry, i18n, l
     # re-applies a pending adjustment (cache()$adjust_data()) that other pages' cache()$adjusted_data reads
     # depend on, regardless of whether anyone opens that page, so it needs to run eagerly.
     cd_pages_server(registry, cache, i18n, page_is)
-    cd_download_report_server("download_report", cache, i18n)
+    observeEvent(input$open_reports, cd_request_report(session))
 
     # session$onSessionEnded(stopApp)
 
@@ -181,15 +181,12 @@ cd_app <- function(app_name, app_version, theme, nav_sections, registry, i18n, l
       )
     })
 
-    # req(data_ready()), not just req(cache()) -- the button used to appear (and be genuinely clickable) the
-    # moment a fresh Excel/Stata upload started, well before Finish, since cache() itself goes truthy immediately
-    # (wizard_parts only). cd_download_report_server()'s own check_coverage_params gate (_shared/R/actions/download-report.R) already
-    # catches a click against incomplete data with an error dialog, but the button shouldn't have been offered at
-    # all yet -- confirmed live, matches the same "req(cache()) alone is too permissive" issue page_is()'s own
-    # data_ready() condition (above) already exists to fix for every other page.
+    # The header's report button opens the Reports page (the report builder). req(data_ready()), not just
+    # req(cache()): cache() goes truthy the moment a fresh upload starts, well before the wizard's Finish.
     output$download_buttons <- renderUI({
-      req(data_ready())
-      cd_download_report_ui("download_report", i18n)
+      req(data_ready(), cd_has_reports())
+      # .cd-button__label is what the narrow-header CSS hides to go icon-only
+      cd_button("open_reports", "btn_report_download", i18n, icon = "file-lines", variant = "bare", class = "cd-header-download")
     })
   }
 

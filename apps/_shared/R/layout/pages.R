@@ -6,7 +6,8 @@
 
 # One page. `ui`/`server` are the page module's functions (ui(id, i18n, ...), server(id, cache, i18n, ..., active)).
 # title/section/subtitle are translation keys. `help`: c(<docs chapter>, <section>) for the Get help button.
-# `report`: the page's key for the report generator, or NULL when the page has no report button.
+# `report`: the page's standard report (cd2030.core::report_presets()), started in the report builder by the page's
+#   "Generate report" button; NULL when the page has none. The button is shown only in an app with the Reports page.
 # `server_args`: extra arguments after (id, cache, i18n). `active = FALSE`: the server takes no `active` argument.
 cd_page_def <- function(id, ui, server, title, section, subtitle, help = NULL, denominator = FALSE, report = NULL,
                         server_args = list(), active = TRUE) {
@@ -33,7 +34,7 @@ cd_page_ui <- function(id, i18n, ..., filters = NULL) {
     eyebrow = page$section,
     subtitle = page$subtitle,
     include_denominator = isTRUE(page$denominator),
-    include_report = !is.null(page$report),
+    include_report = !is.null(page$report) && cd_has_reports(),
     i18n = i18n,
     filters = filters,
     ...

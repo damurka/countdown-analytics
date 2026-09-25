@@ -11,7 +11,7 @@ cd_page_header <- function(id, title, i18n, include_report = FALSE, include_note
     ),
     div(
       class = 'right-buttons',
-      if (include_report) cd_report_button_ui(ns('report'), label = i18n$t("btn_report_generate")),
+      if (include_report) cd_button(ns('report'), "btn_report_generate", i18n, icon = 'file-lines', size = 'sm'),
       if (include_notes) cd_notes_button_ui(ns('add_notes'), i18n),
       if (include_help) cd_help_button_ui(ns('get_help'), name = i18n$t('btn_global_help'))
     )
@@ -41,7 +41,7 @@ cd_denominator_row <- function(vaccination, maternal = NULL, i18n) {
   )
 }
 
-# `key`: what this page is called to the report generator and the notes store (the page's old header id).
+# `key`: the page's standard report (cd2030.core::report_presets()) and its id in the notes store.
 cd_page_header_server <- function(id, cache, path, section = NULL, i18n, key = id) {
   stopifnot(is.reactive(cache))
 
@@ -56,13 +56,8 @@ cd_page_header_server <- function(id, cache, path, section = NULL, i18n, key = i
         cd_denominator_row(cache()$denominator, cache()$maternal_denominator, i18n)
       })
 
-      cd_report_button_server(
-        id = 'report',
-        cache = cache,
-        report_name = reactive(key),
-        i18n = i18n,
-        adminlevel_1 = reactive(NULL)
-      )
+      # the page's standard report opens in the report builder (modules/reports.R), which asks for its name
+      observeEvent(input$report, cd_request_report(session, key))
 
       cd_help_button_server(
         id = 'get_help',

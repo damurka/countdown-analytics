@@ -38,3 +38,17 @@ cd_set_language <- function(session, lang) {
 cd_navigate_to <- function(session, tab_name) {
   session$sendCustomMessage("cd-navigate", tab_name)
 }
+
+# Opens the Reports page to start a new report from a standard report (a page's "Generate report" button, the header's
+# report button). `preset`: the standard report's id (cd2030.core::report_presets()), or NULL to just open the page.
+# The Reports page (modules/reports.R) keeps the request in session$userData and asks for the new report's name.
+cd_request_report <- function(session, preset = NULL) {
+  request <- session$userData$cd_report_request
+  if (is.function(request)) request(list(preset = preset, nonce = as.numeric(Sys.time())))
+  cd_navigate_to(session, "reports")
+}
+
+# Whether this app has the Reports page (pages.R)
+cd_has_reports <- function() {
+  !is.null(get0("pages", envir = .cd_state, inherits = FALSE)[["reports"]])
+}

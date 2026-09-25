@@ -149,6 +149,24 @@
       "en": "Ratio plot",
       "fr": "Graphique des ratios",
       "pt": "Gráfico de razões"
+    },
+    {
+      "key": "opt_ideliv",
+      "en": "Institutional Deliveries",
+      "fr": "Accouchements en établissement de santé",
+      "pt": "Partos institucionais"
+    },
+    {
+      "key": "opt_anc4",
+      "en": "ANC 4 Visits",
+      "fr": "4 CPN",
+      "pt": "4 Consultas de Pré-natal"
+    },
+    {
+      "key": "opt_opd",
+      "en": "OPD Visits",
+      "fr": "Consultations externes",
+      "pt": "Consultas ambulatoriais"
     }
   ]
 }

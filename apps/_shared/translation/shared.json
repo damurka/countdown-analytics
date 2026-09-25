@@ -2198,9 +2198,9 @@
     },
     {
       "key": "btn_report_download",
-      "en": "Download Report",
-      "fr": "Télécharger le rapport",
-      "pt": "Baixar relatório"
+      "en": "Reports",
+      "fr": "Rapports",
+      "pt": "Relatórios"
     },
     {
       "key": "btn_report_generate",
@@ -4301,9 +4301,9 @@
     },
     {
       "key": "lbl_cc_t_text",
-      "en": "Text",
-      "fr": "Texte",
-      "pt": "Texto"
+      "en": "All text",
+      "fr": "Tout le texte",
+      "pt": "Todo o texto"
     },
     {
       "key": "lbl_cc_t_axes",
@@ -4319,15 +4319,15 @@
     },
     {
       "key": "lbl_cc_t_grid",
-      "en": "Grid",
-      "fr": "Grille",
-      "pt": "Grelha"
+      "en": "Gridlines",
+      "fr": "Quadrillage",
+      "pt": "Linhas de grelha"
     },
     {
       "key": "lbl_cc_t_marks",
-      "en": "Marks",
-      "fr": "Marques",
-      "pt": "Marcas"
+      "en": "Bars, lines and points",
+      "fr": "Barres, lignes et points",
+      "pt": "Barras, linhas e pontos"
     },
     {
       "key": "lbl_cc_t_layout",
@@ -4550,6 +4550,4236 @@
       "en": "Reports use this id to find this chart's report settings.",
       "fr": "Les rapports utilisent cet id pour retrouver les réglages de ce graphique.",
       "pt": "Os relatórios usam este id para encontrar as definições deste gráfico."
+    },
+    {
+      "key": "title_reports",
+      "en": "Reports",
+      "fr": "Rapports",
+      "pt": "Relatórios"
+    },
+    {
+      "key": "sub_reports",
+      "en": "Build Word and PDF reports from this dataset. Charts and tables are drawn from the data every time you download.",
+      "fr": "Créez des rapports Word et PDF à partir de ce jeu de données. Les graphiques et tableaux sont recalculés à chaque téléchargement.",
+      "pt": "Crie relatórios Word e PDF a partir destes dados. Os gráficos e tabelas são recalculados a cada descarga."
+    },
+    {
+      "key": "lbl_nav_section_output",
+      "en": "Output",
+      "fr": "Résultats",
+      "pt": "Resultados"
+    },
+    {
+      "key": "lbl_rb_allReports",
+      "en": "All reports",
+      "fr": "Tous les rapports",
+      "pt": "Todos os relatórios"
+    },
+    {
+      "key": "lbl_rb_document",
+      "en": "Document",
+      "fr": "Document",
+      "pt": "Documento"
+    },
+    {
+      "key": "lbl_rb_pages",
+      "en": "pages",
+      "fr": "pages",
+      "pt": "páginas"
+    },
+    {
+      "key": "lbl_rb_page",
+      "en": "Page",
+      "fr": "Page",
+      "pt": "Página"
+    },
+    {
+      "key": "lbl_rb_saving",
+      "en": "Saving…",
+      "fr": "Enregistrement…",
+      "pt": "A guardar…"
+    },
+    {
+      "key": "lbl_rb_saved",
+      "en": "Saved in the dataset",
+      "fr": "Enregistré dans le jeu de données",
+      "pt": "Guardado nos dados"
+    },
+    {
+      "key": "lbl_rb_undo",
+      "en": "Undo",
+      "fr": "Annuler",
+      "pt": "Desfazer"
+    },
+    {
+      "key": "lbl_rb_redo",
+      "en": "Redo",
+      "fr": "Rétablir",
+      "pt": "Refazer"
+    },
+    {
+      "key": "lbl_rb_zoom",
+      "en": "Zoom",
+      "fr": "Zoom",
+      "pt": "Zoom"
+    },
+    {
+      "key": "lbl_rb_preview",
+      "en": "Preview",
+      "fr": "Aperçu",
+      "pt": "Pré-visualizar"
+    },
+    {
+      "key": "lbl_rb_backToEditing",
+      "en": "Back to editing",
+      "fr": "Revenir à l'édition",
+      "pt": "Voltar à edição"
+    },
+    {
+      "key": "lbl_rb_download",
+      "en": "Download",
+      "fr": "Télécharger",
+      "pt": "Descarregar"
+    },
+    {
+      "key": "lbl_rb_blocks",
+      "en": "Blocks",
+      "fr": "Blocs",
+      "pt": "Blocos"
+    },
+    {
+      "key": "lbl_rb_outline",
+      "en": "Outline",
+      "fr": "Plan",
+      "pt": "Estrutura"
+    },
+    {
+      "key": "lbl_rb_design",
+      "en": "Design",
+      "fr": "Mise en page",
+      "pt": "Design"
+    },
+    {
+      "key": "lbl_rb_searchBlocks",
+      "en": "Search charts, tables, text",
+      "fr": "Rechercher graphiques, tableaux, texte",
+      "pt": "Pesquisar gráficos, tabelas, texto"
+    },
+    {
+      "key": "lbl_rb_paletteHint",
+      "en": "Drag onto a page, or press + to add after the selected block.",
+      "fr": "Glissez sur une page, ou cliquez + pour ajouter après le bloc sélectionné.",
+      "pt": "Arraste para uma página, ou clique + para adicionar após o bloco selecionado."
+    },
+    {
+      "key": "lbl_rb_noBlocks",
+      "en": "No block matches this search.",
+      "fr": "Aucun bloc ne correspond.",
+      "pt": "Nenhum bloco corresponde."
+    },
+    {
+      "key": "lbl_rb_add",
+      "en": "Add",
+      "fr": "Ajouter",
+      "pt": "Adicionar"
+    },
+    {
+      "key": "lbl_rb_chart",
+      "en": "Chart",
+      "fr": "Graphique",
+      "pt": "Gráfico"
+    },
+    {
+      "key": "lbl_rb_table",
+      "en": "Table",
+      "fr": "Tableau",
+      "pt": "Tabela"
+    },
+    {
+      "key": "lbl_rb_text",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_textAndLayout",
+      "en": "Text and layout",
+      "fr": "Texte et mise en page",
+      "pt": "Texto e disposição"
+    },
+    {
+      "key": "lbl_rb_heading",
+      "en": "Heading",
+      "fr": "Titre",
+      "pt": "Título"
+    },
+    {
+      "key": "lbl_rb_subheading",
+      "en": "Sub-heading",
+      "fr": "Sous-titre",
+      "pt": "Subtítulo"
+    },
+    {
+      "key": "lbl_rb_paragraph",
+      "en": "Paragraph",
+      "fr": "Paragraphe",
+      "pt": "Parágrafo"
+    },
+    {
+      "key": "lbl_rb_note",
+      "en": "Notes box",
+      "fr": "Encadré de notes",
+      "pt": "Caixa de notas"
+    },
+    {
+      "key": "lbl_rb_pagebreak",
+      "en": "Page break",
+      "fr": "Saut de page",
+      "pt": "Quebra de página"
+    },
+    {
+      "key": "lbl_rb_newHeading",
+      "en": "New section",
+      "fr": "Nouvelle section",
+      "pt": "Nova secção"
+    },
+    {
+      "key": "lbl_rb_newParagraph",
+      "en": "Write your text here.",
+      "fr": "Écrivez votre texte ici.",
+      "pt": "Escreva o seu texto aqui."
+    },
+    {
+      "key": "lbl_rb_newNote",
+      "en": "Add the interpretation agreed at the review meeting.",
+      "fr": "Ajoutez l'interprétation convenue lors de la réunion de revue.",
+      "pt": "Adicione a interpretação acordada na reunião de revisão."
+    },
+    {
+      "key": "lbl_rb_accent",
+      "en": "Accent colour",
+      "fr": "Couleur d'accent",
+      "pt": "Cor de destaque"
+    },
+    {
+      "key": "lbl_rb_headingFont",
+      "en": "Headings",
+      "fr": "Titres",
+      "pt": "Títulos"
+    },
+    {
+      "key": "lbl_rb_serif",
+      "en": "Serif",
+      "fr": "Serif",
+      "pt": "Serif"
+    },
+    {
+      "key": "lbl_rb_sans",
+      "en": "Sans",
+      "fr": "Sans",
+      "pt": "Sans"
+    },
+    {
+      "key": "lbl_rb_pageSize",
+      "en": "Page size",
+      "fr": "Format de page",
+      "pt": "Tamanho da página"
+    },
+    {
+      "key": "lbl_rb_coverPage",
+      "en": "Cover page",
+      "fr": "Page de couverture",
+      "pt": "Capa"
+    },
+    {
+      "key": "lbl_rb_contents",
+      "en": "Contents",
+      "fr": "Sommaire",
+      "pt": "Índice"
+    },
+    {
+      "key": "lbl_rb_pageNumbers",
+      "en": "Page numbers",
+      "fr": "Numéros de page",
+      "pt": "Números de página"
+    },
+    {
+      "key": "lbl_rb_runningHeader",
+      "en": "Running header",
+      "fr": "En-tête de page",
+      "pt": "Cabeçalho"
+    },
+    {
+      "key": "lbl_rb_designHint",
+      "en": "The design is used for both the Word and the PDF file.",
+      "fr": "La mise en page s'applique au fichier Word et au PDF.",
+      "pt": "O design aplica-se ao ficheiro Word e ao PDF."
+    },
+    {
+      "key": "lbl_rb_dropHere",
+      "en": "Drag blocks here to continue the report",
+      "fr": "Glissez des blocs ici pour continuer le rapport",
+      "pt": "Arraste blocos para aqui para continuar o relatório"
+    },
+    {
+      "key": "lbl_rb_emptyReport",
+      "en": "This report is empty. Drag a chart, a table or text here from Blocks.",
+      "fr": "Ce rapport est vide. Glissez ici un graphique, un tableau ou du texte depuis Blocs.",
+      "pt": "Este relatório está vazio. Arraste para aqui um gráfico, uma tabela ou texto dos Blocos."
+    },
+    {
+      "key": "lbl_rb_settings",
+      "en": "Block settings",
+      "fr": "Réglages du bloc",
+      "pt": "Definições do bloco"
+    },
+    {
+      "key": "lbl_rb_charts",
+      "en": "charts",
+      "fr": "graphiques",
+      "pt": "gráficos"
+    },
+    {
+      "key": "lbl_rb_chartsAndTables",
+      "en": "charts and tables",
+      "fr": "graphiques et tableaux",
+      "pt": "gráficos e tabelas"
+    },
+    {
+      "key": "lbl_rb_notDrawn",
+      "en": "Could not be drawn with this dataset",
+      "fr": "Impossible à tracer avec ces données",
+      "pt": "Não foi possível desenhar com estes dados"
+    },
+    {
+      "key": "lbl_rb_drawing",
+      "en": "Drawing from the dataset…",
+      "fr": "Calcul à partir des données…",
+      "pt": "A desenhar a partir dos dados…"
+    },
+    {
+      "key": "lbl_rb_updating",
+      "en": "Updating…",
+      "fr": "Mise à jour…",
+      "pt": "A atualizar…"
+    },
+    {
+      "key": "lbl_rb_level",
+      "en": "Level",
+      "fr": "Niveau",
+      "pt": "Nível"
+    },
+    {
+      "key": "lbl_rb_indicator",
+      "en": "Indicator",
+      "fr": "Indicateur",
+      "pt": "Indicador"
+    },
+    {
+      "key": "lbl_rb_region",
+      "en": "Region",
+      "fr": "Région",
+      "pt": "Região"
+    },
+    {
+      "key": "lbl_rb_year",
+      "en": "Year",
+      "fr": "Année",
+      "pt": "Ano"
+    },
+    {
+      "key": "lbl_rb_show",
+      "en": "Show",
+      "fr": "Afficher",
+      "pt": "Mostrar"
+    },
+    {
+      "key": "lbl_rb_title",
+      "en": "Title",
+      "fr": "Titre",
+      "pt": "Título"
+    },
+    {
+      "key": "lbl_rb_titleAuto",
+      "en": "As drawn",
+      "fr": "Titre par défaut",
+      "pt": "Predefinido"
+    },
+    {
+      "key": "lbl_rb_width",
+      "en": "Width",
+      "fr": "Largeur",
+      "pt": "Largura"
+    },
+    {
+      "key": "lbl_rb_fullWidth",
+      "en": "Full width",
+      "fr": "Pleine largeur",
+      "pt": "Largura total"
+    },
+    {
+      "key": "lbl_rb_half",
+      "en": "Half",
+      "fr": "Moitié",
+      "pt": "Metade"
+    },
+    {
+      "key": "lbl_rb_showCaption",
+      "en": "Show caption and source",
+      "fr": "Afficher la légende et la source",
+      "pt": "Mostrar legenda e fonte"
+    },
+    {
+      "key": "lbl_rb_styleHint",
+      "en": "Charts you customised in the app with Apply to: Report keep that styling here and in the file.",
+      "fr": "Les graphiques personnalisés dans l'application avec Appliquer à : Rapport gardent ce style ici et dans le fichier.",
+      "pt": "Os gráficos personalizados na aplicação com Aplicar a: Relatório mantêm esse estilo aqui e no ficheiro."
+    },
+    {
+      "key": "lbl_rb_duplicate",
+      "en": "Duplicate",
+      "fr": "Dupliquer",
+      "pt": "Duplicar"
+    },
+    {
+      "key": "lbl_rb_delete",
+      "en": "Delete",
+      "fr": "Supprimer",
+      "pt": "Eliminar"
+    },
+    {
+      "key": "lbl_rb_moveUp",
+      "en": "Move up",
+      "fr": "Monter",
+      "pt": "Mover para cima"
+    },
+    {
+      "key": "lbl_rb_moveDown",
+      "en": "Move down",
+      "fr": "Descendre",
+      "pt": "Mover para baixo"
+    },
+    {
+      "key": "lbl_rb_dragToMove",
+      "en": "Drag to move",
+      "fr": "Glisser pour déplacer",
+      "pt": "Arraste para mover"
+    },
+    {
+      "key": "lbl_rb_reportName",
+      "en": "Report name",
+      "fr": "Nom du rapport",
+      "pt": "Nome do relatório"
+    },
+    {
+      "key": "lbl_rb_downloadReport",
+      "en": "Download report",
+      "fr": "Télécharger le rapport",
+      "pt": "Descarregar relatório"
+    },
+    {
+      "key": "lbl_rb_format",
+      "en": "Format",
+      "fr": "Format",
+      "pt": "Formato"
+    },
+    {
+      "key": "lbl_rb_wordNote",
+      "en": "Editable, with the same pages as the PDF",
+      "fr": "Modifiable, avec les mêmes pages que le PDF",
+      "pt": "Editável, com as mesmas páginas do PDF"
+    },
+    {
+      "key": "lbl_rb_pdfNote",
+      "en": "Ready to share or print",
+      "fr": "Prêt à partager ou imprimer",
+      "pt": "Pronto a partilhar ou imprimir"
+    },
+    {
+      "key": "lbl_rb_cancel",
+      "en": "Cancel",
+      "fr": "Annuler",
+      "pt": "Cancelar"
+    },
+    {
+      "key": "lbl_rb_downloadDocx",
+      "en": "Download .docx",
+      "fr": "Télécharger .docx",
+      "pt": "Descarregar .docx"
+    },
+    {
+      "key": "lbl_rb_downloadPdf",
+      "en": "Download PDF",
+      "fr": "Télécharger PDF",
+      "pt": "Descarregar PDF"
+    },
+    {
+      "key": "lbl_rb_preparing",
+      "en": "Preparing…",
+      "fr": "Préparation…",
+      "pt": "A preparar…"
+    },
+    {
+      "key": "lbl_rb_downloaded",
+      "en": "Downloaded",
+      "fr": "Téléchargé",
+      "pt": "Descarregado"
+    },
+    {
+      "key": "lbl_rb_downloadAgain",
+      "en": "Download again",
+      "fr": "Télécharger à nouveau",
+      "pt": "Descarregar novamente"
+    },
+    {
+      "key": "lbl_rb_done",
+      "en": "Done",
+      "fr": "Terminé",
+      "pt": "Concluído"
+    },
+    {
+      "key": "lbl_rb_close",
+      "en": "Close",
+      "fr": "Fermer",
+      "pt": "Fechar"
+    },
+    {
+      "key": "lbl_rb_newDocument",
+      "en": "New document",
+      "fr": "Nouveau document",
+      "pt": "Novo documento"
+    },
+    {
+      "key": "lbl_rb_newDocumentHint",
+      "en": "Pages of charts, tables and text · Word or PDF",
+      "fr": "Pages de graphiques, tableaux et texte · Word ou PDF",
+      "pt": "Páginas de gráficos, tabelas e texto · Word ou PDF"
+    },
+    {
+      "key": "lbl_rb_startBlank",
+      "en": "Start blank",
+      "fr": "Page vierge",
+      "pt": "Começar em branco"
+    },
+    {
+      "key": "lbl_rb_newSlides",
+      "en": "New slide deck",
+      "fr": "Nouvelle présentation",
+      "pt": "Nova apresentação"
+    },
+    {
+      "key": "lbl_rb_slidesSoon",
+      "en": "PowerPoint slides · coming next",
+      "fr": "Diapositives PowerPoint · bientôt",
+      "pt": "Diapositivos PowerPoint · em breve"
+    },
+    {
+      "key": "lbl_rb_standardReports",
+      "en": "Standard reports",
+      "fr": "Rapports standard",
+      "pt": "Relatórios padrão"
+    },
+    {
+      "key": "lbl_rb_standardHint",
+      "en": "The Countdown reports of each analysis section, in the order of the analysis. Each opens as your own copy; change anything.",
+      "fr": "Les rapports Countdown de chaque section d'analyse, dans l'ordre de l'analyse. Chacun s'ouvre comme votre propre copie ; modifiez ce que vous voulez.",
+      "pt": "Os relatórios Countdown de cada secção de análise, pela ordem da análise. Cada um abre como uma cópia sua; altere o que quiser."
+    },
+    {
+      "key": "lbl_rb_yourReports",
+      "en": "Your reports",
+      "fr": "Vos rapports",
+      "pt": "Os seus relatórios"
+    },
+    {
+      "key": "lbl_rb_yourReportsHint",
+      "en": "Saved in this dataset",
+      "fr": "Enregistrés dans ce jeu de données",
+      "pt": "Guardados nestes dados"
+    },
+    {
+      "key": "lbl_rb_noReports",
+      "en": "No reports yet. Start from a standard report or a blank one.",
+      "fr": "Aucun rapport. Commencez à partir d'un rapport standard ou d'une page vierge.",
+      "pt": "Ainda não há relatórios. Comece a partir de um relatório padrão ou em branco."
+    },
+    {
+      "key": "lbl_rb_name",
+      "en": "Name",
+      "fr": "Nom",
+      "pt": "Nome"
+    },
+    {
+      "key": "lbl_rb_content",
+      "en": "Content",
+      "fr": "Contenu",
+      "pt": "Conteúdo"
+    },
+    {
+      "key": "lbl_rb_lastEdited",
+      "en": "Last edited",
+      "fr": "Dernière modification",
+      "pt": "Última edição"
+    },
+    {
+      "key": "lbl_rb_open",
+      "en": "Open",
+      "fr": "Ouvrir",
+      "pt": "Abrir"
+    },
+    {
+      "key": "lbl_rb_confirmDelete",
+      "en": "Delete for good?",
+      "fr": "Supprimer définitivement ?",
+      "pt": "Eliminar definitivamente?"
+    },
+    {
+      "key": "lbl_rb_blocksCount",
+      "en": "blocks",
+      "fr": "blocs",
+      "pt": "blocos"
+    },
+    {
+      "key": "lbl_rb_untitled",
+      "en": "Untitled report",
+      "fr": "Rapport sans titre",
+      "pt": "Relatório sem título"
+    },
+    {
+      "key": "lbl_rb_copy",
+      "en": "(copy)",
+      "fr": "(copie)",
+      "pt": "(cópia)"
+    },
+    {
+      "key": "lbl_rb_stage_draw",
+      "en": "Drawing charts from the dataset",
+      "fr": "Calcul des graphiques",
+      "pt": "A desenhar os gráficos"
+    },
+    {
+      "key": "lbl_rb_stage_word",
+      "en": "Writing the Word file",
+      "fr": "Écriture du fichier Word",
+      "pt": "A escrever o ficheiro Word"
+    },
+    {
+      "key": "lbl_rb_stage_pdf",
+      "en": "Printing the PDF",
+      "fr": "Impression du PDF",
+      "pt": "A imprimir o PDF"
+    },
+    {
+      "key": "lbl_rb_group_national",
+      "en": "National analysis",
+      "fr": "Analyse nationale",
+      "pt": "Análise nacional"
+    },
+    {
+      "key": "lbl_rb_group_subnational",
+      "en": "Sub-national analysis",
+      "fr": "Analyse infranationale",
+      "pt": "Análise subnacional"
+    },
+    {
+      "key": "lbl_rb_group_denominators",
+      "en": "Denominators",
+      "fr": "Dénominateurs",
+      "pt": "Denominadores"
+    },
+    {
+      "key": "lbl_rb_group_quality",
+      "en": "Data quality",
+      "fr": "Qualité des données",
+      "pt": "Qualidade dos dados"
+    },
+    {
+      "key": "lbl_rb_group_utilization",
+      "en": "Service utilization",
+      "fr": "Utilisation des services",
+      "pt": "Utilização dos serviços"
+    },
+    {
+      "key": "lbl_rb_group_mortality",
+      "en": "Mortality",
+      "fr": "Mortalité",
+      "pt": "Mortalidade"
+    },
+    {
+      "key": "lbl_rb_kind_coverage",
+      "en": "Coverage trend: DHIS2 and survey",
+      "fr": "Tendance de couverture : DHIS2 et enquête",
+      "pt": "Tendência de cobertura: DHIS2 e inquérito"
+    },
+    {
+      "key": "lbl_rb_kind_continuum",
+      "en": "Continuum of care",
+      "fr": "Continuum de soins",
+      "pt": "Continuidade dos cuidados"
+    },
+    {
+      "key": "lbl_rb_kind_threshold",
+      "en": "Districts reaching the target",
+      "fr": "Districts atteignant la cible",
+      "pt": "Distritos que atingem a meta"
+    },
+    {
+      "key": "lbl_rb_kind_coverage_table",
+      "en": "Coverage table (DHIS2)",
+      "fr": "Tableau de couverture (DHIS2)",
+      "pt": "Tabela de cobertura (DHIS2)"
+    },
+    {
+      "key": "lbl_rb_kind_inequality",
+      "en": "Coverage by region over time",
+      "fr": "Couverture par région dans le temps",
+      "pt": "Cobertura por região ao longo do tempo"
+    },
+    {
+      "key": "lbl_rb_kind_map",
+      "en": "Coverage map",
+      "fr": "Carte de couverture",
+      "pt": "Mapa de cobertura"
+    },
+    {
+      "key": "lbl_rb_kind_derived_coverage",
+      "en": "Coverage by denominator",
+      "fr": "Couverture par dénominateur",
+      "pt": "Cobertura por denominador"
+    },
+    {
+      "key": "lbl_rb_kind_reporting_rate",
+      "en": "Districts with low reporting rate, by service",
+      "fr": "Districts avec un faible taux de rapportage, par service",
+      "pt": "Distritos com baixa taxa de reporte, por serviço"
+    },
+    {
+      "key": "lbl_rb_kind_overall_score",
+      "en": "Data quality summary table",
+      "fr": "Tableau récapitulatif de la qualité des données",
+      "pt": "Tabela resumo da qualidade dos dados"
+    },
+    {
+      "key": "lbl_rb_kind_service_utilization",
+      "en": "Service utilization",
+      "fr": "Utilisation des services",
+      "pt": "Utilização dos serviços"
+    },
+    {
+      "key": "lbl_rb_kind_mortality_ratio",
+      "en": "Completeness of death reporting",
+      "fr": "Complétude de la notification des décès",
+      "pt": "Completude da notificação de óbitos"
+    },
+    {
+      "key": "lbl_rb_level_national",
+      "en": "National",
+      "fr": "National",
+      "pt": "Nacional"
+    },
+    {
+      "key": "lbl_rb_level_adminlevel_1",
+      "en": "Region",
+      "fr": "Région",
+      "pt": "Região"
+    },
+    {
+      "key": "lbl_rb_level_district",
+      "en": "District",
+      "fr": "District",
+      "pt": "Distrito"
+    },
+    {
+      "key": "lbl_rb_var_maternal",
+      "en": "Maternal",
+      "fr": "Maternel",
+      "pt": "Materno"
+    },
+    {
+      "key": "lbl_rb_var_child",
+      "en": "Child",
+      "fr": "Enfant",
+      "pt": "Criança"
+    },
+    {
+      "key": "lbl_rb_var_Blues",
+      "en": "Blue",
+      "fr": "Bleu",
+      "pt": "Azul"
+    },
+    {
+      "key": "lbl_rb_var_Greens",
+      "en": "Green",
+      "fr": "Vert",
+      "pt": "Verde"
+    },
+    {
+      "key": "lbl_rb_var_Purples",
+      "en": "Purple",
+      "fr": "Violet",
+      "pt": "Roxo"
+    },
+    {
+      "key": "lbl_rb_var_opd",
+      "en": "Outpatient",
+      "fr": "Ambulatoire",
+      "pt": "Ambulatório"
+    },
+    {
+      "key": "lbl_rb_var_ipd",
+      "en": "Inpatient",
+      "fr": "Hospitalisation",
+      "pt": "Internamento"
+    },
+    {
+      "key": "lbl_rb_var_mmr",
+      "en": "Maternal",
+      "fr": "Maternelle",
+      "pt": "Materna"
+    },
+    {
+      "key": "lbl_rb_var_sbr",
+      "en": "Stillbirths",
+      "fr": "Mortinatalité",
+      "pt": "Nados-mortos"
+    },
+    {
+      "key": "lbl_rb_preset_national_coverage",
+      "en": "National coverage",
+      "fr": "Couverture nationale",
+      "pt": "Cobertura nacional"
+    },
+    {
+      "key": "lbl_rb_preset_national_coverage_desc",
+      "en": "DHIS2 and survey coverage, continuum of care, targets",
+      "fr": "Couverture DHIS2 et enquêtes, continuum de soins, cibles",
+      "pt": "Cobertura DHIS2 e inquéritos, continuidade dos cuidados, metas"
+    },
+    {
+      "key": "lbl_rb_preset_data_quality",
+      "en": "Data quality",
+      "fr": "Qualité des données",
+      "pt": "Qualidade dos dados"
+    },
+    {
+      "key": "lbl_rb_preset_data_quality_desc",
+      "en": "Quality score and reporting completeness",
+      "fr": "Score de qualité et complétude du rapportage",
+      "pt": "Pontuação de qualidade e completude do reporte"
+    },
+    {
+      "key": "lbl_rb_preset_denominator_selection",
+      "en": "Denominator selection",
+      "fr": "Choix du dénominateur",
+      "pt": "Seleção do denominador"
+    },
+    {
+      "key": "lbl_rb_preset_denominator_selection_desc",
+      "en": "Coverage under each denominator option",
+      "fr": "Couverture selon chaque dénominateur",
+      "pt": "Cobertura com cada denominador"
+    },
+    {
+      "key": "lbl_rb_preset_national_inequality",
+      "en": "Sub-national inequality",
+      "fr": "Inégalités infranationales",
+      "pt": "Desigualdade subnacional"
+    },
+    {
+      "key": "lbl_rb_preset_national_inequality_desc",
+      "en": "Coverage by region and maps",
+      "fr": "Couverture par région et cartes",
+      "pt": "Cobertura por região e mapas"
+    },
+    {
+      "key": "lbl_rb_preset_service_utilization",
+      "en": "Service utilization",
+      "fr": "Utilisation des services",
+      "pt": "Utilização dos serviços"
+    },
+    {
+      "key": "lbl_rb_preset_service_utilization_desc",
+      "en": "Outpatient and inpatient services",
+      "fr": "Services ambulatoires et hospitaliers",
+      "pt": "Serviços ambulatórios e de internamento"
+    },
+    {
+      "key": "lbl_rb_preset_mortality",
+      "en": "Mortality",
+      "fr": "Mortalité",
+      "pt": "Mortalidade"
+    },
+    {
+      "key": "lbl_rb_preset_mortality_desc",
+      "en": "Institutional mortality ratios",
+      "fr": "Ratios de mortalité institutionnelle",
+      "pt": "Rácios de mortalidade institucional"
+    },
+    {
+      "key": "lbl_rb_coverage_estimates",
+      "en": "coverage estimates",
+      "fr": "estimations de couverture",
+      "pt": "estimativas de cobertura"
+    },
+    {
+      "key": "lbl_rb_denominators_from",
+      "en": "Denominators derived from",
+      "fr": "Dénominateurs dérivés de",
+      "pt": "Denominadores derivados de"
+    },
+    {
+      "key": "lbl_rb_districts_target",
+      "en": "- districts reaching the target",
+      "fr": "- districts atteignant la cible",
+      "pt": "- distritos que atingem a meta"
+    },
+    {
+      "key": "lbl_rb_by_district",
+      "en": "By district",
+      "fr": "Par district",
+      "pt": "Por distrito"
+    },
+    {
+      "key": "lbl_rb_by_region",
+      "en": "By region",
+      "fr": "Par région",
+      "pt": "Por região"
+    },
+    {
+      "key": "lbl_rb_by_denominator",
+      "en": "coverage by denominator",
+      "fr": "couverture par dénominateur",
+      "pt": "cobertura por denominador"
+    },
+    {
+      "key": "lbl_rb_not_drawn",
+      "en": "This chart could not be drawn with this dataset",
+      "fr": "Ce graphique n'a pas pu être tracé avec ces données",
+      "pt": "Não foi possível desenhar este gráfico com estes dados"
+    },
+    {
+      "key": "lbl_rb_home",
+      "en": "Home",
+      "fr": "Accueil",
+      "pt": "Início"
+    },
+    {
+      "key": "lbl_rb_insert",
+      "en": "Insert",
+      "fr": "Insertion",
+      "pt": "Inserir"
+    },
+    {
+      "key": "lbl_rb_designTab",
+      "en": "Design",
+      "fr": "Conception",
+      "pt": "Design"
+    },
+    {
+      "key": "lbl_rb_layout",
+      "en": "Layout",
+      "fr": "Mise en page",
+      "pt": "Layout"
+    },
+    {
+      "key": "lbl_rb_styles",
+      "en": "Styles",
+      "fr": "Styles",
+      "pt": "Estilos"
+    },
+    {
+      "key": "lbl_rb_styleH1",
+      "en": "Heading 1",
+      "fr": "Titre 1",
+      "pt": "Título 1"
+    },
+    {
+      "key": "lbl_rb_styleH2",
+      "en": "Heading 2",
+      "fr": "Titre 2",
+      "pt": "Título 2"
+    },
+    {
+      "key": "lbl_rb_styleBody",
+      "en": "Body text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_styleNote",
+      "en": "Note",
+      "fr": "Note",
+      "pt": "Nota"
+    },
+    {
+      "key": "lbl_rb_bold",
+      "en": "Bold",
+      "fr": "Gras",
+      "pt": "Negrito"
+    },
+    {
+      "key": "lbl_rb_italic",
+      "en": "Italic",
+      "fr": "Italique",
+      "pt": "Itálico"
+    },
+    {
+      "key": "lbl_rb_underline",
+      "en": "Underline",
+      "fr": "Souligné",
+      "pt": "Sublinhado"
+    },
+    {
+      "key": "lbl_rb_textColor",
+      "en": "Text colour",
+      "fr": "Couleur du texte",
+      "pt": "Cor do texto"
+    },
+    {
+      "key": "lbl_rb_clearFormat",
+      "en": "Clear formatting",
+      "fr": "Effacer la mise en forme",
+      "pt": "Limpar formatação"
+    },
+    {
+      "key": "lbl_rb_alignLeft",
+      "en": "Left",
+      "fr": "Gauche",
+      "pt": "Esquerda"
+    },
+    {
+      "key": "lbl_rb_alignCenter",
+      "en": "Centre",
+      "fr": "Centré",
+      "pt": "Centro"
+    },
+    {
+      "key": "lbl_rb_alignRight",
+      "en": "Right",
+      "fr": "Droite",
+      "pt": "Direita"
+    },
+    {
+      "key": "lbl_rb_alignJustify",
+      "en": "Justify",
+      "fr": "Justifié",
+      "pt": "Justificado"
+    },
+    {
+      "key": "lbl_rb_bullets",
+      "en": "Bullets",
+      "fr": "Puces",
+      "pt": "Marcadores"
+    },
+    {
+      "key": "lbl_rb_numbering",
+      "en": "Numbering",
+      "fr": "Numérotation",
+      "pt": "Numeração"
+    },
+    {
+      "key": "lbl_rb_field",
+      "en": "Field",
+      "fr": "Champ",
+      "pt": "Campo"
+    },
+    {
+      "key": "lbl_rb_fieldGroupReport",
+      "en": "Report",
+      "fr": "Rapport",
+      "pt": "Relatório"
+    },
+    {
+      "key": "lbl_rb_fieldGroupData",
+      "en": "Data",
+      "fr": "Données",
+      "pt": "Dados"
+    },
+    {
+      "key": "lbl_rb_fieldGroupCoverage",
+      "en": "Coverage values",
+      "fr": "Valeurs de couverture",
+      "pt": "Valores de cobertura"
+    },
+    {
+      "key": "lbl_rb_image",
+      "en": "Picture",
+      "fr": "Image",
+      "pt": "Imagem"
+    },
+    {
+      "key": "lbl_rb_chooseImage",
+      "en": "Choose a picture",
+      "fr": "Choisir une image",
+      "pt": "Escolher uma imagem"
+    },
+    {
+      "key": "lbl_rb_orientation",
+      "en": "Orientation",
+      "fr": "Orientation",
+      "pt": "Orientação"
+    },
+    {
+      "key": "lbl_rb_portrait",
+      "en": "Portrait",
+      "fr": "Portrait",
+      "pt": "Retrato"
+    },
+    {
+      "key": "lbl_rb_landscape",
+      "en": "Landscape",
+      "fr": "Paysage",
+      "pt": "Paisagem"
+    },
+    {
+      "key": "lbl_rb_margins",
+      "en": "Margins",
+      "fr": "Marges",
+      "pt": "Margens"
+    },
+    {
+      "key": "lbl_rb_marginNormal",
+      "en": "Normal",
+      "fr": "Normales",
+      "pt": "Normais"
+    },
+    {
+      "key": "lbl_rb_marginNarrow",
+      "en": "Narrow",
+      "fr": "Étroites",
+      "pt": "Estreitas"
+    },
+    {
+      "key": "lbl_rb_marginWide",
+      "en": "Wide",
+      "fr": "Larges",
+      "pt": "Largas"
+    },
+    {
+      "key": "lbl_rb_header",
+      "en": "Header",
+      "fr": "En-tête",
+      "pt": "Cabeçalho"
+    },
+    {
+      "key": "lbl_rb_footer",
+      "en": "Footer",
+      "fr": "Pied de page",
+      "pt": "Rodapé"
+    },
+    {
+      "key": "lbl_rb_headerHint",
+      "en": "Fields such as {country} are filled in.",
+      "fr": "Les champs comme {country} sont remplis.",
+      "pt": "Campos como {country} são preenchidos."
+    },
+    {
+      "key": "lbl_rb_customiseTheme",
+      "en": "Customise theme",
+      "fr": "Personnaliser le thème",
+      "pt": "Personalizar o tema"
+    },
+    {
+      "key": "lbl_rb_editCover",
+      "en": "Cover page",
+      "fr": "Page de couverture",
+      "pt": "Capa"
+    },
+    {
+      "key": "lbl_rb_enterHint",
+      "en": "Type here. Enter starts a new paragraph, Shift+Enter a new line.",
+      "fr": "Tapez ici. Entrée commence un nouveau paragraphe, Maj+Entrée une nouvelle ligne.",
+      "pt": "Escreva aqui. Enter inicia um novo parágrafo, Shift+Enter uma nova linha."
+    },
+    {
+      "key": "lbl_rb_chartData",
+      "en": "Data",
+      "fr": "Données",
+      "pt": "Dados"
+    },
+    {
+      "key": "lbl_rb_chartStyle",
+      "en": "Text, fonts and colours",
+      "fr": "Texte, polices et couleurs",
+      "pt": "Texto, fontes e cores"
+    },
+    {
+      "key": "lbl_rb_chartOnlyThis",
+      "en": "These changes are for this chart in this report only.",
+      "fr": "Ces changements ne concernent que ce graphique dans ce rapport.",
+      "pt": "Estas alterações aplicam-se apenas a este gráfico neste relatório."
+    },
+    {
+      "key": "lbl_rb_resetChart",
+      "en": "Reset this chart",
+      "fr": "Réinitialiser ce graphique",
+      "pt": "Repor este gráfico"
+    },
+    {
+      "key": "lbl_rb_replaceImage",
+      "en": "Replace picture",
+      "fr": "Remplacer l'image",
+      "pt": "Substituir a imagem"
+    },
+    {
+      "key": "lbl_rb_imageWidth",
+      "en": "Width",
+      "fr": "Largeur",
+      "pt": "Largura"
+    },
+    {
+      "key": "lbl_rb_alignment",
+      "en": "Alignment",
+      "fr": "Alignement",
+      "pt": "Alinhamento"
+    },
+    {
+      "key": "lbl_rb_shape",
+      "en": "Shape",
+      "fr": "Forme",
+      "pt": "Forma"
+    },
+    {
+      "key": "lbl_rb_shapeRect",
+      "en": "Square corners",
+      "fr": "Angles droits",
+      "pt": "Cantos retos"
+    },
+    {
+      "key": "lbl_rb_shapeRounded",
+      "en": "Rounded",
+      "fr": "Arrondie",
+      "pt": "Arredondada"
+    },
+    {
+      "key": "lbl_rb_shapeCircle",
+      "en": "Circle",
+      "fr": "Cercle",
+      "pt": "Círculo"
+    },
+    {
+      "key": "lbl_rb_border",
+      "en": "Border",
+      "fr": "Bordure",
+      "pt": "Borda"
+    },
+    {
+      "key": "lbl_rb_caption",
+      "en": "Caption",
+      "fr": "Légende",
+      "pt": "Legenda"
+    },
+    {
+      "key": "lbl_rb_altText",
+      "en": "Alternative text",
+      "fr": "Texte de remplacement",
+      "pt": "Texto alternativo"
+    },
+    {
+      "key": "lbl_rb_altHint",
+      "en": "Describes the picture for people who cannot see it.",
+      "fr": "Décrit l'image pour les personnes qui ne peuvent pas la voir.",
+      "pt": "Descreve a imagem para quem não a pode ver."
+    },
+    {
+      "key": "lbl_rb_theme",
+      "en": "Theme",
+      "fr": "Thème",
+      "pt": "Tema"
+    },
+    {
+      "key": "lbl_rb_fontsTitle",
+      "en": "Fonts",
+      "fr": "Polices",
+      "pt": "Fontes"
+    },
+    {
+      "key": "lbl_rb_headingFontLabel",
+      "en": "Headings",
+      "fr": "Titres",
+      "pt": "Títulos"
+    },
+    {
+      "key": "lbl_rb_bodyFont",
+      "en": "Body text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_colours",
+      "en": "Colours",
+      "fr": "Couleurs",
+      "pt": "Cores"
+    },
+    {
+      "key": "lbl_rb_accentColour",
+      "en": "Accent",
+      "fr": "Accent",
+      "pt": "Destaque"
+    },
+    {
+      "key": "lbl_rb_headingColour",
+      "en": "Headings",
+      "fr": "Titres",
+      "pt": "Títulos"
+    },
+    {
+      "key": "lbl_rb_textColour",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_mutedColour",
+      "en": "Secondary text",
+      "fr": "Texte secondaire",
+      "pt": "Texto secundário"
+    },
+    {
+      "key": "lbl_rb_noteFill",
+      "en": "Note background",
+      "fr": "Fond des notes",
+      "pt": "Fundo das notas"
+    },
+    {
+      "key": "lbl_rb_noteBorder",
+      "en": "Note border",
+      "fr": "Bordure des notes",
+      "pt": "Borda das notas"
+    },
+    {
+      "key": "lbl_rb_palette",
+      "en": "Chart colours",
+      "fr": "Couleurs des graphiques",
+      "pt": "Cores dos gráficos"
+    },
+    {
+      "key": "lbl_rb_applyPalette",
+      "en": "Use these colours in charts",
+      "fr": "Utiliser ces couleurs dans les graphiques",
+      "pt": "Usar estas cores nos gráficos"
+    },
+    {
+      "key": "lbl_rb_chartPaletteHint",
+      "en": "Given in order to each chart's series. Maps keep their own scale.",
+      "fr": "Attribuées dans l'ordre aux séries de chaque graphique. Les cartes gardent leur échelle.",
+      "pt": "Atribuídas por ordem às séries de cada gráfico. Os mapas mantêm a sua escala."
+    },
+    {
+      "key": "lbl_rb_textStyles",
+      "en": "Text styles",
+      "fr": "Styles de texte",
+      "pt": "Estilos de texto"
+    },
+    {
+      "key": "lbl_rb_sizeTitle",
+      "en": "Cover title",
+      "fr": "Titre de couverture",
+      "pt": "Título da capa"
+    },
+    {
+      "key": "lbl_rb_sizeH1",
+      "en": "Heading 1",
+      "fr": "Titre 1",
+      "pt": "Título 1"
+    },
+    {
+      "key": "lbl_rb_sizeH2",
+      "en": "Heading 2",
+      "fr": "Titre 2",
+      "pt": "Título 2"
+    },
+    {
+      "key": "lbl_rb_sizeBody",
+      "en": "Body text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_sizeNote",
+      "en": "Notes",
+      "fr": "Notes",
+      "pt": "Notas"
+    },
+    {
+      "key": "lbl_rb_sizeCaption",
+      "en": "Captions",
+      "fr": "Légendes",
+      "pt": "Legendas"
+    },
+    {
+      "key": "lbl_rb_themeHint",
+      "en": "The theme becomes the Word file's styles, so the Word file and the PDF look the same, and a heading typed later in Word matches the others.",
+      "fr": "Le thème devient les styles du fichier Word : le fichier Word et le PDF sont identiques, et un titre ajouté plus tard dans Word ressemble aux autres.",
+      "pt": "O tema torna-se os estilos do ficheiro Word: o Word e o PDF ficam iguais, e um título escrito depois no Word fica igual aos outros."
+    },
+    {
+      "key": "lbl_rb_cover",
+      "en": "Cover page",
+      "fr": "Page de couverture",
+      "pt": "Capa"
+    },
+    {
+      "key": "lbl_rb_coverLayout",
+      "en": "Layout",
+      "fr": "Disposition",
+      "pt": "Disposição"
+    },
+    {
+      "key": "lbl_rb_layoutBand",
+      "en": "Band",
+      "fr": "Bande",
+      "pt": "Faixa"
+    },
+    {
+      "key": "lbl_rb_layoutFull",
+      "en": "Full colour",
+      "fr": "Pleine couleur",
+      "pt": "Cor inteira"
+    },
+    {
+      "key": "lbl_rb_layoutPhoto",
+      "en": "Photo",
+      "fr": "Photo",
+      "pt": "Foto"
+    },
+    {
+      "key": "lbl_rb_layoutMinimal",
+      "en": "Minimal",
+      "fr": "Épurée",
+      "pt": "Simples"
+    },
+    {
+      "key": "lbl_rb_kicker",
+      "en": "Line above the title",
+      "fr": "Ligne au-dessus du titre",
+      "pt": "Linha acima do título"
+    },
+    {
+      "key": "lbl_rb_coverTitle",
+      "en": "Title",
+      "fr": "Titre",
+      "pt": "Título"
+    },
+    {
+      "key": "lbl_rb_coverTitleHint",
+      "en": "The report's name",
+      "fr": "Le nom du rapport",
+      "pt": "O nome do relatório"
+    },
+    {
+      "key": "lbl_rb_subtitle",
+      "en": "Subtitle",
+      "fr": "Sous-titre",
+      "pt": "Subtítulo"
+    },
+    {
+      "key": "lbl_rb_showFlag",
+      "en": "Country flag",
+      "fr": "Drapeau du pays",
+      "pt": "Bandeira do país"
+    },
+    {
+      "key": "lbl_rb_flagMissing",
+      "en": "The flag could not be found for this dataset (it is downloaded once; the computer running the app needs internet the first time).",
+      "fr": "Le drapeau est introuvable pour ce jeu de données (il est téléchargé une fois ; l'ordinateur qui exécute l'application a besoin d'internet la première fois).",
+      "pt": "Não foi possível obter a bandeira para estes dados (é descarregada uma vez; o computador que corre a aplicação precisa de internet da primeira vez)."
+    },
+    {
+      "key": "lbl_rb_logos",
+      "en": "Logos",
+      "fr": "Logos",
+      "pt": "Logótipos"
+    },
+    {
+      "key": "lbl_rb_addLogo",
+      "en": "Add a logo",
+      "fr": "Ajouter un logo",
+      "pt": "Adicionar um logótipo"
+    },
+    {
+      "key": "lbl_rb_photo",
+      "en": "Photo",
+      "fr": "Photo",
+      "pt": "Foto"
+    },
+    {
+      "key": "lbl_rb_choosePhoto",
+      "en": "Choose a photo",
+      "fr": "Choisir une photo",
+      "pt": "Escolher uma foto"
+    },
+    {
+      "key": "lbl_rb_editors",
+      "en": "Editors",
+      "fr": "Éditeurs",
+      "pt": "Editores"
+    },
+    {
+      "key": "lbl_rb_addEditor",
+      "en": "Add a name",
+      "fr": "Ajouter un nom",
+      "pt": "Adicionar um nome"
+    },
+    {
+      "key": "lbl_rb_editorName",
+      "en": "Name",
+      "fr": "Nom",
+      "pt": "Nome"
+    },
+    {
+      "key": "lbl_rb_editorRole",
+      "en": "Role or organisation",
+      "fr": "Fonction ou organisation",
+      "pt": "Função ou organização"
+    },
+    {
+      "key": "lbl_rb_remove",
+      "en": "Remove",
+      "fr": "Retirer",
+      "pt": "Remover"
+    },
+    {
+      "key": "lbl_rb_date",
+      "en": "Date",
+      "fr": "Date",
+      "pt": "Data"
+    },
+    {
+      "key": "lbl_rb_dateMonth",
+      "en": "Month and year",
+      "fr": "Mois et année",
+      "pt": "Mês e ano"
+    },
+    {
+      "key": "lbl_rb_dateToday",
+      "en": "Full date",
+      "fr": "Date complète",
+      "pt": "Data completa"
+    },
+    {
+      "key": "lbl_rb_dateCustom",
+      "en": "Other",
+      "fr": "Autre",
+      "pt": "Outra"
+    },
+    {
+      "key": "lbl_rb_reference",
+      "en": "Reference",
+      "fr": "Référence",
+      "pt": "Referência"
+    },
+    {
+      "key": "lbl_rb_coverHint",
+      "en": "Texts can contain fields such as {country} or {latest_year}; they are filled in from the data.",
+      "fr": "Les textes peuvent contenir des champs comme {country} ou {latest_year} ; ils sont remplis à partir des données.",
+      "pt": "Os textos podem conter campos como {country} ou {latest_year}; são preenchidos a partir dos dados."
+    },
+    {
+      "key": "lbl_rb_finalPages",
+      "en": "Final pages",
+      "fr": "Pages finales",
+      "pt": "Páginas finais"
+    },
+    {
+      "key": "lbl_rb_finalHint",
+      "en": "See the pages exactly as the Word file and the PDF will have them",
+      "fr": "Voir les pages exactement comme dans le fichier Word et le PDF",
+      "pt": "Ver as páginas exatamente como no ficheiro Word e no PDF"
+    },
+    {
+      "key": "lbl_rb_finalMaking",
+      "en": "Writing the Word file and making the PDF with {program}…",
+      "fr": "Écriture du fichier Word et création du PDF avec {program}…",
+      "pt": "A escrever o ficheiro Word e a criar o PDF com {program}…"
+    },
+    {
+      "key": "lbl_rb_finalMatch",
+      "en": "Word and PDF match: {n} pages each, made by {program}",
+      "fr": "Word et PDF identiques : {n} pages chacun, créés par {program}",
+      "pt": "Word e PDF iguais: {n} páginas cada, criados pelo {program}"
+    },
+    {
+      "key": "lbl_rb_finalNoConverter",
+      "en": "The final pages need Microsoft Word or LibreOffice on the computer running the app. You can still download the Word file.",
+      "fr": "Les pages finales nécessitent Microsoft Word ou LibreOffice sur l'ordinateur qui exécute l'application. Vous pouvez toujours télécharger le fichier Word.",
+      "pt": "As páginas finais precisam do Microsoft Word ou do LibreOffice no computador que corre a aplicação. Pode sempre descarregar o ficheiro Word."
+    },
+    {
+      "key": "lbl_rb_pdfFromWord",
+      "en": "Made from the Word file: the same pages",
+      "fr": "Créé à partir du fichier Word : les mêmes pages",
+      "pt": "Criado a partir do ficheiro Word: as mesmas páginas"
+    },
+    {
+      "key": "lbl_rb_pdfFromBrowser",
+      "en": "Printed by the browser (Word and LibreOffice are not installed): close to the Word file, but the pages can differ",
+      "fr": "Imprimé par le navigateur (Word et LibreOffice ne sont pas installés) : proche du fichier Word, mais les pages peuvent différer",
+      "pt": "Impresso pelo navegador (o Word e o LibreOffice não estão instalados): próximo do ficheiro Word, mas as páginas podem diferir"
+    },
+    {
+      "key": "lbl_rb_wordFinished",
+      "en": "Microsoft Word filled in the contents page and embedded the fonts.",
+      "fr": "Microsoft Word a rempli la table des matières et incorporé les polices.",
+      "pt": "O Microsoft Word preencheu o índice e incorporou as fontes."
+    },
+    {
+      "key": "lbl_rb_refresh",
+      "en": "Refresh",
+      "fr": "Actualiser",
+      "pt": "Atualizar"
+    },
+    {
+      "key": "lbl_rb_theme_countdown",
+      "en": "Countdown",
+      "fr": "Countdown",
+      "pt": "Countdown"
+    },
+    {
+      "key": "lbl_rb_theme_ministry",
+      "en": "Ministry of Health",
+      "fr": "Ministère de la Santé",
+      "pt": "Ministério da Saúde"
+    },
+    {
+      "key": "lbl_rb_theme_minimal",
+      "en": "Minimal",
+      "fr": "Épuré",
+      "pt": "Simples"
+    },
+    {
+      "key": "lbl_rb_theme_formal",
+      "en": "Formal",
+      "fr": "Formel",
+      "pt": "Formal"
+    },
+    {
+      "key": "lbl_rb_field_country",
+      "en": "Country",
+      "fr": "Pays",
+      "pt": "País"
+    },
+    {
+      "key": "lbl_rb_field_report_title",
+      "en": "Report title",
+      "fr": "Titre du rapport",
+      "pt": "Título do relatório"
+    },
+    {
+      "key": "lbl_rb_field_report_date",
+      "en": "Report date",
+      "fr": "Date du rapport",
+      "pt": "Data do relatório"
+    },
+    {
+      "key": "lbl_rb_field_editors",
+      "en": "Editors",
+      "fr": "Éditeurs",
+      "pt": "Editores"
+    },
+    {
+      "key": "lbl_rb_field_reference",
+      "en": "Reference",
+      "fr": "Référence",
+      "pt": "Referência"
+    },
+    {
+      "key": "lbl_rb_field_first_year",
+      "en": "First year of data",
+      "fr": "Première année des données",
+      "pt": "Primeiro ano dos dados"
+    },
+    {
+      "key": "lbl_rb_field_latest_year",
+      "en": "Latest year of data",
+      "fr": "Dernière année des données",
+      "pt": "Último ano dos dados"
+    },
+    {
+      "key": "lbl_rb_field_latest",
+      "en": "latest year (DHIS2)",
+      "fr": "dernière année (DHIS2)",
+      "pt": "último ano (DHIS2)"
+    },
+    {
+      "key": "lbl_rb_field_survey",
+      "en": "latest survey",
+      "fr": "dernière enquête",
+      "pt": "último inquérito"
+    },
+    {
+      "key": "lbl_rb_group_region",
+      "en": "Region profile",
+      "fr": "Profil d'une région",
+      "pt": "Perfil de uma região"
+    },
+    {
+      "key": "lbl_rb_group_health_system",
+      "en": "Health system",
+      "fr": "Système de santé",
+      "pt": "Sistema de saúde"
+    },
+    {
+      "key": "lbl_rb_kind_equity",
+      "en": "Equity (from surveys)",
+      "fr": "Équité (enquêtes)",
+      "pt": "Equidade (inquéritos)"
+    },
+    {
+      "key": "lbl_rb_kind_region_coverage",
+      "en": "Coverage in a region, compared with the others",
+      "fr": "Couverture d'une région, comparée aux autres",
+      "pt": "Cobertura de uma região, comparada com as outras"
+    },
+    {
+      "key": "lbl_rb_kind_district_table",
+      "en": "Coverage by district in a region",
+      "fr": "Couverture par district d'une région",
+      "pt": "Cobertura por distrito numa região"
+    },
+    {
+      "key": "lbl_rb_kind_denominator_trend",
+      "en": "Population projections: DHIS2 and UN",
+      "fr": "Projections de population : DHIS2 et ONU",
+      "pt": "Projeções da população: DHIS2 e ONU"
+    },
+    {
+      "key": "lbl_rb_kind_consistency",
+      "en": "Consistency between two indicators, by district",
+      "fr": "Cohérence entre deux indicateurs, par district",
+      "pt": "Consistência entre dois indicadores, por distrito"
+    },
+    {
+      "key": "lbl_rb_kind_mch_index",
+      "en": "Preventive and curative care index",
+      "fr": "Indice des soins préventifs et curatifs",
+      "pt": "Índice de cuidados preventivos e curativos"
+    },
+    {
+      "key": "lbl_rb_kind_mortality_trend",
+      "en": "Institutional mortality trend",
+      "fr": "Tendance de la mortalité institutionnelle",
+      "pt": "Tendência da mortalidade institucional"
+    },
+    {
+      "key": "lbl_rb_kind_mortality_region",
+      "en": "Institutional mortality by region",
+      "fr": "Mortalité institutionnelle par région",
+      "pt": "Mortalidade institucional por região"
+    },
+    {
+      "key": "lbl_rb_kind_mortality_plausibility",
+      "en": "Stillbirths per maternal death",
+      "fr": "Mortinaissances par décès maternel",
+      "pt": "Nados-mortos por morte materna"
+    },
+    {
+      "key": "lbl_rb_kind_health_system_table",
+      "en": "Health system inputs table",
+      "fr": "Tableau des ressources du système de santé",
+      "pt": "Tabela dos recursos do sistema de saúde"
+    },
+    {
+      "key": "lbl_rb_kind_health_system_region",
+      "en": "Health system inputs by region",
+      "fr": "Ressources du système de santé par région",
+      "pt": "Recursos do sistema de saúde por região"
+    },
+    {
+      "key": "lbl_rb_kind_phc_scatter",
+      "en": "Service outputs by inputs",
+      "fr": "Résultats des services selon les ressources",
+      "pt": "Resultados dos serviços segundo os recursos"
+    },
+    {
+      "key": "lbl_rb_kind_private_share",
+      "en": "Private sector share",
+      "fr": "Part du secteur privé",
+      "pt": "Parte do setor privado"
+    },
+    {
+      "key": "lbl_rb_var_area",
+      "en": "Rural / urban",
+      "fr": "Rural / urbain",
+      "pt": "Rural / urbano"
+    },
+    {
+      "key": "lbl_rb_var_wealth",
+      "en": "Wealth",
+      "fr": "Richesse",
+      "pt": "Riqueza"
+    },
+    {
+      "key": "lbl_rb_var_education",
+      "en": "Education",
+      "fr": "Éducation",
+      "pt": "Educação"
+    },
+    {
+      "key": "lbl_rb_var_mmr_inst",
+      "en": "Maternal (iMMR)",
+      "fr": "Maternelle (RMMi)",
+      "pt": "Materna (RMMi)"
+    },
+    {
+      "key": "lbl_rb_var_sbr_inst",
+      "en": "Stillbirths (iSBR)",
+      "fr": "Mortinaissances (TMNi)",
+      "pt": "Nados-mortos (TNMi)"
+    },
+    {
+      "key": "lbl_rb_var_ratio_fac_pop",
+      "en": "Facilities",
+      "fr": "Établissements",
+      "pt": "Unidades"
+    },
+    {
+      "key": "lbl_rb_var_ratio_hos_pop",
+      "en": "Hospitals",
+      "fr": "Hôpitaux",
+      "pt": "Hospitais"
+    },
+    {
+      "key": "lbl_rb_var_ratio_hstaff_pop",
+      "en": "Health workers",
+      "fr": "Personnel de santé",
+      "pt": "Profissionais de saúde"
+    },
+    {
+      "key": "lbl_rb_var_national",
+      "en": "National",
+      "fr": "National",
+      "pt": "Nacional"
+    },
+    {
+      "key": "lbl_rb_preset_synthesis",
+      "en": "Synthesis chartbook",
+      "fr": "Recueil de synthèse",
+      "pt": "Caderno de síntese"
+    },
+    {
+      "key": "lbl_rb_preset_synthesis_desc",
+      "en": "All six analysis areas with interpretation questions, on the chartbook page",
+      "fr": "Les six domaines d'analyse avec questions d'interprétation, au format du recueil",
+      "pt": "As seis áreas de análise com perguntas de interpretação, no formato do caderno"
+    },
+    {
+      "key": "lbl_rb_preset_one_pager",
+      "en": "Sub-national one-pager",
+      "fr": "Fiche d'une page par région",
+      "pt": "Ficha de uma página por região"
+    },
+    {
+      "key": "lbl_rb_preset_one_pager_desc",
+      "en": "One region on one poster page: data quality, coverage and districts",
+      "fr": "Une région sur une page affiche : qualité des données, couverture et districts",
+      "pt": "Uma região numa página cartaz: qualidade dos dados, cobertura e distritos"
+    },
+    {
+      "key": "lbl_rb_third",
+      "en": "Third",
+      "fr": "Tiers",
+      "pt": "Terço"
+    },
+    {
+      "key": "lbl_rb_sizeChartbook",
+      "en": "Chartbook (13.9 × 22 in)",
+      "fr": "Recueil (35 × 56 cm)",
+      "pt": "Caderno (35 × 56 cm)"
+    },
+    {
+      "key": "lbl_rb_sizePoster",
+      "en": "Poster (17 × 22 in)",
+      "fr": "Affiche (43 × 56 cm)",
+      "pt": "Cartaz (43 × 56 cm)"
+    },
+    {
+      "key": "lbl_rb_reportRegion",
+      "en": "Region of this report",
+      "fr": "Région de ce rapport",
+      "pt": "Região deste relatório"
+    },
+    {
+      "key": "lbl_rb_regionOfReport",
+      "en": "The report's region",
+      "fr": "La région du rapport",
+      "pt": "A região do relatório"
+    },
+    {
+      "key": "lbl_rb_yearsFirstLast",
+      "en": "First and latest year",
+      "fr": "Première et dernière année",
+      "pt": "Primeiro e último ano"
+    },
+    {
+      "key": "lbl_rb_field_region",
+      "en": "Region of the report",
+      "fr": "Région du rapport",
+      "pt": "Região do relatório"
+    },
+    {
+      "key": "lbl_rb_district",
+      "en": "District",
+      "fr": "District",
+      "pt": "Distrito"
+    },
+    {
+      "key": "lbl_rb_group_adjustment",
+      "en": "Data adjustment",
+      "fr": "Ajustement des données",
+      "pt": "Ajuste dos dados"
+    },
+    {
+      "key": "lbl_rb_group_private_sector",
+      "en": "Private sector",
+      "fr": "Secteur privé",
+      "pt": "Setor privado"
+    },
+    {
+      "key": "lbl_rb_kind_dq_ratios",
+      "en": "Consistency ratios compared with expected ratios",
+      "fr": "Ratios de cohérence comparés aux ratios attendus",
+      "pt": "Razões de consistência comparadas às razões esperadas"
+    },
+    {
+      "key": "lbl_rb_kind_adj_comparison",
+      "en": "Numbers before and after adjustment",
+      "fr": "Nombres avant et après ajustement",
+      "pt": "Números antes e depois do ajuste"
+    },
+    {
+      "key": "lbl_rb_kind_natcov_fpet",
+      "en": "Family planning: mCPR and demand satisfied (FPET)",
+      "fr": "Planification familiale : mCPR et demande satisfaite (FPET)",
+      "pt": "Planeamento familiar: mCPR e procura satisfeita (FPET)"
+    },
+    {
+      "key": "lbl_rb_kind_natcov_continuum_region",
+      "en": "Continuum of care by region",
+      "fr": "Continuum de soins par région",
+      "pt": "Continuidade de cuidados por região"
+    },
+    {
+      "key": "lbl_rb_kind_mort_nn_trend",
+      "en": "Institutional neonatal mortality trend",
+      "fr": "Tendance de la mortalité néonatale en établissement",
+      "pt": "Tendência da mortalidade neonatal institucional"
+    },
+    {
+      "key": "lbl_rb_kind_su_dqa",
+      "en": "Service utilization data quality",
+      "fr": "Qualité des données d'utilisation des services",
+      "pt": "Qualidade dos dados de utilização dos serviços"
+    },
+    {
+      "key": "lbl_rb_kind_su_map",
+      "en": "Service utilization map by region",
+      "fr": "Carte de l'utilisation des services par région",
+      "pt": "Mapa da utilização dos serviços por região"
+    },
+    {
+      "key": "lbl_rb_kind_ps_ownership",
+      "en": "Ownership of health facilities by region",
+      "fr": "Propriété des établissements de santé par région",
+      "pt": "Propriedade das unidades de saúde por região"
+    },
+    {
+      "key": "lbl_rb_kind_op_district_population",
+      "en": "Population and coverage by district in a region",
+      "fr": "Population et couverture par district dans une région",
+      "pt": "População e cobertura por distrito numa região"
+    },
+    {
+      "key": "lbl_rb_var_anc1_penta1",
+      "en": "ANC1 and Penta1",
+      "fr": "CPN1 et Penta1",
+      "pt": "CPN1 e Penta1"
+    },
+    {
+      "key": "lbl_rb_var_penta1_penta3",
+      "en": "Penta1 and Penta3",
+      "fr": "Penta1 et Penta3",
+      "pt": "Penta1 e Penta3"
+    },
+    {
+      "key": "lbl_rb_var_opv1_opv3",
+      "en": "OPV1 and OPV3",
+      "fr": "VPO1 et VPO3",
+      "pt": "VPO1 e VPO3"
+    },
+    {
+      "key": "lbl_rb_var_population",
+      "en": "Total population",
+      "fr": "Population totale",
+      "pt": "População total"
+    },
+    {
+      "key": "lbl_rb_var_births",
+      "en": "Live births",
+      "fr": "Naissances vivantes",
+      "pt": "Nascimentos vivos"
+    },
+    {
+      "key": "lbl_rb_var_under1",
+      "en": "Under 1",
+      "fr": "Moins de 1 an",
+      "pt": "Menores de 1 ano"
+    },
+    {
+      "key": "lbl_rb_var_ratio_bed_pop",
+      "en": "Beds",
+      "fr": "Lits",
+      "pt": "Camas"
+    },
+    {
+      "key": "lbl_rb_nameTitle",
+      "en": "Name your report",
+      "fr": "Nommez votre rapport",
+      "pt": "Dê um nome ao seu relatório"
+    },
+    {
+      "key": "lbl_rb_nameLabel",
+      "en": "Report name",
+      "fr": "Nom du rapport",
+      "pt": "Nome do relatório"
+    },
+    {
+      "key": "lbl_rb_nameHint",
+      "en": "Say what it is for, so you can find it again among the dataset's reports.",
+      "fr": "Indiquez à quoi il sert, pour le retrouver parmi les rapports du jeu de données.",
+      "pt": "Diga para que serve, para o encontrar entre os relatórios dos dados."
+    },
+    {
+      "key": "lbl_rb_nameCreate",
+      "en": "Create report",
+      "fr": "Créer le rapport",
+      "pt": "Criar relatório"
+    },
+    {
+      "key": "lbl_rb_zoomIn",
+      "en": "Zoom in",
+      "fr": "Zoom avant",
+      "pt": "Aumentar zoom"
+    },
+    {
+      "key": "lbl_rb_zoomOut",
+      "en": "Zoom out",
+      "fr": "Zoom arrière",
+      "pt": "Diminuir zoom"
+    },
+    {
+      "key": "lbl_rb_fitWidth",
+      "en": "Page width",
+      "fr": "Largeur de la page",
+      "pt": "Largura da página"
+    },
+    {
+      "key": "lbl_rb_fitPage",
+      "en": "Whole page",
+      "fr": "Page entière",
+      "pt": "Página inteira"
+    },
+    {
+      "key": "lbl_rb_customize",
+      "en": "Customize this chart",
+      "fr": "Personnaliser ce graphique",
+      "pt": "Personalizar este gráfico"
+    },
+    {
+      "key": "opt_measles3",
+      "en": "MCV 3",
+      "fr": "VAR 3",
+      "pt": "VAS 3"
+    },
+    {
+      "key": "opt_live_births",
+      "en": "Live births",
+      "fr": "Naissances vivantes",
+      "pt": "Nascimentos vivos"
+    },
+    {
+      "key": "plt_mort_title_mmr_inst",
+      "en": "Maternal mortality per 100,000 live births in health facilities",
+      "fr": "Mortalité maternelle pour 100 000 naissances vivantes dans les établissements de santé",
+      "pt": "Mortalidade materna por 100.000 nascidos vivos nas unidades de saúde"
+    },
+    {
+      "key": "plt_mort_title_ratio_md_sb",
+      "en": "Ratio number of stillbirths to maternal deaths in health facilities",
+      "fr": "Ratio du nombre de mortinaissances aux décès maternels dans les établissements de santé",
+      "pt": "Razão entre o número de nados-mortos e de óbitos maternos nas unidades de saúde"
+    },
+    {
+      "key": "plt_mort_title_sbr_inst",
+      "en": "Stillbirths per 1,000 births in health facilities",
+      "fr": "Mortinaissances pour 1 000 naissances dans les établissements de santé",
+      "pt": "Nados-mortos por 1.000 nascimentos nas unidades de saúde"
+    },
+    {
+      "key": "plt_mort_title_nn_inst",
+      "en": "Neonatal deaths before discharge per 1,000 live births in health facilities",
+      "fr": "Décès néonatals avant la sortie pour 1 000 naissances vivantes dans les établissements de santé",
+      "pt": "Óbitos neonatais antes da alta por 1.000 nascidos vivos nas unidades de saúde"
+    },
+    {
+      "key": "plt_mort_national_mmr_inst",
+      "en": "National inst. MMR",
+      "fr": "RMM inst. national",
+      "pt": "RMM inst. nacional"
+    },
+    {
+      "key": "plt_mort_national_ratio_md_sb",
+      "en": "National SB/MM ratio",
+      "fr": "Ratio MN/DM national",
+      "pt": "Razão NM/MM nacional"
+    },
+    {
+      "key": "plt_mort_national_sbr_inst",
+      "en": "National inst. SBR",
+      "fr": "TMN inst. national",
+      "pt": "TNM inst. nacional"
+    },
+    {
+      "key": "plt_mort_national_nn_inst",
+      "en": "National NN",
+      "fr": "Décès néonatals, national",
+      "pt": "Óbitos neonatais, nacional"
+    },
+    {
+      "key": "plt_lbl_regions",
+      "en": "Regions",
+      "fr": "Régions",
+      "pt": "Regiões"
+    },
+    {
+      "key": "plt_mort_map_title_mmr_inst",
+      "en": "Institutional MMR by Region",
+      "fr": "RMM institutionnel par région",
+      "pt": "RMM institucional por região"
+    },
+    {
+      "key": "plt_mort_map_title_sbr_inst",
+      "en": "Institutional SBR by Region",
+      "fr": "TMN institutionnel par région",
+      "pt": "TNM institucional por região"
+    },
+    {
+      "key": "plt_mort_map_legend_mmr_inst",
+      "en": "Institutional MMR per 100,000 livebirths",
+      "fr": "RMM institutionnel pour 100 000 naissances vivantes",
+      "pt": "RMM institucional por 100.000 nascidos vivos"
+    },
+    {
+      "key": "plt_mort_map_legend_sbr_inst",
+      "en": "Institutional SBR per 1000",
+      "fr": "TMN institutionnel pour 1 000",
+      "pt": "TNM institucional por 1.000"
+    },
+    {
+      "key": "plt_mort_compl_title_mmr",
+      "en": "Completeness of facility maternal death reporting (%), based on UN MMR estimates and community to institutional ratio",
+      "fr": "Complétude de la déclaration des décès maternels par les établissements (%), d'après les estimations du RMM de l'ONU et le ratio communauté / établissement",
+      "pt": "Completude da notificação de óbitos maternos pelas unidades de saúde (%), com base nas estimativas de RMM da ONU e na razão comunidade / instituição"
+    },
+    {
+      "key": "plt_mort_compl_title_sbr",
+      "en": "Completeness of facility stillbirth reporting (%), based on UN stillbirth estimates and community to institutional ratio",
+      "fr": "Complétude de la déclaration des mortinaissances par les établissements (%), d'après les estimations de mortinatalité de l'ONU et le ratio communauté / établissement",
+      "pt": "Completude da notificação de nados-mortos pelas unidades de saúde (%), com base nas estimativas de natimortalidade da ONU e na razão comunidade / instituição"
+    },
+    {
+      "key": "plt_mort_compl_x_mmr",
+      "en": "Ratio Community MMR to Institutional MMR",
+      "fr": "Ratio RMM communautaire / RMM institutionnel",
+      "pt": "Razão RMM comunitária / RMM institucional"
+    },
+    {
+      "key": "plt_mort_compl_x_sbr",
+      "en": "Ratio Community SBR to Institutional SBR",
+      "fr": "Ratio TMN communautaire / TMN institutionnel",
+      "pt": "Razão TNM comunitária / TNM institucional"
+    },
+    {
+      "key": "plt_mort_compl_y_mmr",
+      "en": "Completeness maternal deaths reporting by facilities (%)",
+      "fr": "Complétude de la déclaration des décès maternels par les établissements (%)",
+      "pt": "Completude da notificação de óbitos maternos pelas unidades de saúde (%)"
+    },
+    {
+      "key": "plt_mort_compl_y_sbr",
+      "en": "Completeness stillbirth reporting by facilities (%)",
+      "fr": "Complétude de la déclaration des mortinaissances par les établissements (%)",
+      "pt": "Completude da notificação de nados-mortos pelas unidades de saúde (%)"
+    },
+    {
+      "key": "plt_mort_type_mmr",
+      "en": "MMR",
+      "fr": "RMM",
+      "pt": "RMM"
+    },
+    {
+      "key": "plt_mort_type_sbr",
+      "en": "SBR",
+      "fr": "TMN",
+      "pt": "TNM"
+    },
+    {
+      "key": "plt_mort_un_lower",
+      "en": "UN {type} lower bound",
+      "fr": "{type} ONU : borne inférieure",
+      "pt": "{type} ONU: limite inferior"
+    },
+    {
+      "key": "plt_mort_un_best",
+      "en": "UN {type} best estimate",
+      "fr": "{type} ONU : meilleure estimation",
+      "pt": "{type} ONU: melhor estimativa"
+    },
+    {
+      "key": "plt_mort_un_upper",
+      "en": "UN {type} upper bound",
+      "fr": "{type} ONU : borne supérieure",
+      "pt": "{type} ONU: limite superior"
+    },
+    {
+      "key": "plt_su_title_opd",
+      "en": "OPD per person per year",
+      "fr": "Consultations externes par personne et par an",
+      "pt": "Consultas externas por pessoa por ano"
+    },
+    {
+      "key": "plt_su_ylab_opd",
+      "en": "OPD Utilization Trends",
+      "fr": "Tendances de l'utilisation des consultations externes",
+      "pt": "Tendências de utilização das consultas externas"
+    },
+    {
+      "key": "plt_su_title_ipd",
+      "en": "IPD admissions",
+      "fr": "Hospitalisations",
+      "pt": "Internamentos"
+    },
+    {
+      "key": "plt_su_ylab_ipd",
+      "en": "Mean # of IPD admissions per 100 persons",
+      "fr": "Nombre moyen d'hospitalisations pour 100 personnes",
+      "pt": "Número médio de internamentos por 100 pessoas"
+    },
+    {
+      "key": "plt_su_under5",
+      "en": "Under-5",
+      "fr": "Moins de 5 ans",
+      "pt": "Menores de 5 anos"
+    },
+    {
+      "key": "plt_su_all_ages",
+      "en": "All ages",
+      "fr": "Tous âges",
+      "pt": "Todas as idades"
+    },
+    {
+      "key": "plt_su_map_title_opd",
+      "en": "OPD under-five by Region",
+      "fr": "Consultations externes des moins de 5 ans par région",
+      "pt": "Consultas externas de menores de 5 anos por região"
+    },
+    {
+      "key": "plt_su_map_title_ipd",
+      "en": "IPD under-five by Region",
+      "fr": "Hospitalisations des moins de 5 ans par région",
+      "pt": "Internamentos de menores de 5 anos por região"
+    },
+    {
+      "key": "plt_su_map_legend_opd",
+      "en": "Mean OPD per child per year",
+      "fr": "Consultations externes moyennes par enfant et par an",
+      "pt": "Média de consultas externas por criança por ano"
+    },
+    {
+      "key": "plt_su_map_legend_ipd",
+      "en": "Mean IPD per 100 children per year",
+      "fr": "Hospitalisations moyennes pour 100 enfants par an",
+      "pt": "Média de internamentos por 100 crianças por ano"
+    },
+    {
+      "key": "plt_ps_share",
+      "en": "Priv. share = ",
+      "fr": "Part du privé = ",
+      "pt": "Parte privada = "
+    },
+    {
+      "key": "plt_ps_careany",
+      "en": "Careseeking for child illness",
+      "fr": "Recours aux soins pour les maladies de l'enfant",
+      "pt": "Procura de cuidados para doenças da criança"
+    },
+    {
+      "key": "plt_ps_csection",
+      "en": "C-section",
+      "fr": "Césarienne",
+      "pt": "Cesariana"
+    },
+    {
+      "key": "plt_ps_ideliv",
+      "en": "Institutional delivery",
+      "fr": "Accouchement en établissement",
+      "pt": "Parto institucional"
+    },
+    {
+      "key": "plt_title_region_coverage",
+      "en": "{indicator} coverage by region, {year} (HMIS)",
+      "fr": "Couverture de {indicator} par région, {year} (SNIS)",
+      "pt": "Cobertura de {indicator} por região, {year} (SIS)"
+    },
+    {
+      "key": "plt_regcov_lower",
+      "en": "Lower than average",
+      "fr": "Inférieure à la moyenne",
+      "pt": "Abaixo da média"
+    },
+    {
+      "key": "plt_regcov_average",
+      "en": "Average",
+      "fr": "Moyenne",
+      "pt": "Média"
+    },
+    {
+      "key": "plt_regcov_higher",
+      "en": "Higher than average",
+      "fr": "Supérieure à la moyenne",
+      "pt": "Acima da média"
+    },
+    {
+      "key": "lbl_rb_reportLanguage",
+      "en": "Report language",
+      "fr": "Langue du rapport",
+      "pt": "Idioma do relatório"
+    },
+    {
+      "key": "lbl_rb_languageNote",
+      "en": "The standard text is written in this language, and the charts, tables and dates are always drawn in it, whatever language the app is in. You can change it later on the Layout tab.",
+      "fr": "Le texte type est rédigé dans cette langue, et les graphiques, tableaux et dates sont toujours dessinés dans celle-ci, quelle que soit la langue de l'application. Vous pourrez la changer plus tard dans l'onglet Mise en page.",
+      "pt": "O texto padrão é escrito neste idioma, e os gráficos, tabelas e datas são sempre desenhados nele, seja qual for o idioma da aplicação. Pode mudá-lo mais tarde no separador Layout."
+    },
+    {
+      "key": "lbl_rb_languageChangeNote",
+      "en": "Charts and tables are redrawn in it; text you wrote is not translated.",
+      "fr": "Les graphiques et tableaux sont redessinés ; le texte que vous avez écrit n'est pas traduit.",
+      "pt": "Os gráficos e tabelas são redesenhados; o texto que escreveu não é traduzido."
+    },
+    {
+      "key": "lbl_rb_clipboard",
+      "en": "Clipboard",
+      "fr": "Presse-papiers",
+      "pt": "Área de transferência"
+    },
+    {
+      "key": "lbl_rb_paste",
+      "en": "Paste",
+      "fr": "Coller",
+      "pt": "Colar"
+    },
+    {
+      "key": "lbl_rb_cut",
+      "en": "Cut",
+      "fr": "Couper",
+      "pt": "Cortar"
+    },
+    {
+      "key": "lbl_rb_font",
+      "en": "Font",
+      "fr": "Police",
+      "pt": "Tipo de letra"
+    },
+    {
+      "key": "lbl_rb_fontSize",
+      "en": "Font size",
+      "fr": "Taille de police",
+      "pt": "Tamanho do tipo de letra"
+    },
+    {
+      "key": "lbl_rb_growFont",
+      "en": "Increase font size",
+      "fr": "Augmenter la taille",
+      "pt": "Aumentar tamanho"
+    },
+    {
+      "key": "lbl_rb_shrinkFont",
+      "en": "Decrease font size",
+      "fr": "Réduire la taille",
+      "pt": "Diminuir tamanho"
+    },
+    {
+      "key": "lbl_rb_changeCase",
+      "en": "Change case",
+      "fr": "Modifier la casse",
+      "pt": "Maiúsculas/minúsculas"
+    },
+    {
+      "key": "lbl_rb_caseSentence",
+      "en": "Sentence case.",
+      "fr": "Majuscule en début de phrase.",
+      "pt": "Tipo frase."
+    },
+    {
+      "key": "lbl_rb_caseLower",
+      "en": "lowercase",
+      "fr": "minuscules",
+      "pt": "minúsculas"
+    },
+    {
+      "key": "lbl_rb_caseUpper",
+      "en": "UPPERCASE",
+      "fr": "MAJUSCULES",
+      "pt": "MAIÚSCULAS"
+    },
+    {
+      "key": "lbl_rb_caseTitle",
+      "en": "Capitalize Each Word",
+      "fr": "Mettre En Majuscule Chaque Mot",
+      "pt": "Colocar Em Maiúscula Cada Palavra"
+    },
+    {
+      "key": "lbl_rb_strike",
+      "en": "Strikethrough",
+      "fr": "Barré",
+      "pt": "Rasurado"
+    },
+    {
+      "key": "lbl_rb_subscript",
+      "en": "Subscript",
+      "fr": "Indice",
+      "pt": "Subscrito"
+    },
+    {
+      "key": "lbl_rb_superscript",
+      "en": "Superscript",
+      "fr": "Exposant",
+      "pt": "Sobrescrito"
+    },
+    {
+      "key": "lbl_rb_highlight",
+      "en": "Text highlight colour",
+      "fr": "Couleur de surbrillance",
+      "pt": "Cor de realce"
+    },
+    {
+      "key": "lbl_rb_noHighlight",
+      "en": "No colour",
+      "fr": "Aucune couleur",
+      "pt": "Sem cor"
+    },
+    {
+      "key": "lbl_rb_themeColours",
+      "en": "Theme colours",
+      "fr": "Couleurs du thème",
+      "pt": "Cores do tema"
+    },
+    {
+      "key": "lbl_rb_moreColours",
+      "en": "More colours…",
+      "fr": "Autres couleurs…",
+      "pt": "Mais cores…"
+    },
+    {
+      "key": "lbl_rb_themeFonts",
+      "en": "Theme fonts",
+      "fr": "Polices du thème",
+      "pt": "Tipos de letra do tema"
+    },
+    {
+      "key": "lbl_rb_paragraphGroup",
+      "en": "Paragraph",
+      "fr": "Paragraphe",
+      "pt": "Parágrafo"
+    },
+    {
+      "key": "lbl_rb_paragraphSettings",
+      "en": "Paragraph settings",
+      "fr": "Paramètres du paragraphe",
+      "pt": "Definições do parágrafo"
+    },
+    {
+      "key": "lbl_rb_indentLess",
+      "en": "Decrease indent",
+      "fr": "Diminuer le retrait",
+      "pt": "Diminuir avanço"
+    },
+    {
+      "key": "lbl_rb_indentMore",
+      "en": "Increase indent",
+      "fr": "Augmenter le retrait",
+      "pt": "Aumentar avanço"
+    },
+    {
+      "key": "lbl_rb_lineSpacing",
+      "en": "Line and paragraph spacing",
+      "fr": "Interligne et espacement",
+      "pt": "Espaçamento entre linhas e parágrafos"
+    },
+    {
+      "key": "lbl_rb_spaceBeforeAdd",
+      "en": "Add space before paragraph",
+      "fr": "Ajouter un espace avant le paragraphe",
+      "pt": "Adicionar espaço antes do parágrafo"
+    },
+    {
+      "key": "lbl_rb_spaceBeforeRemove",
+      "en": "Remove space before paragraph",
+      "fr": "Supprimer l'espace avant le paragraphe",
+      "pt": "Remover espaço antes do parágrafo"
+    },
+    {
+      "key": "lbl_rb_pagesGroup",
+      "en": "Pages",
+      "fr": "Pages",
+      "pt": "Páginas"
+    },
+    {
+      "key": "lbl_rb_blankPage",
+      "en": "Blank page",
+      "fr": "Page vierge",
+      "pt": "Página em branco"
+    },
+    {
+      "key": "lbl_rb_tablesGroup",
+      "en": "Tables",
+      "fr": "Tableaux",
+      "pt": "Tabelas"
+    },
+    {
+      "key": "lbl_rb_illustrations",
+      "en": "Illustrations",
+      "fr": "Illustrations",
+      "pt": "Ilustrações"
+    },
+    {
+      "key": "lbl_rb_dateField",
+      "en": "Date",
+      "fr": "Date",
+      "pt": "Data"
+    },
+    {
+      "key": "lbl_rb_headerFooter",
+      "en": "Header & Footer",
+      "fr": "En-tête et pied de page",
+      "pt": "Cabeçalho e rodapé"
+    },
+    {
+      "key": "lbl_rb_quickParts",
+      "en": "Quick parts",
+      "fr": "QuickPart",
+      "pt": "Peças rápidas"
+    },
+    {
+      "key": "lbl_rb_documentFormatting",
+      "en": "Document formatting",
+      "fr": "Mise en forme du document",
+      "pt": "Formatação do documento"
+    },
+    {
+      "key": "lbl_rb_styleTitle",
+      "en": "Title",
+      "fr": "Titre",
+      "pt": "Título"
+    },
+    {
+      "key": "lbl_rb_sampleText",
+      "en": "Charts, tables and text follow the theme's fonts and colours.",
+      "fr": "Graphiques, tableaux et texte suivent les polices et couleurs du thème.",
+      "pt": "Gráficos, tabelas e texto seguem os tipos de letra e as cores do tema."
+    },
+    {
+      "key": "lbl_rb_paragraphSpacing",
+      "en": "Paragraph spacing",
+      "fr": "Espacement de paragraphe",
+      "pt": "Espaçamento de parágrafo"
+    },
+    {
+      "key": "lbl_rb_spacingNone",
+      "en": "No paragraph space",
+      "fr": "Aucun espace de paragraphe",
+      "pt": "Sem espaço de parágrafo"
+    },
+    {
+      "key": "lbl_rb_spacingCompact",
+      "en": "Compact",
+      "fr": "Compact",
+      "pt": "Compacto"
+    },
+    {
+      "key": "lbl_rb_spacingTight",
+      "en": "Tight",
+      "fr": "Serré",
+      "pt": "Apertado"
+    },
+    {
+      "key": "lbl_rb_spacingOpen",
+      "en": "Open",
+      "fr": "Ouvert",
+      "pt": "Aberto"
+    },
+    {
+      "key": "lbl_rb_spacingRelaxed",
+      "en": "Relaxed",
+      "fr": "Détendu",
+      "pt": "Descontraído"
+    },
+    {
+      "key": "lbl_rb_spacingDouble",
+      "en": "Double",
+      "fr": "Double",
+      "pt": "Duplo"
+    },
+    {
+      "key": "lbl_rb_pageBackground",
+      "en": "Page background",
+      "fr": "Arrière-plan de page",
+      "pt": "Fundo da página"
+    },
+    {
+      "key": "lbl_rb_pageSetup",
+      "en": "Page setup",
+      "fr": "Mise en page",
+      "pt": "Configurar página"
+    },
+    {
+      "key": "lbl_rb_indent",
+      "en": "Indent",
+      "fr": "Retrait",
+      "pt": "Avanço"
+    },
+    {
+      "key": "lbl_rb_spacing",
+      "en": "Spacing",
+      "fr": "Espacement",
+      "pt": "Espaçamento"
+    },
+    {
+      "key": "lbl_rb_indentLeft",
+      "en": "Left",
+      "fr": "Gauche",
+      "pt": "Esquerda"
+    },
+    {
+      "key": "lbl_rb_indentRight",
+      "en": "Right",
+      "fr": "Droite",
+      "pt": "Direita"
+    },
+    {
+      "key": "lbl_rb_spaceBefore",
+      "en": "Before",
+      "fr": "Avant",
+      "pt": "Antes"
+    },
+    {
+      "key": "lbl_rb_spaceAfter",
+      "en": "After",
+      "fr": "Après",
+      "pt": "Depois"
+    },
+    {
+      "key": "lbl_rb_reportGroup",
+      "en": "Report",
+      "fr": "Rapport",
+      "pt": "Relatório"
+    },
+    {
+      "key": "lbl_rb_showBlocksPanel",
+      "en": "Show or hide the blocks panel",
+      "fr": "Afficher ou masquer le panneau des blocs",
+      "pt": "Mostrar ou ocultar o painel de blocos"
+    },
+    {
+      "key": "lbl_rb_typeHere",
+      "en": "Click here and type…",
+      "fr": "Cliquez ici et tapez…",
+      "pt": "Clique aqui e escreva…"
+    },
+    {
+      "key": "lbl_rb_chartDesignTab",
+      "en": "Chart Design",
+      "fr": "Création de graphique",
+      "pt": "Estrutura do gráfico"
+    },
+    {
+      "key": "lbl_rb_tableDesign",
+      "en": "Table Design",
+      "fr": "Création de tableau",
+      "pt": "Estrutura da tabela"
+    },
+    {
+      "key": "lbl_rb_formatTab",
+      "en": "Format",
+      "fr": "Format",
+      "pt": "Formatar"
+    },
+    {
+      "key": "lbl_rb_pictureFormatTab",
+      "en": "Picture Format",
+      "fr": "Format de l'image",
+      "pt": "Formato da imagem"
+    },
+    {
+      "key": "lbl_rb_chartLayouts",
+      "en": "Chart layouts",
+      "fr": "Dispositions",
+      "pt": "Esquemas do gráfico"
+    },
+    {
+      "key": "lbl_rb_quickLayout",
+      "en": "Chart elements",
+      "fr": "Éléments du graphique",
+      "pt": "Elementos do gráfico"
+    },
+    {
+      "key": "lbl_rb_legend",
+      "en": "Legend",
+      "fr": "Légende",
+      "pt": "Legenda"
+    },
+    {
+      "key": "lbl_rb_asDrawn",
+      "en": "As drawn",
+      "fr": "Par défaut",
+      "pt": "Predefinido"
+    },
+    {
+      "key": "lbl_rb_legendTop",
+      "en": "Top",
+      "fr": "En haut",
+      "pt": "Em cima"
+    },
+    {
+      "key": "lbl_rb_legendBottom",
+      "en": "Bottom",
+      "fr": "En bas",
+      "pt": "Em baixo"
+    },
+    {
+      "key": "lbl_rb_legendRight",
+      "en": "Right",
+      "fr": "À droite",
+      "pt": "À direita"
+    },
+    {
+      "key": "lbl_rb_legendLeft",
+      "en": "Left",
+      "fr": "À gauche",
+      "pt": "À esquerda"
+    },
+    {
+      "key": "lbl_rb_legendNone",
+      "en": "None",
+      "fr": "Aucune",
+      "pt": "Nenhuma"
+    },
+    {
+      "key": "lbl_rb_chartTitle",
+      "en": "Chart title",
+      "fr": "Titre du graphique",
+      "pt": "Título do gráfico"
+    },
+    {
+      "key": "lbl_rb_showTitle",
+      "en": "Show the title",
+      "fr": "Afficher le titre",
+      "pt": "Mostrar o título"
+    },
+    {
+      "key": "lbl_rb_hideTitle",
+      "en": "Hide the title",
+      "fr": "Masquer le titre",
+      "pt": "Ocultar o título"
+    },
+    {
+      "key": "lbl_rb_gridlines",
+      "en": "Gridlines",
+      "fr": "Quadrillage",
+      "pt": "Linhas de grelha"
+    },
+    {
+      "key": "lbl_rb_gridBoth",
+      "en": "Both",
+      "fr": "Les deux",
+      "pt": "Ambas"
+    },
+    {
+      "key": "lbl_rb_gridHorizontal",
+      "en": "Horizontal",
+      "fr": "Horizontal",
+      "pt": "Horizontais"
+    },
+    {
+      "key": "lbl_rb_gridVertical",
+      "en": "Vertical",
+      "fr": "Vertical",
+      "pt": "Verticais"
+    },
+    {
+      "key": "lbl_rb_gridNone",
+      "en": "None",
+      "fr": "Aucun",
+      "pt": "Nenhuma"
+    },
+    {
+      "key": "lbl_rb_chartStyles",
+      "en": "Chart styles",
+      "fr": "Styles du graphique",
+      "pt": "Estilos do gráfico"
+    },
+    {
+      "key": "lbl_rb_presetAsDrawn",
+      "en": "As drawn",
+      "fr": "Par défaut",
+      "pt": "Predefinido"
+    },
+    {
+      "key": "lbl_rb_presetMinimal",
+      "en": "Minimal",
+      "fr": "Épuré",
+      "pt": "Simples"
+    },
+    {
+      "key": "lbl_rb_presetClassic",
+      "en": "Classic",
+      "fr": "Classique",
+      "pt": "Clássico"
+    },
+    {
+      "key": "lbl_rb_presetBw",
+      "en": "Black & white",
+      "fr": "Noir et blanc",
+      "pt": "Preto e branco"
+    },
+    {
+      "key": "lbl_rb_presetLight",
+      "en": "Light",
+      "fr": "Clair",
+      "pt": "Claro"
+    },
+    {
+      "key": "lbl_rb_presetLinedraw",
+      "en": "Lines",
+      "fr": "Traits",
+      "pt": "Linhas"
+    },
+    {
+      "key": "lbl_rb_changeColours",
+      "en": "Change colours",
+      "fr": "Modifier les couleurs",
+      "pt": "Alterar cores"
+    },
+    {
+      "key": "lbl_rb_themePalette",
+      "en": "The theme's colours",
+      "fr": "Couleurs du thème",
+      "pt": "Cores do tema"
+    },
+    {
+      "key": "lbl_rb_chartEdit",
+      "en": "Edit",
+      "fr": "Modifier",
+      "pt": "Editar"
+    },
+    {
+      "key": "lbl_rb_chartText",
+      "en": "Text",
+      "fr": "Texte",
+      "pt": "Texto"
+    },
+    {
+      "key": "lbl_rb_themeFont",
+      "en": "Theme font",
+      "fr": "Police du thème",
+      "pt": "Tipo de letra do tema"
+    },
+    {
+      "key": "lbl_rb_textSize",
+      "en": "Text size",
+      "fr": "Taille du texte",
+      "pt": "Tamanho do texto"
+    },
+    {
+      "key": "lbl_rb_axes",
+      "en": "Axes",
+      "fr": "Axes",
+      "pt": "Eixos"
+    },
+    {
+      "key": "lbl_rb_linesPoints",
+      "en": "Lines and points",
+      "fr": "Lignes et points",
+      "pt": "Linhas e pontos"
+    },
+    {
+      "key": "lbl_rb_lineWidth",
+      "en": "Line width",
+      "fr": "Épaisseur des lignes",
+      "pt": "Espessura das linhas"
+    },
+    {
+      "key": "lbl_rb_pointSize",
+      "en": "Point size",
+      "fr": "Taille des points",
+      "pt": "Tamanho dos pontos"
+    },
+    {
+      "key": "lbl_rb_backgroundGroup",
+      "en": "Background",
+      "fr": "Arrière-plan",
+      "pt": "Fundo"
+    },
+    {
+      "key": "lbl_rb_chartBackground",
+      "en": "Chart background",
+      "fr": "Fond du graphique",
+      "pt": "Fundo do gráfico"
+    },
+    {
+      "key": "lbl_rb_panelBorder",
+      "en": "Border around the plot",
+      "fr": "Bordure autour du tracé",
+      "pt": "Contorno do gráfico"
+    },
+    {
+      "key": "lbl_rb_adjust",
+      "en": "Adjust",
+      "fr": "Ajuster",
+      "pt": "Ajustar"
+    },
+    {
+      "key": "lbl_rb_pictureStyles",
+      "en": "Picture styles",
+      "fr": "Styles d'image",
+      "pt": "Estilos de imagem"
+    },
+    {
+      "key": "lbl_rb_arrange",
+      "en": "Arrange",
+      "fr": "Organiser",
+      "pt": "Organizar"
+    },
+    {
+      "key": "lbl_rb_imageSizeGroup",
+      "en": "Size",
+      "fr": "Taille",
+      "pt": "Tamanho"
+    },
+    {
+      "key": "lbl_rb_accessibility",
+      "en": "Accessibility",
+      "fr": "Accessibilité",
+      "pt": "Acessibilidade"
+    },
+    {
+      "key": "lbl_style_f_bar_width",
+      "en": "Bar width (share of the space)",
+      "fr": "Largeur des barres (part de l'espace)",
+      "pt": "Largura das barras (parte do espaço)"
+    },
+    {
+      "key": "lbl_rb_barWidth",
+      "en": "Bar width",
+      "fr": "Largeur des barres",
+      "pt": "Largura das barras"
+    },
+    {
+      "key": "lbl_rb_dataLabelSize",
+      "en": "Data labels",
+      "fr": "Étiquettes de données",
+      "pt": "Rótulos de dados"
+    },
+    {
+      "key": "lbl_rb_serifFonts",
+      "en": "Serif (reading text)",
+      "fr": "Avec empattements (texte courant)",
+      "pt": "Com serifa (texto corrido)"
+    },
+    {
+      "key": "lbl_rb_sansFonts",
+      "en": "Sans serif (charts, headings)",
+      "fr": "Sans empattements (graphiques, titres)",
+      "pt": "Sem serifa (gráficos, títulos)"
+    },
+    {
+      "key": "lbl_rb_wrapText",
+      "en": "Wrap text",
+      "fr": "Habillage",
+      "pt": "Moldar texto"
+    },
+    {
+      "key": "lbl_rb_wrapInline",
+      "en": "In line with text",
+      "fr": "Aligné sur le texte",
+      "pt": "Alinhado com o texto"
+    },
+    {
+      "key": "lbl_rb_wrapLeft",
+      "en": "Square, picture on the left",
+      "fr": "Carré, image à gauche",
+      "pt": "Quadrado, imagem à esquerda"
+    },
+    {
+      "key": "lbl_rb_wrapRight",
+      "en": "Square, picture on the right",
+      "fr": "Carré, image à droite",
+      "pt": "Quadrado, imagem à direita"
+    },
+    {
+      "key": "lbl_rb_imageHeight",
+      "en": "Height",
+      "fr": "Hauteur",
+      "pt": "Altura"
+    },
+    {
+      "key": "lbl_rb_rotate",
+      "en": "Rotate",
+      "fr": "Rotation",
+      "pt": "Rodar"
+    },
+    {
+      "key": "lbl_rb_crop",
+      "en": "Crop",
+      "fr": "Rogner",
+      "pt": "Recortar"
+    },
+    {
+      "key": "lbl_rb_cropTop",
+      "en": "Top",
+      "fr": "Haut",
+      "pt": "Cima"
+    },
+    {
+      "key": "lbl_rb_cropBottom",
+      "en": "Bottom",
+      "fr": "Bas",
+      "pt": "Baixo"
+    },
+    {
+      "key": "lbl_rb_cropLeft",
+      "en": "Left",
+      "fr": "Gauche",
+      "pt": "Esquerda"
+    },
+    {
+      "key": "lbl_rb_cropRight",
+      "en": "Right",
+      "fr": "Droite",
+      "pt": "Direita"
+    },
+    {
+      "key": "lbl_rb_resetPicture",
+      "en": "Reset picture",
+      "fr": "Rétablir l'image",
+      "pt": "Repor imagem"
+    },
+    {
+      "key": "lbl_rb_brightness",
+      "en": "Brightness",
+      "fr": "Luminosité",
+      "pt": "Brilho"
+    },
+    {
+      "key": "lbl_rb_contrast",
+      "en": "Contrast",
+      "fr": "Contraste",
+      "pt": "Contraste"
+    },
+    {
+      "key": "lbl_rb_greyscale",
+      "en": "Greyscale",
+      "fr": "Nuances de gris",
+      "pt": "Tons de cinzento"
+    },
+    {
+      "key": "lbl_rb_borderColour",
+      "en": "Border colour",
+      "fr": "Couleur de la bordure",
+      "pt": "Cor do contorno"
+    },
+    {
+      "key": "lbl_rb_borderWidth",
+      "en": "Border width",
+      "fr": "Épaisseur de la bordure",
+      "pt": "Espessura do contorno"
+    },
+    {
+      "key": "lbl_rb_angleX",
+      "en": "Angle, x axis",
+      "fr": "Angle, axe des x",
+      "pt": "Ângulo, eixo x"
+    },
+    {
+      "key": "lbl_rb_angleY",
+      "en": "Angle, y axis",
+      "fr": "Angle, axe des y",
+      "pt": "Ângulo, eixo y"
+    },
+    {
+      "key": "lbl_rb_rotateRight",
+      "en": "Rotate right 90°",
+      "fr": "Rotation à droite de 90°",
+      "pt": "Rodar 90° para a direita"
+    },
+    {
+      "key": "lbl_rb_rotateLeft",
+      "en": "Rotate left 90°",
+      "fr": "Rotation à gauche de 90°",
+      "pt": "Rodar 90° para a esquerda"
+    },
+    {
+      "key": "lbl_rb_flipV",
+      "en": "Flip vertical",
+      "fr": "Retourner verticalement",
+      "pt": "Inverter na vertical"
+    },
+    {
+      "key": "lbl_rb_flipH",
+      "en": "Flip horizontal",
+      "fr": "Retourner horizontalement",
+      "pt": "Inverter na horizontal"
+    },
+    {
+      "key": "lbl_rb_styleH3",
+      "en": "Heading 3",
+      "fr": "Titre 3",
+      "pt": "Título 3"
+    },
+    {
+      "key": "lbl_rb_styleH4",
+      "en": "Heading 4",
+      "fr": "Titre 4",
+      "pt": "Título 4"
+    },
+    {
+      "key": "lbl_rb_styleH5",
+      "en": "Heading 5",
+      "fr": "Titre 5",
+      "pt": "Título 5"
+    },
+    {
+      "key": "lbl_rb_styleH6",
+      "en": "Heading 6",
+      "fr": "Titre 6",
+      "pt": "Título 6"
+    },
+    {
+      "key": "lbl_rb_styleQuote",
+      "en": "Quote",
+      "fr": "Citation",
+      "pt": "Citação"
+    },
+    {
+      "key": "lbl_rb_styleCode",
+      "en": "Preformatted",
+      "fr": "Texte préformaté",
+      "pt": "Texto pré-formatado"
+    },
+    {
+      "key": "lbl_rb_allStyles",
+      "en": "All styles",
+      "fr": "Tous les styles",
+      "pt": "Todos os estilos"
+    },
+    {
+      "key": "lbl_rb_linksGroup",
+      "en": "Links",
+      "fr": "Liens",
+      "pt": "Ligações"
+    },
+    {
+      "key": "lbl_rb_link",
+      "en": "Link",
+      "fr": "Lien",
+      "pt": "Ligação"
+    },
+    {
+      "key": "lbl_rb_linkAddress",
+      "en": "Address (web page or e-mail)",
+      "fr": "Adresse (page web ou e-mail)",
+      "pt": "Endereço (página web ou e-mail)"
+    },
+    {
+      "key": "lbl_rb_apply",
+      "en": "Apply",
+      "fr": "Appliquer",
+      "pt": "Aplicar"
+    },
+    {
+      "key": "lbl_rb_removeLink",
+      "en": "Remove link",
+      "fr": "Supprimer le lien",
+      "pt": "Remover ligação"
+    },
+    {
+      "key": "lbl_rb_pictureFromFile",
+      "en": "From this computer",
+      "fr": "Depuis cet ordinateur",
+      "pt": "Deste computador"
+    },
+    {
+      "key": "lbl_rb_pictureFromUrl",
+      "en": "From a web address",
+      "fr": "Depuis une adresse web",
+      "pt": "De um endereço web"
+    },
+    {
+      "key": "lbl_rb_pictureUrlHint",
+      "en": "The picture is downloaded now and kept in the dataset, so the report does not need the internet later.",
+      "fr": "L'image est téléchargée maintenant et gardée dans les données : le rapport n'aura plus besoin d'internet.",
+      "pt": "A imagem é descarregada agora e guardada nos dados: o relatório não precisará de internet depois."
+    },
+    {
+      "key": "lbl_rb_pictureDownloading",
+      "en": "Downloading the picture…",
+      "fr": "Téléchargement de l'image…",
+      "pt": "A descarregar a imagem…"
+    },
+    {
+      "key": "lbl_rb_pictureFailed",
+      "en": "The picture could not be added.",
+      "fr": "L'image n'a pas pu être ajoutée.",
+      "pt": "Não foi possível adicionar a imagem."
+    },
+    {
+      "key": "lbl_rb_cropToRatio",
+      "en": "Crop to a shape",
+      "fr": "Rogner selon un format",
+      "pt": "Recortar num formato"
+    },
+    {
+      "key": "lbl_rb_spacingHint",
+      "en": "Space kept between the picture and the text around it.",
+      "fr": "Espace laissé entre l'image et le texte autour.",
+      "pt": "Espaço deixado entre a imagem e o texto à volta."
+    },
+    {
+      "key": "lbl_rb_spaceAbove",
+      "en": "Above",
+      "fr": "Au-dessus",
+      "pt": "Acima"
+    },
+    {
+      "key": "lbl_rb_spaceBelow",
+      "en": "Below",
+      "fr": "En dessous",
+      "pt": "Abaixo"
+    },
+    {
+      "key": "lbl_rb_spaceBeside",
+      "en": "Beside",
+      "fr": "À côté",
+      "pt": "Ao lado"
+    },
+    {
+      "key": "lbl_rb_fullscreen",
+      "en": "Full screen",
+      "fr": "Plein écran",
+      "pt": "Ecrã inteiro"
+    },
+    {
+      "key": "lbl_rb_exitFullscreen",
+      "en": "Leave full screen",
+      "fr": "Quitter le plein écran",
+      "pt": "Sair do ecrã inteiro"
+    },
+    {
+      "key": "lbl_rb_of",
+      "en": "of",
+      "fr": "sur",
+      "pt": "de"
+    },
+    {
+      "key": "lbl_rb_words",
+      "en": "words",
+      "fr": "mots",
+      "pt": "palavras"
+    },
+    {
+      "key": "lbl_rb_characters",
+      "en": "characters",
+      "fr": "caractères",
+      "pt": "caracteres"
+    },
+    {
+      "key": "lbl_rb_shortcuts",
+      "en": "Shortcuts",
+      "fr": "Raccourcis",
+      "pt": "Atalhos"
+    },
+    {
+      "key": "lbl_rb_shortcutsHint",
+      "en": "Ctrl+B bold · Ctrl+I italic · Ctrl+U underline · Ctrl+K link · Ctrl+Alt+1 to 6 heading · Ctrl+Alt+0 body text · Ctrl+Shift+8 bullets · Ctrl+Shift+7 numbering · Tab / Shift+Tab list level · Ctrl+Shift+> / < text size · Ctrl+Enter page break · Ctrl+Z / Ctrl+Y undo / redo · Ctrl+S save now",
+      "fr": "Ctrl+B gras · Ctrl+I italique · Ctrl+U souligné · Ctrl+K lien · Ctrl+Alt+1 à 6 titre · Ctrl+Alt+0 corps de texte · Ctrl+Maj+8 puces · Ctrl+Maj+7 numéros · Tab / Maj+Tab niveau de liste · Ctrl+Maj+> / < taille · Ctrl+Entrée saut de page · Ctrl+Z / Ctrl+Y annuler / rétablir · Ctrl+S enregistrer",
+      "pt": "Ctrl+B negrito · Ctrl+I itálico · Ctrl+U sublinhado · Ctrl+K ligação · Ctrl+Alt+1 a 6 título · Ctrl+Alt+0 texto · Ctrl+Shift+8 marcadores · Ctrl+Shift+7 numeração · Tab / Shift+Tab nível da lista · Ctrl+Shift+> / < tamanho · Ctrl+Enter quebra de página · Ctrl+Z / Ctrl+Y anular / refazer · Ctrl+S guardar"
+    },
+    {
+      "key": "lbl_rb_undoGroup",
+      "en": "Undo",
+      "fr": "Annuler",
+      "pt": "Anular"
+    },
+    {
+      "key": "lbl_rb_views",
+      "en": "Views",
+      "fr": "Affichages",
+      "pt": "Vistas"
+    },
+    {
+      "key": "lbl_rb_viewEdit",
+      "en": "Edit",
+      "fr": "Modification",
+      "pt": "Edição"
+    },
+    {
+      "key": "lbl_rb_viewRead",
+      "en": "Read mode",
+      "fr": "Mode lecture",
+      "pt": "Modo de leitura"
+    },
+    {
+      "key": "lbl_rb_viewPrint",
+      "en": "Print layout",
+      "fr": "Page",
+      "pt": "Esquema de impressão"
+    },
+    {
+      "key": "lbl_rb_focus",
+      "en": "Focus",
+      "fr": "Concentration",
+      "pt": "Foco"
+    },
+    {
+      "key": "lbl_rb_focusHint",
+      "en": "Focus: only the pages, on the whole screen (Esc to leave)",
+      "fr": "Concentration : uniquement les pages, en plein écran (Échap pour quitter)",
+      "pt": "Foco: apenas as páginas, em ecrã inteiro (Esc para sair)"
+    },
+    {
+      "key": "lbl_rb_leaveFocus",
+      "en": "Leave focus",
+      "fr": "Quitter la concentration",
+      "pt": "Sair do foco"
+    },
+    {
+      "key": "lbl_rb_modifyStyles",
+      "en": "Modify styles…",
+      "fr": "Modifier les styles…",
+      "pt": "Modificar estilos…"
+    },
+    {
+      "key": "lbl_rb_cropHint",
+      "en": "Crop: drag the black handles, then press Enter or click elsewhere",
+      "fr": "Rogner : faites glisser les poignées noires, puis appuyez sur Entrée ou cliquez ailleurs",
+      "pt": "Recortar: arraste as alças pretas e prima Enter ou clique noutro lugar"
+    },
+    {
+      "key": "lbl_rb_resetCrop",
+      "en": "Reset crop",
+      "fr": "Annuler le rognage",
+      "pt": "Repor recorte"
+    },
+    {
+      "key": "lbl_rb_lineAndParagraph",
+      "en": "Line and Paragraph Spacing",
+      "fr": "Interligne et espacement",
+      "pt": "Espaçamento de linha e parágrafo"
+    },
+    {
+      "key": "lbl_rb_previousRow",
+      "en": "Previous row of styles",
+      "fr": "Rangée de styles précédente",
+      "pt": "Fila de estilos anterior"
+    },
+    {
+      "key": "lbl_rb_nextRow",
+      "en": "Next row of styles",
+      "fr": "Rangée de styles suivante",
+      "pt": "Fila de estilos seguinte"
+    },
+    {
+      "key": "lbl_rb_formatPainter",
+      "en": "Format Painter",
+      "fr": "Reproduire la mise en forme",
+      "pt": "Pincel de Formatação"
+    },
+    {
+      "key": "lbl_rb_formatPainterHint",
+      "en": "Format Painter: click, then select text to give it this formatting (double-click to keep it on; Esc stops it)",
+      "fr": "Reproduire la mise en forme : cliquez, puis sélectionnez le texte à mettre en forme (double-cliquez pour la garder ; Échap l’arrête)",
+      "pt": "Pincel de Formatação: clique e selecione o texto a formatar (duplo clique para o manter; Esc para parar)"
+    },
+    {
+      "key": "lbl_rb_noBorder",
+      "en": "No border",
+      "fr": "Pas de bordure",
+      "pt": "Sem limite"
+    },
+    {
+      "key": "lbl_rb_position",
+      "en": "Position",
+      "fr": "Position",
+      "pt": "Posição"
+    },
+    {
+      "key": "lbl_rb_fieldGroupChart",
+      "en": "Chart below",
+      "fr": "Graphique ci-dessous",
+      "pt": "Gráfico abaixo"
+    },
+    {
+      "key": "lbl_rb_field_chart_indicator",
+      "en": "Indicator of the chart below",
+      "fr": "Indicateur du graphique ci-dessous",
+      "pt": "Indicador do gráfico abaixo"
+    },
+    {
+      "key": "lbl_rb_field_chart_year",
+      "en": "Year of the chart below",
+      "fr": "Année du graphique ci-dessous",
+      "pt": "Ano do gráfico abaixo"
+    },
+    {
+      "key": "lbl_rb_panels",
+      "en": "Panels",
+      "fr": "Panneaux",
+      "pt": "Painéis"
+    },
+    {
+      "key": "lbl_rb_panelColumns",
+      "en": "Panels across",
+      "fr": "Panneaux en largeur",
+      "pt": "Painéis na largura"
+    },
+    {
+      "key": "lbl_rb_panelRows",
+      "en": "Panels down",
+      "fr": "Panneaux en hauteur",
+      "pt": "Painéis na altura"
+    },
+    {
+      "key": "lbl_rb_panelAxes",
+      "en": "Axes",
+      "fr": "Axes",
+      "pt": "Eixos"
+    },
+    {
+      "key": "lbl_rb_panelScalesFixed",
+      "en": "The same axes for every panel",
+      "fr": "Les mêmes axes pour tous les panneaux",
+      "pt": "Os mesmos eixos em todos os painéis"
+    },
+    {
+      "key": "lbl_rb_panelScalesFreeY",
+      "en": "Each panel its own vertical axis",
+      "fr": "Un axe vertical propre à chaque panneau",
+      "pt": "Cada painel com o seu eixo vertical"
+    },
+    {
+      "key": "lbl_rb_panelScalesFreeX",
+      "en": "Each panel its own horizontal axis",
+      "fr": "Un axe horizontal propre à chaque panneau",
+      "pt": "Cada painel com o seu eixo horizontal"
+    },
+    {
+      "key": "lbl_rb_panelScalesFree",
+      "en": "Each panel its own axes",
+      "fr": "Des axes propres à chaque panneau",
+      "pt": "Cada painel com os seus eixos"
+    },
+    {
+      "key": "lbl_rb_panelLabels",
+      "en": "Panel names",
+      "fr": "Noms des panneaux",
+      "pt": "Nomes dos painéis"
+    },
+    {
+      "key": "lbl_rb_customCharts",
+      "en": "Custom",
+      "fr": "Personnalisés",
+      "pt": "Personalizados"
+    },
+    {
+      "key": "lbl_rb_customChartsHint",
+      "en": "Charts made for this dataset will appear here. Later you will be able to ask the AI to make one.",
+      "fr": "Les graphiques créés pour ces données apparaîtront ici. Vous pourrez bientôt demander à l’IA d’en créer un.",
+      "pt": "Os gráficos criados para estes dados aparecerão aqui. Em breve poderá pedir à IA que crie um."
+    },
+    {
+      "key": "lbl_rb_coverAddKicker",
+      "en": "[Kicker]",
+      "fr": "[Surtitre]",
+      "pt": "[Antetítulo]"
+    },
+    {
+      "key": "lbl_rb_coverAddTitle",
+      "en": "[Report title]",
+      "fr": "[Titre du rapport]",
+      "pt": "[Título do relatório]"
+    },
+    {
+      "key": "lbl_rb_coverAddSubtitle",
+      "en": "[Subtitle]",
+      "fr": "[Sous-titre]",
+      "pt": "[Subtítulo]"
+    },
+    {
+      "key": "lbl_rb_coverAddReference",
+      "en": "[Reference]",
+      "fr": "[Référence]",
+      "pt": "[Referência]"
+    },
+    {
+      "key": "lbl_rb_kind_dq_reporting_units",
+      "en": "Reporting rate by region or district",
+      "fr": "Taux de rapportage par région ou district",
+      "pt": "Taxa de reporte por região ou distrito"
+    },
+    {
+      "key": "lbl_rb_kind_dq_completeness_units",
+      "en": "Completeness of reporting by region or district",
+      "fr": "Complétude des rapports par région ou district",
+      "pt": "Completude dos relatórios por região ou distrito"
+    },
+    {
+      "key": "lbl_rb_kind_dq_completeness_districts",
+      "en": "Districts with complete data",
+      "fr": "Districts avec des données complètes",
+      "pt": "Distritos com dados completos"
+    },
+    {
+      "key": "lbl_rb_kind_dq_outliers_units",
+      "en": "Values that are not extreme outliers",
+      "fr": "Valeurs qui ne sont pas des valeurs extrêmes",
+      "pt": "Valores que não são valores extremos"
+    },
+    {
+      "key": "lbl_rb_kind_dq_outlier_trend",
+      "en": "Monthly values and outliers in a district",
+      "fr": "Valeurs mensuelles et valeurs extrêmes dans un district",
+      "pt": "Valores mensais e valores extremos num distrito"
+    },
+    {
+      "key": "lbl_rb_kind_indicator_coverage",
+      "en": "Coverage indicators by year (DHIS2)",
+      "fr": "Indicateurs de couverture par année (DHIS2)",
+      "pt": "Indicadores de cobertura por ano (DHIS2)"
+    },
+    {
+      "key": "lbl_rb_kind_continuum_gap",
+      "en": "Continuum of care: facility and survey compared",
+      "fr": "Continuum de soins : établissements et enquête comparés",
+      "pt": "Continuidade de cuidados: unidades de saúde e inquérito comparados"
+    },
+    {
+      "key": "lbl_rb_kind_continuum_units",
+      "en": "Continuum of care: latest coverage by region",
+      "fr": "Continuum de soins : dernière couverture par région",
+      "pt": "Continuidade de cuidados: cobertura mais recente por região"
+    },
+    {
+      "key": "lbl_rb_kind_bayes_coverage",
+      "en": "Bayesian coverage model estimates",
+      "fr": "Estimations du modèle bayésien de couverture",
+      "pt": "Estimativas do modelo bayesiano de cobertura"
+    },
+    {
+      "key": "lbl_rb_kind_derived_coverage_trend",
+      "en": "Coverage over time by denominator",
+      "fr": "Couverture dans le temps par dénominateur",
+      "pt": "Cobertura ao longo do tempo por denominador"
+    },
+    {
+      "key": "lbl_rb_kind_su_region",
+      "en": "Service use by region",
+      "fr": "Utilisation des services par région",
+      "pt": "Utilização dos serviços por região"
+    },
+    {
+      "key": "lbl_rb_kind_hs_comparison",
+      "en": "Service use by health system inputs, by region",
+      "fr": "Utilisation des services selon les ressources du système de santé, par région",
+      "pt": "Utilização dos serviços segundo os recursos do sistema de saúde, por região"
+    },
+    {
+      "key": "lbl_rb_kind_hs_national",
+      "en": "Health system scores and densities (national)",
+      "fr": "Scores et densités du système de santé (national)",
+      "pt": "Pontuações e densidades do sistema de saúde (nacional)"
+    },
+    {
+      "key": "lbl_rb_var_heat_map",
+      "en": "Heat map",
+      "fr": "Carte thermique",
+      "pt": "Mapa de calor"
+    },
+    {
+      "key": "lbl_rb_var_bar",
+      "en": "Bar chart",
+      "fr": "Diagramme en barres",
+      "pt": "Gráfico de barras"
+    },
+    {
+      "key": "lbl_rb_var_all_indicators",
+      "en": "All indicators",
+      "fr": "Tous les indicateurs",
+      "pt": "Todos os indicadores"
+    },
+    {
+      "key": "lbl_rb_var_trend",
+      "en": "Trend",
+      "fr": "Tendance",
+      "pt": "Tendência"
+    },
+    {
+      "key": "lbl_rb_var_by_unit",
+      "en": "By region or district",
+      "fr": "Par région ou district",
+      "pt": "Por região ou distrito"
+    },
+    {
+      "key": "lbl_rb_var_by_indicator",
+      "en": "By indicator",
+      "fr": "Par indicateur",
+      "pt": "Por indicador"
+    },
+    {
+      "key": "lbl_rb_var_anc",
+      "en": "ANC and delivery",
+      "fr": "CPN et accouchement",
+      "pt": "CPN e parto"
+    },
+    {
+      "key": "lbl_rb_var_immunization",
+      "en": "Immunization",
+      "fr": "Vaccination",
+      "pt": "Vacinação"
+    },
+    {
+      "key": "lbl_rb_var_delivery",
+      "en": "Zero-dose and dropout",
+      "fr": "Zéro dose et abandon",
+      "pt": "Dose zero e abandono"
+    },
+    {
+      "key": "lbl_rb_var_ratio_opd_u5_hstaff",
+      "en": "OPD under 5 and health workers",
+      "fr": "Consultations externes des moins de 5 ans et personnel de santé",
+      "pt": "Consultas externas de menores de 5 anos e profissionais de saúde"
+    },
+    {
+      "key": "lbl_rb_var_ratio_ipd_u5_hos",
+      "en": "IPD under 5 and hospitals",
+      "fr": "Hospitalisations des moins de 5 ans et hôpitaux",
+      "pt": "Internamentos de menores de 5 anos e hospitais"
+    },
+    {
+      "key": "lbl_rb_var_ratio_ipd_u5_bed",
+      "en": "IPD under 5 and beds",
+      "fr": "Hospitalisations des moins de 5 ans et lits",
+      "pt": "Internamentos de menores de 5 anos e camas"
+    },
+    {
+      "key": "lbl_rb_var_performance",
+      "en": "Performance scores",
+      "fr": "Scores de performance",
+      "pt": "Pontuações de desempenho"
+    },
+    {
+      "key": "lbl_rb_var_density",
+      "en": "Densities",
+      "fr": "Densités",
+      "pt": "Densidades"
+    },
+    {
+      "key": "lbl_rb_bringForward",
+      "en": "Bring forward",
+      "fr": "Avancer",
+      "pt": "Trazer para a frente"
+    },
+    {
+      "key": "lbl_rb_sendBackward",
+      "en": "Send backward",
+      "fr": "Reculer",
+      "pt": "Enviar para trás"
+    },
+    {
+      "key": "lbl_rb_customizeGroup",
+      "en": "Customize",
+      "fr": "Personnaliser",
+      "pt": "Personalizar"
+    },
+    {
+      "key": "lbl_rb_deleteSlide",
+      "en": "Delete slide",
+      "fr": "Supprimer la diapositive",
+      "pt": "Eliminar diapositivo"
+    },
+    {
+      "key": "lbl_rb_duplicateSlide",
+      "en": "Duplicate slide",
+      "fr": "Dupliquer la diapositive",
+      "pt": "Duplicar diapositivo"
+    },
+    {
+      "key": "lbl_rb_downloadPptx",
+      "en": "Download PowerPoint",
+      "fr": "Télécharger PowerPoint",
+      "pt": "Transferir PowerPoint"
+    },
+    {
+      "key": "lbl_rb_fitSlide",
+      "en": "Fit the slide to the window",
+      "fr": "Ajuster la diapositive à la fenêtre",
+      "pt": "Ajustar o diapositivo à janela"
+    },
+    {
+      "key": "lbl_rb_layout_title",
+      "en": "Title Slide",
+      "fr": "Diapositive de titre",
+      "pt": "Diapositivo de Título"
+    },
+    {
+      "key": "lbl_rb_layout_title_content",
+      "en": "Title and Content",
+      "fr": "Titre et contenu",
+      "pt": "Título e Conteúdo"
+    },
+    {
+      "key": "lbl_rb_layout_two_content",
+      "en": "Two Content",
+      "fr": "Deux contenus",
+      "pt": "Dois Conteúdos"
+    },
+    {
+      "key": "lbl_rb_layout_three_content",
+      "en": "Three Content",
+      "fr": "Trois contenus",
+      "pt": "Três Conteúdos"
+    },
+    {
+      "key": "lbl_rb_layout_comparison",
+      "en": "Comparison",
+      "fr": "Comparaison",
+      "pt": "Comparação"
+    },
+    {
+      "key": "lbl_rb_layout_title_only",
+      "en": "Title Only",
+      "fr": "Titre seul",
+      "pt": "Só Título"
+    },
+    {
+      "key": "lbl_rb_layout_section",
+      "en": "Section Header",
+      "fr": "En-tête de section",
+      "pt": "Cabeçalho de Secção"
+    },
+    {
+      "key": "lbl_rb_layout_blank",
+      "en": "Blank",
+      "fr": "Vide",
+      "pt": "Em branco"
+    },
+    {
+      "key": "lbl_rb_newSlide",
+      "en": "New Slide",
+      "fr": "Nouvelle diapositive",
+      "pt": "Novo Diapositivo"
+    },
+    {
+      "key": "lbl_rb_newSlidesHint",
+      "en": "Slides with charts, tables and pictures, downloaded as PowerPoint or PDF",
+      "fr": "Des diapositives avec graphiques, tableaux et images, téléchargées en PowerPoint ou PDF",
+      "pt": "Diapositivos com gráficos, tabelas e imagens, transferidos em PowerPoint ou PDF"
+    },
+    {
+      "key": "lbl_rb_notes",
+      "en": "Notes",
+      "fr": "Notes",
+      "pt": "Notas"
+    },
+    {
+      "key": "lbl_rb_notesPlaceholder",
+      "en": "Click to add notes",
+      "fr": "Cliquez pour ajouter des notes",
+      "pt": "Clique para adicionar notas"
+    },
+    {
+      "key": "lbl_rb_pdfFromPowerPoint",
+      "en": "Made from the PowerPoint file by PowerPoint or LibreOffice: the same slides",
+      "fr": "Créé à partir du fichier PowerPoint par PowerPoint ou LibreOffice : les mêmes diapositives",
+      "pt": "Criado a partir do ficheiro PowerPoint pelo PowerPoint ou LibreOffice: os mesmos diapositivos"
+    },
+    {
+      "key": "lbl_rb_picture",
+      "en": "Picture",
+      "fr": "Image",
+      "pt": "Imagem"
+    },
+    {
+      "key": "lbl_rb_pptxNote",
+      "en": "Every text, chart and table can still be edited in PowerPoint",
+      "fr": "Chaque texte, graphique et tableau reste modifiable dans PowerPoint",
+      "pt": "Cada texto, gráfico e tabela continua editável no PowerPoint"
+    },
+    {
+      "key": "lbl_rb_resetSlide",
+      "en": "Reset",
+      "fr": "Rétablir",
+      "pt": "Repor"
+    },
+    {
+      "key": "lbl_rb_slide",
+      "en": "Slide",
+      "fr": "Diapositive",
+      "pt": "Diapositivo"
+    },
+    {
+      "key": "lbl_rb_slideDeck",
+      "en": "Slide deck",
+      "fr": "Présentation",
+      "pt": "Apresentação"
+    },
+    {
+      "key": "lbl_rb_slideLayout",
+      "en": "Layout",
+      "fr": "Disposition",
+      "pt": "Esquema"
+    },
+    {
+      "key": "lbl_rb_slideShow",
+      "en": "Slide Show",
+      "fr": "Diaporama",
+      "pt": "Apresentação de Diapositivos"
+    },
+    {
+      "key": "lbl_rb_slideSize",
+      "en": "Slide Size",
+      "fr": "Taille des diapositives",
+      "pt": "Tamanho do Diapositivo"
+    },
+    {
+      "key": "lbl_rb_slideSorter",
+      "en": "Slide Sorter",
+      "fr": "Trieuse de diapositives",
+      "pt": "Organização de Diapositivos"
+    },
+    {
+      "key": "lbl_rb_slideStandard",
+      "en": "Standard (4:3)",
+      "fr": "Standard (4:3)",
+      "pt": "Padrão (4:3)"
+    },
+    {
+      "key": "lbl_rb_slideWide",
+      "en": "Widescreen (16:9)",
+      "fr": "Grand écran (16:9)",
+      "pt": "Ecrã panorâmico (16:9)"
+    },
+    {
+      "key": "lbl_rb_slidesCount",
+      "en": "slides",
+      "fr": "diapositives",
+      "pt": "diapositivos"
+    },
+    {
+      "key": "lbl_rb_slidesGroup",
+      "en": "Slides",
+      "fr": "Diapositives",
+      "pt": "Diapositivos"
+    },
+    {
+      "key": "lbl_rb_speakerNotes",
+      "en": "Speaker notes",
+      "fr": "Notes du présentateur",
+      "pt": "Notas do orador"
+    },
+    {
+      "key": "lbl_rb_standardDecks",
+      "en": "Standard slide decks",
+      "fr": "Présentations standard",
+      "pt": "Apresentações padrão"
+    },
+    {
+      "key": "lbl_rb_standardDecksHint",
+      "en": "Made from the dataset, ready to present",
+      "fr": "Faites à partir des données, prêtes à présenter",
+      "pt": "Feitas a partir dos dados, prontas a apresentar"
+    },
+    {
+      "key": "lbl_rb_textBox",
+      "en": "Text Box",
+      "fr": "Zone de texte",
+      "pt": "Caixa de Texto"
+    },
+    {
+      "key": "lbl_rb_untitledDeck",
+      "en": "Untitled slide deck",
+      "fr": "Présentation sans titre",
+      "pt": "Apresentação sem título"
+    },
+    {
+      "key": "lbl_rb_viewNormal",
+      "en": "Normal",
+      "fr": "Normal",
+      "pt": "Normal"
+    },
+    {
+      "key": "lbl_rb_stage_pptx",
+      "en": "Writing the PowerPoint file",
+      "fr": "Écriture du fichier PowerPoint",
+      "pt": "A escrever o ficheiro PowerPoint"
+    },
+    {
+      "key": "lbl_rb_freePage",
+      "en": "Free page",
+      "fr": "Page libre",
+      "pt": "Página livre"
+    },
+    {
+      "key": "lbl_rb_freePageHint",
+      "en": "A free page: click to place text, charts, tables and pictures anywhere on it",
+      "fr": "Page libre : cliquez pour y placer textes, graphiques, tableaux et images où vous voulez",
+      "pt": "Página livre: clique para colocar textos, gráficos, tabelas e imagens onde quiser"
+    },
+    {
+      "key": "lbl_rb_handTool",
+      "en": "Hand",
+      "fr": "Main",
+      "pt": "Mão"
+    },
+    {
+      "key": "lbl_rb_handToolHint",
+      "en": "Hand: drag to move the view (or hold Space, or drag with the middle button)",
+      "fr": "Main : faites glisser pour déplacer la vue (ou maintenez Espace, ou le bouton du milieu)",
+      "pt": "Mão: arraste para mover a vista (ou mantenha Espaço, ou o botão do meio)"
+    },
+    {
+      "key": "lbl_rb_clickPicture",
+      "en": "Click the icon to add a picture",
+      "fr": "Cliquez sur l’icône pour ajouter une image",
+      "pt": "Clique no ícone para adicionar uma imagem"
+    },
+    {
+      "key": "lbl_rb_picStyles",
+      "en": "Picture styles",
+      "fr": "Styles d’image",
+      "pt": "Estilos de imagem"
+    },
+    {
+      "key": "lbl_rb_picStyleNone",
+      "en": "No style",
+      "fr": "Aucun style",
+      "pt": "Sem estilo"
+    },
+    {
+      "key": "lbl_rb_picStyleShadow",
+      "en": "Drop shadow",
+      "fr": "Ombre portée",
+      "pt": "Sombra"
+    },
+    {
+      "key": "lbl_rb_picStyleFrame",
+      "en": "White frame",
+      "fr": "Cadre blanc",
+      "pt": "Moldura branca"
+    },
+    {
+      "key": "lbl_rb_picStyleSoft",
+      "en": "Soft edges",
+      "fr": "Bords adoucis",
+      "pt": "Margens suaves"
+    },
+    {
+      "key": "lbl_rb_picStyleReflection",
+      "en": "Reflection",
+      "fr": "Reflet",
+      "pt": "Reflexo"
+    },
+    {
+      "key": "lbl_rb_shapeGroup",
+      "en": "Shape",
+      "fr": "Forme",
+      "pt": "Forma"
+    },
+    {
+      "key": "lbl_rb_shapeFill",
+      "en": "Shape Fill",
+      "fr": "Remplissage",
+      "pt": "Preenchimento"
+    },
+    {
+      "key": "lbl_rb_noFill",
+      "en": "No fill",
+      "fr": "Aucun remplissage",
+      "pt": "Sem preenchimento"
+    },
+    {
+      "key": "lbl_rb_transparency",
+      "en": "Transparency",
+      "fr": "Transparence",
+      "pt": "Transparência"
+    },
+    {
+      "key": "lbl_rb_shapeOutline",
+      "en": "Shape Outline",
+      "fr": "Contour",
+      "pt": "Contorno"
+    },
+    {
+      "key": "lbl_rb_noOutline",
+      "en": "No outline",
+      "fr": "Aucun contour",
+      "pt": "Sem contorno"
+    },
+    {
+      "key": "lbl_rb_themeFromFile",
+      "en": "Browse for Themes…",
+      "fr": "Rechercher des thèmes…",
+      "pt": "Procurar Temas…"
+    },
+    {
+      "key": "lbl_rb_themeFromFileHint",
+      "en": "A PowerPoint or Word file (template or document): its colours, fonts and background make a theme, and the file is written from it",
+      "fr": "Un fichier PowerPoint ou Word (modèle ou document) : ses couleurs, polices et arrière-plan font un thème, et le fichier est écrit à partir de lui",
+      "pt": "Um ficheiro PowerPoint ou Word (modelo ou documento): as suas cores, tipos de letra e fundo fazem um tema, e o ficheiro é escrito a partir dele"
+    },
+    {
+      "key": "lbl_rb_themeFileDone",
+      "en": "The theme from the file is applied; downloads are written from the file.",
+      "fr": "Le thème du fichier est appliqué ; les téléchargements sont écrits à partir du fichier.",
+      "pt": "O tema do ficheiro foi aplicado; as transferências são escritas a partir do ficheiro."
+    },
+    {
+      "key": "lbl_rb_themeFileFailed",
+      "en": "That file could not be made into a theme:",
+      "fr": "Ce fichier n’a pas pu devenir un thème :",
+      "pt": "Não foi possível fazer um tema com esse ficheiro:"
+    },
+    {
+      "key": "lbl_rb_themeFileKinds",
+      "en": "Choose a PowerPoint (.potx, .pptx) or Word (.dotx, .docx) file.",
+      "fr": "Choisissez un fichier PowerPoint (.potx, .pptx) ou Word (.dotx, .docx).",
+      "pt": "Escolha um ficheiro PowerPoint (.potx, .pptx) ou Word (.dotx, .docx)."
+    },
+    {
+      "key": "lbl_rb_layout_picture_caption",
+      "en": "Picture with Caption",
+      "fr": "Image avec légende",
+      "pt": "Imagem com Legenda"
+    },
+    {
+      "key": "lbl_rb_layout_content_caption",
+      "en": "Content with Caption",
+      "fr": "Contenu avec légende",
+      "pt": "Conteúdo com Legenda"
+    },
+    {
+      "key": "lbl_rb_layout_picture_left",
+      "en": "Picture and Text",
+      "fr": "Image et texte",
+      "pt": "Imagem e Texto"
+    },
+    {
+      "key": "lbl_rb_layout_full_picture",
+      "en": "Full Picture with Title",
+      "fr": "Image pleine page avec titre",
+      "pt": "Imagem Completa com Título"
+    },
+    {
+      "key": "lbl_rb_clickTitle",
+      "en": "Click to add title",
+      "fr": "Cliquez pour ajouter un titre",
+      "pt": "Clique para adicionar título"
+    },
+    {
+      "key": "lbl_rb_clickSubtitle",
+      "en": "Click to add subtitle",
+      "fr": "Cliquez pour ajouter un sous-titre",
+      "pt": "Clique para adicionar subtítulo"
+    },
+    {
+      "key": "lbl_rb_clickText",
+      "en": "Click to add text",
+      "fr": "Cliquez pour ajouter du texte",
+      "pt": "Clique para adicionar texto"
+    },
+    {
+      "key": "lbl_rb_insertChart",
+      "en": "Insert Chart",
+      "fr": "Insérer un graphique",
+      "pt": "Inserir Gráfico"
+    },
+    {
+      "key": "lbl_rb_insertTable",
+      "en": "Insert Table",
+      "fr": "Insérer un tableau",
+      "pt": "Inserir Tabela"
+    },
+    {
+      "key": "lbl_cc_t_title",
+      "en": "Chart title",
+      "fr": "Titre du graphique",
+      "pt": "Título do gráfico"
+    },
+    {
+      "key": "lbl_cc_t_subtitle",
+      "en": "Subtitle",
+      "fr": "Sous-titre",
+      "pt": "Subtítulo"
+    },
+    {
+      "key": "lbl_cc_t_caption",
+      "en": "Source note",
+      "fr": "Note de source",
+      "pt": "Nota de fonte"
+    },
+    {
+      "key": "lbl_cc_t_x_title",
+      "en": "Horizontal axis title",
+      "fr": "Titre de l'axe horizontal",
+      "pt": "Título do eixo horizontal"
+    },
+    {
+      "key": "lbl_cc_t_x_axis",
+      "en": "Horizontal axis labels",
+      "fr": "Étiquettes de l'axe horizontal",
+      "pt": "Rótulos do eixo horizontal"
+    },
+    {
+      "key": "lbl_cc_t_y_title",
+      "en": "Vertical axis title",
+      "fr": "Titre de l'axe vertical",
+      "pt": "Título do eixo vertical"
+    },
+    {
+      "key": "lbl_cc_t_y_axis",
+      "en": "Vertical axis labels",
+      "fr": "Étiquettes de l'axe vertical",
+      "pt": "Rótulos do eixo vertical"
+    },
+    {
+      "key": "lbl_cc_t_legend_title",
+      "en": "Legend title",
+      "fr": "Titre de la légende",
+      "pt": "Título da legenda"
+    },
+    {
+      "key": "lbl_cc_t_labels",
+      "en": "Data labels",
+      "fr": "Étiquettes de données",
+      "pt": "Rótulos de dados"
+    },
+    {
+      "key": "lbl_cc_t_panels",
+      "en": "Panel headings",
+      "fr": "En-têtes des panneaux",
+      "pt": "Cabeçalhos dos painéis"
+    },
+    {
+      "key": "lbl_cc_t_area",
+      "en": "Chart area",
+      "fr": "Zone du graphique",
+      "pt": "Área do gráfico"
+    },
+    {
+      "key": "lbl_cc_show",
+      "en": "Show",
+      "fr": "Afficher",
+      "pt": "Mostrar"
+    },
+    {
+      "key": "lbl_cc_hidden",
+      "en": "Hidden",
+      "fr": "Masqué",
+      "pt": "Oculto"
+    },
+    {
+      "key": "lbl_rb_chartElements",
+      "en": "Chart Elements",
+      "fr": "Éléments du graphique",
+      "pt": "Elementos do gráfico"
+    },
+    {
+      "key": "lbl_rb_elTitle",
+      "en": "Chart title",
+      "fr": "Titre du graphique",
+      "pt": "Título do gráfico"
+    },
+    {
+      "key": "lbl_rb_elSubtitle",
+      "en": "Subtitle",
+      "fr": "Sous-titre",
+      "pt": "Subtítulo"
+    },
+    {
+      "key": "lbl_rb_elCaption",
+      "en": "Source note",
+      "fr": "Note de source",
+      "pt": "Nota de fonte"
+    },
+    {
+      "key": "lbl_rb_elXTitle",
+      "en": "Horizontal axis title",
+      "fr": "Titre de l'axe horizontal",
+      "pt": "Título do eixo horizontal"
+    },
+    {
+      "key": "lbl_rb_elXText",
+      "en": "Horizontal axis labels",
+      "fr": "Étiquettes de l'axe horizontal",
+      "pt": "Rótulos do eixo horizontal"
+    },
+    {
+      "key": "lbl_rb_elYTitle",
+      "en": "Vertical axis title",
+      "fr": "Titre de l'axe vertical",
+      "pt": "Título do eixo vertical"
+    },
+    {
+      "key": "lbl_rb_elYText",
+      "en": "Vertical axis labels",
+      "fr": "Étiquettes de l'axe vertical",
+      "pt": "Rótulos do eixo vertical"
+    },
+    {
+      "key": "lbl_rb_elLegend",
+      "en": "Legend",
+      "fr": "Légende",
+      "pt": "Legenda"
+    },
+    {
+      "key": "lbl_rb_elLegendTitle",
+      "en": "Legend title",
+      "fr": "Titre de la légende",
+      "pt": "Título da legenda"
+    },
+    {
+      "key": "lbl_rb_elLabels",
+      "en": "Data labels",
+      "fr": "Étiquettes de données",
+      "pt": "Rótulos de dados"
+    },
+    {
+      "key": "lbl_rb_elStrips",
+      "en": "Panel headings",
+      "fr": "En-têtes des panneaux",
+      "pt": "Cabeçalhos dos painéis"
+    },
+    {
+      "key": "lbl_rb_and",
+      "en": "and",
+      "fr": "et",
+      "pt": "e"
+    },
+    {
+      "key": "lbl_rb_field_chart_indicators",
+      "en": "Indicators of the charts below",
+      "fr": "Indicateurs des graphiques ci-dessous",
+      "pt": "Indicadores dos gráficos abaixo"
     }
   ]
 }

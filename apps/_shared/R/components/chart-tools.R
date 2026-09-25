@@ -12,7 +12,7 @@ cd_chart_customize <- function(inputId, i18n = cd_i18n()) {
     changed = "lbl_cc_changed", asDrawn = "lbl_chart_style_as_drawn", yes = "lbl_chart_style_yes", no = "lbl_chart_style_no",
     min = "lbl_chart_style_min", max = "lbl_chart_style_max", entriesLegend = "lbl_chart_style_legend_entries",
     entriesCategories = "lbl_chart_style_category_entries", entryText = "lbl_chart_style_entry_text",
-    entryColor = "lbl_chart_style_entry_color", autoNote = "lbl_chart_auto_down"
+    entryColor = "lbl_chart_style_entry_color", autoNote = "lbl_chart_auto_down", show = "lbl_cc_show", hidden = "lbl_cc_hidden"
   )
   cd_react_element("ChartCustomize", shiny.react::asProps(
     inputId = inputId,
