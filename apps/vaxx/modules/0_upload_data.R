@@ -1,4 +1,4 @@
-# The Load Data wizard itself is shared (apps/_shared/R/wizard, loaded by cd_ui_load()); this is the part of it that
+# The Load Data wizard itself is shared (cd2030.core, R/ui-wizard-*.R); this is the part of it that
 # is vaxx's own -- see wizard-config.R for the contract. Survey estimates here are the vaccine set (anc1,
 # instlivebirths, bcg, penta1, penta3, opv1, opv3, measles1 -- what cd2030.core's set_survey_estimates() keeps for
 # the "vaccine" group); no anc4/csection/low_bweight. Every field below is required before the wizard's National

@@ -6,7 +6,7 @@
 #                       data and graphs; Compare countries and All datasets look across the whole file; Extract a piece pulls
 #                       chosen datasets, countries, years and columns out of it.
 #
-# Two pages on the shared Countdown shell (../_shared), with the "pooled" (green) theme. The logic is plain R in R/:
+# Two pages on the shared Countdown shell (datasuite.ui and cd2030.core), with the "pooled" (green) theme. The logic is plain R in R/:
 # pooled-datasets.R (the tables), pooled-build.R (load and combine), pooled-export.R, pooled-charts.R, pooled-ui.R.
 options(shiny.maxRequestSize = 2 * 1024 * 1024^2)
 
@@ -28,8 +28,8 @@ pacman::p_load(
   update = FALSE
 )
 
-source("../_shared/load.R")
-cd_ui_load()
+# The interface (datasuite.ui) and the Countdown pages (cd2030.core)
+library(datasuite.ui)
 
 app_name <- Sys.getenv("CDSUITE_SHINY_NAME", unset = "Pooled")
 app_version <- Sys.getenv("CDSUITE_SHINY_VERSION", unset = "2.0.0")

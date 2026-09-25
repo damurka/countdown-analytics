@@ -18,7 +18,7 @@ library(cd2030.core)
 options(cd2030.app_group = "vaccine")
 set_selected_group("vaccine")
 
-# What is particular to this app for the shared page modules (../_shared/R/core/config.R lists the keys).
+# What is particular to this app for the shared page modules (R/ui-core-config.R in cd2030.core lists the keys).
 options(cd2030.config = list(
   target_indicators = c("vaccine", "dropout"),
   # cd2030.core's equiplot_*() take the analysis indicators, but the standard survey data has no coverage for these:
@@ -60,9 +60,8 @@ pacman::p_load(
   update = FALSE
 )
 
-# The shared Countdown UI (../_shared): every cd_*/cd* builder, the React components' R side, the assets.
-source("../_shared/load.R")
-cd_ui_load()
+# The interface (datasuite.ui) and the Countdown pages (cd2030.core)
+library(datasuite.ui)
 options(cd2030.denominator_choices = c("opt_dhis2" = "dhis2", "opt_anc1" = "anc1", "opt_penta1" = "penta1", "opt_penta1derived" = "penta1derived"))
 # The tabs the national/sub-national analysis pages open with; their "Custom" tab lets the user pick any indicator
 # from cd2030.core's get_analysis_indicators() (the tabbed-charts helper's customIndicators default).
@@ -85,13 +84,13 @@ i18n <- init_i18n(translation_json_path = cd_translations("translation/translati
 i18n$set_translation_language(language)
 cd_use_i18n(i18n)
 
-# The sidebar/header nav tree: the standard sections (_shared/R/layout/nav-sections.R); vaxx adds no groups of its own.
+# The sidebar/header nav tree: the standard sections (cd2030.core, R/ui-layout-nav-sections.R); vaxx adds no groups of its own.
 cd_nav_sections <- list(
   cd_nav_start(),
   cd_nav_quality(),
   cd_nav_denominators(),
   cd_nav_section("lbl_nav_section_analysis", cd_nav_national(), cd_nav_subnational()),
-  # Reports built from blocks of this app's charts and tables (_shared/R/modules/reports.R)
+  # Reports built from blocks of this app's charts and tables (datasuite.ui, R/kit-reports.R)
   cd_nav_section("lbl_nav_section_output",
     cd_nav_item("title_reports", tabName = "reports", icon = "file-lines", requires_adjustment = TRUE)
   )
