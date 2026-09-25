@@ -110,7 +110,7 @@
         "package": {
           "name": "cd2030.rmncah",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev"]
+          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
         },
         "accepts": ["xls", "xlsx", "dta", "rds"],
         "capabilities": {
@@ -127,7 +127,7 @@
         "package": {
           "name": "cd2030.vaxx",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev"]
+          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
         },
         "accepts": ["xls", "xlsx", "dta", "rds"],
         "capabilities": {
@@ -144,7 +144,7 @@
         "package": {
           "name": "cd2030.pooled",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev"]
+          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
         },
         "accepts": ["rds"],
         "capabilities": {
