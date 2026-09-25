@@ -35,5 +35,5 @@ Imports:
     utils,
     zip
 Remotes:
-    damurka/cd2030.core@report-builder,
+    damurka/cd2030.core,
     damurka/datasuite.ui
