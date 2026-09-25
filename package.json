@@ -107,6 +107,11 @@
         "description": "Launch the RMNCAH App to keep working",
         "icon": "graph",
         "location": "apps/rmncah",
+        "package": {
+          "name": "cd2030.rmncah",
+          "version": "2.0.0",
+          "repos": ["https://damurka.r-universe.dev"]
+        },
         "accepts": ["xls", "xlsx", "dta", "rds"],
         "capabilities": {
           "requiresFile": true
@@ -119,6 +124,11 @@
         "description": "Launch the Vaxx App to keep working",
         "icon": "graph",
         "location": "apps/vaxx",
+        "package": {
+          "name": "cd2030.vaxx",
+          "version": "2.0.0",
+          "repos": ["https://damurka.r-universe.dev"]
+        },
         "accepts": ["xls", "xlsx", "dta", "rds"],
         "capabilities": {
           "requiresFile": true
@@ -131,6 +141,11 @@
         "description": "Launch the Pooled App to keep working",
         "icon": "graph",
         "location": "apps/pooled",
+        "package": {
+          "name": "cd2030.pooled",
+          "version": "2.0.0",
+          "repos": ["https://damurka.r-universe.dev"]
+        },
         "accepts": ["rds"],
         "capabilities": {
           "requiresFile": true,
