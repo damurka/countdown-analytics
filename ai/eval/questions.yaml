@@ -1,0 +1,156 @@
+# The Countdown AI's evaluation set (docs/AI-PLAN.md section 11).
+#
+# Each question says what a correct answer is grounded in: the tools, the CacheConnection member and arguments, the
+# docs page. scripts/run-eval.R checks the deterministic part on cd2030.core's sample dataset (Kenya, inst/extdata):
+# members exist and are read-only, arguments are valid, values match `expect`, docs URLs exist in the corpus. The
+# rest (the model choosing these tools, the wording) is checked end to end in DataSuite before a release.
+#
+# expect: { column, where: { column: value }, value, tolerance } -- one cell of the member's table.
+#         { rows } -- the table's row count.       { value } -- a scalar member.
+
+questions:
+  - id: screen-page
+    ask: "Which page am I on?"
+    type: screen
+    tools: []            # answered from the Shiny App context (bridge state), no tool
+  - id: screen-visible
+    ask: "What can you see?"
+    type: screen
+    tools: [countdown_context]
+  - id: screen-this-chart-data
+    ask: "What are the numbers behind this chart?"
+    type: screen
+    tools: [countdown_component]    # the component in view; asks which if several are in view
+
+  - id: page-about-data-quality
+    ask: "What is this page about?"
+    context: { page: reporting_rate }
+    type: docs
+    tools: [countdown_context, countdown_docs]
+    docs: https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/
+  - id: significance-coverage
+    ask: "What is the significance of what I'm seeing?"
+    context: { page: national_coverage }
+    type: docs
+    tools: [countdown_context, countdown_component]
+    docs: https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/
+
+  # From a real test (2026-09-26): the AI recommended the UN denominator and said Penta-1 derived "is a vaccination
+  # denominator, inappropriate for ANC4" -- neither is in the methodology. A correct answer applies the method's six
+  # options per indicator and its steps, cites the section, and adds no rule of its own.
+  - id: method-denominator-selection
+    ask: "I'm on the denominator page -- what is wrong with my selection?"
+    context: { page: denominator_selection }
+    type: docs
+    tools: [countdown_component]
+    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/#selecting-the-best-denominator-option
+    must_not: ["recommends a denominator the method does not list for the level", "calls Penta-1 derived a vaccination-only denominator"]
+  - id: method-denominator-pushback
+    ask: "But the Penta1 population growth does not change the ANC4 visits in Arusha"
+    context: { page: subnational_coverage }
+    type: docs
+    tools: [countdown_component, countdown_docs]
+    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/#denominator-options
+    must_not: ["defends an earlier claim the methodology does not support"]
+
+  - id: data-country
+    ask: "Which country is this dataset?"
+    type: data
+    tools: [countdown_cache]
+    member: country
+    expect: { value: Kenya }
+  - id: data-years
+    ask: "Which years does the data cover?"
+    type: data
+    tools: [countdown_cache]
+    member: data_years
+    expect: { value: [2019, 2020, 2021, 2022, 2023] }
+  - id: data-reporting-national-2023
+    ask: "What was the national ANC reporting rate in 2023?"
+    type: data
+    tools: [countdown_cache]
+    member: reporting_rate_national
+    expect: { column: anc_rr, where: { year: 2023 }, value: 97, tolerance: 0.5 }
+  - id: data-reporting-vaccination-2019
+    ask: "And for vaccination in 2019?"
+    type: data
+    tools: [countdown_cache]
+    member: reporting_rate_national
+    expect: { column: vacc_rr, where: { year: 2019 }, value: 94, tolerance: 0.5 }
+  - id: data-district-count
+    ask: "How many districts report?"
+    type: data
+    tools: [countdown_cache]
+    member: reporting_rate_district
+    expect: { rows: 235 }       # 47 districts x 5 years
+  - id: data-lowest-district
+    ask: "Which district had the lowest ANC reporting rate in 2023?"
+    type: data
+    tools: [countdown_cache]
+    member: reporting_rate_district
+    expect: { column: anc_rr, where: { district: Wajir, year: 2023 }, value: 90, tolerance: 0.5 }
+  - id: cross-page-regions
+    ask: "(on another page) How do the regions compare on reporting?"
+    type: data
+    tools: [countdown_cache]
+    member: calculate_reporting_rate
+    args: { admin_level: adminlevel_1 }
+    expect: { rows: 40 }
+  - id: data-completeness
+    ask: "Is anything missing in the 2023 ANC1 data?"
+    type: data
+    tools: [countdown_cache]
+    member: completeness_national
+    expect: { column: mis_anc1, where: { year: 2023 }, value: 100, tolerance: 0.5 }
+  - id: data-outliers
+    ask: "Are there outliers in ANC4 in 2023?"
+    type: data
+    tools: [countdown_cache]
+    member: outliers_national
+    expect: { column: anc4_outlier5std, where: { year: 2023 }, value: 100, tolerance: 0.5 }
+
+  - id: drill-down
+    ask: "Which district is behind this drop in ANC4?"
+    type: tool-choice
+    tools: [countdown_context, countdown_cache]
+    member: decompose_change
+    args: { indicator: anc4, from_year: 2022, to_year: 2023, admin_level: district }
+    note: "Say the national figure is rebuilt from districts (rule 7) and check reporting rates."
+
+  - id: general-denominator
+    ask: "What is a denominator and how is it chosen?"
+    type: docs
+    tools: [countdown_docs]
+    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/
+  - id: general-indicators
+    ask: "How is ANC4 defined?"
+    type: docs
+    tools: [countdown_docs]
+    docs: https://datasuite.damurka.com/en/docs/framework/8-indicator-definitions/
+  - id: general-adjustment
+    ask: "Why does the app adjust the data?"
+    type: docs
+    tools: [countdown_docs]
+    docs: https://datasuite.damurka.com/en/docs/framework/3-data-adjustment/
+
+  - id: report-standard
+    ask: "Generate the data quality report."
+    type: tool-choice
+    tools: [countdown_report]
+    note: "listPresets, then generate with the data quality preset."
+  - id: report-custom
+    ask: "Make me a report on reporting in the regions."
+    type: tool-choice
+    tools: [countdown_report]
+    note: "build (validate), then save -- it opens in the Reports page."
+  - id: graph-custom
+    ask: "Plot the ANC and vaccination reporting rates by year."
+    type: tool-choice
+    tools: [countdown_graph]
+    member: reporting_rate_national
+    note: "custom_chart spec from reporting_rate_national, preview, save only if asked."
+
+  - id: other-dataset
+    ask: "Look at C:/data/ghana.rds"
+    type: tool-choice
+    tools: [countdown_open_dataset]

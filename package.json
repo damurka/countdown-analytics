@@ -1,7 +1,7 @@
 {
   "name": "countdown-analytics",
   "displayName": "Countdown Analytics",
-  "description": "Countdown to 2030 Shiny apps (RMNCAH, Vaxx, Pooled) and AI assistant tools for DataSuite.",
+  "description": "Countdown to 2030 Shiny apps (RMNCAH, Vaxx, Pooled) and the Countdown AI: grounded answers from the dataset, the methodology docs and what is on screen.",
   "keywords": [
     "countdown",
     "cd2030",
@@ -51,51 +51,290 @@
     "chatInstructions": [
       {
         "path": "./instructions/countdown-analysis.instructions.md",
-        "when": "shinyAppEditorAppId == 'rmncah' || shinyAppEditorAppId == 'vaxx' || shinyAppEditorAppId == 'pooled'"
+        "when": "shinyAppEditorExtensionId == 'datasuite.countdown-analytics'"
       }
     ],
     "languageModelTools": [
       {
-        "name": "cd2030Docs",
-        "displayName": "Look Up cd2030.core Data Reference",
-        "toolReferenceName": "cd2030Docs",
-        "canBeReferencedInPrompt": false,
-        "userDescription": "Look up which cache data a Shiny app page uses, and what it means.",
-        "modelDescription": "Looks up the generated data reference for a cd2030.core-backed Shiny app (see the \"Shiny App\" chat context for the current app's id). Given a \"page\" (a module id like \"3_national_coverage\"), returns that page's title, which CacheConnection methods/fields it reads, technical documentation for each, and -- where available -- the human-authored analysis rationale explaining why that page's numbers matter and how to interpret them. Given a \"functionName\" instead (e.g. \"calculate_coverage\"), returns that CacheConnection method/field's technical documentation directly, independent of any page -- use this for a custom analysis request that doesn't map onto an existing page, to find which method to call and what it returns. Omit both \"page\" and \"functionName\" to list every known page id and title for the app. Always look this up before writing R code against a Shiny app's CacheConnection cache, rather than guessing at method names or output meaning.",
+        "name": "countdown_context",
+        "displayName": "Countdown: What the User Sees",
+        "toolReferenceName": "countdownContext",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Where you are in a Countdown app: page, what is in view, filters, dataset.",
+        "modelDescription": "Returns what the user is looking at in a Countdown app (RMNCAH, Vaxx, Pooled): the tab and dataset (path, country, revision), the page (id, title, section) with the ESTABLISHED COUNTDOWN METHODOLOGY for that page (full docs sections with URLs, to ground and cite answers), the cards IN VIEW (with the active tab, the component showing, its report kind and options, what that kind shows, the CacheConnection members behind it and its docs), the cards elsewhere on the page, the filters, and other open Countdown tabs. Use it for 'what is this page about', 'what can you see' and 'what does this chart mean' before answering, and to learn which chart 'this' is (if several are in view and the user says 'this chart', ask which). The Shiny App chat context has a shorter version of the same state.",
         "inputSchema": {
           "type": "object",
           "properties": {
-            "appId": {
+            "tabId": {
               "type": "string",
-              "description": "The Shiny app id (see the \"Shiny App\" chat context for the current app's id)."
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
             },
-            "page": {
+            "includeMethodology": {
+              "type": "boolean",
+              "description": "Send the methodology in full even if it was sent for this page recently (e.g. in a new conversation). Default: sent in full once, then only its links."
+            }
+          }
+        }
+      },
+      {
+        "name": "countdown_component",
+        "displayName": "Countdown: Chart Data and Method",
+        "toolReferenceName": "countdownComponent",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "The data behind a chart or table on screen, with the methodology that explains it.",
+        "modelDescription": "Returns the data behind a chart or table in a Countdown app (exactly what its data download writes), together with what it is (its report kind and options, what that kind shows, the CacheConnection members behind it) and the ESTABLISHED COUNTDOWN METHODOLOGY for that chart and its page (full docs sections with URLs), plus the source URLs to cite. Use it -- not screenshots, read_page or shinyApp getComponentData -- whenever the user asks about, interprets or questions a chart or table they are looking at ('tell me about these results', 'what is wrong with my selection', 'does subnational show the same'). Without componentId it takes the one chart in view; if several are in view it fails with their names so you can ask which. Base the answer on the methodology returned and list its URLs under Sources.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "componentId": {
               "type": "string",
-              "description": "A specific page/module id (e.g. \"3_national_coverage\"). Omit (along with functionName) to list all available pages for this app."
+              "description": "The component (chart or table) id from countdown_context. Omit for the one chart in view."
             },
-            "functionName": {
+            "maxRows": {
+              "type": "number",
+              "description": "Rows to return (default 40, at most 2000). Ask for more only when the answer needs them."
+            },
+            "tabId": {
               "type": "string",
-              "description": "A specific CacheConnection method or field name (e.g. \"calculate_coverage\") to look up directly, independent of any page."
+              "description": "The Countdown tab (default: the active one)."
+            },
+            "includeMethodology": {
+              "type": "boolean",
+              "description": "Send the methodology in full even if it was sent for this page recently (e.g. in a new conversation). Default: sent in full once, then only its links."
+            }
+          }
+        }
+      },
+      {
+        "name": "countdown_cache",
+        "displayName": "Countdown: Get Data",
+        "toolReferenceName": "countdownCache",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Get data from the open Countdown dataset (CacheConnection).",
+        "modelDescription": "Gets data from the Countdown dataset open in a tab by calling ONE member of its CacheConnection, the single source of truth for Countdown numbers (most results are precomputed). Runs in the tab's own read-only R session, on exactly the dataset the app has (reloaded when the app saves). Find the right member with countdown_catalog first; never guess member names or arguments. Arguments not given are filled from the app's current filters where they match (admin_level, region, indicator, denominator), and the reply says which were used. Returns the table (capped at maxRows) with provenance (member, arguments, dataset, revision, time): cite it. Use it for any number, on this page or another, national or sub-national, and for drill-downs (decompose_change: which units drive a change between two years). Setters are refused: the AI does not change the dataset.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "member": {
+              "type": "string",
+              "description": "A CacheConnection member (method or precomputed binding) from countdown_catalog, e.g. \"reporting_rate_district\", \"get_filtered_coverage\", \"decompose_change\"."
+            },
+            "args": {
+              "type": "object",
+              "description": "A method's arguments by name, e.g. {\"indicator\": \"anc4\", \"admin_level\": \"district\"}. Omit for a binding."
+            },
+            "maxRows": {
+              "type": "number",
+              "description": "Rows to return (default 200, at most 2000); totalRows says how many there are."
+            },
+            "tabId": {
+              "type": "string",
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
             }
           },
           "required": [
-            "appId"
+            "member"
           ]
         }
       },
       {
-        "name": "readCd2030Cache",
-        "displayName": "Read Countdown Cache",
-        "toolReferenceName": "readCd2030Cache",
-        "canBeReferencedInPrompt": false,
-        "userDescription": "Load a Countdown Shiny app's .rds cache for analysis.",
-        "modelDescription": "Opens a Countdown Shiny app's `.rds` cache fresh via cd2030.core's own init_CacheConnection(), in the same managed R session runR uses, and returns its class and available methods/fields. The loaded cache stays available as the `.datasuite_cache` variable in that session for follow-up runR calls -- call cd2030Docs first to learn what each method/field means before using them. Always reopens fresh (never reuses a previous load) so you never analyze stale data after the Shiny app or a prior runR call has changed it. Accepts either the app's source file path or its .rds cache path directly (see the \"Shiny App\" chat context for the active app's file) -- the sibling .rds path is derived automatically if a non-.rds path is given.",
+        "name": "countdown_catalog",
+        "displayName": "Countdown: Find Data",
+        "toolReferenceName": "countdownCatalog",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Find which CacheConnection member or report kind answers a question.",
+        "modelDescription": "Searches what the Countdown dataset can answer: the read-only members of cd2030.core's CacheConnection (name, group such as 'data quality' or 'coverage', the question it answers, whether it is precomputed, its arguments with allowed values, related report kinds and docs pages), or, with what=\"reportKinds\", the chart and table kinds the apps and reports draw (id, options, members, docs). Use it before countdown_cache to pick the right member and arguments, and before building a report or custom graph. With no query it lists the groups and members.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Words to match, e.g. \"district reporting rate\", \"coverage anc4\", \"outliers\"."
+            },
+            "group": {
+              "type": "string",
+              "description": "Only this group (as listed when called with no query)."
+            },
+            "what": {
+              "type": "string",
+              "enum": [
+                "members",
+                "reportKinds"
+              ],
+              "description": "members (default) or reportKinds."
+            }
+          }
+        }
+      },
+      {
+        "name": "countdown_docs",
+        "displayName": "Countdown: Methodology Docs",
+        "toolReferenceName": "countdownDocs",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Search the Countdown methodology and app documentation.",
+        "modelDescription": "Searches the Countdown to 2030 methodology and app documentation (https://datasuite.damurka.com): the analysis framework (data quality, adjustment, denominators, coverage, equity, sub-national, mortality, service utilization, health system), indicator definitions, and the RMNCAH, Vaxx and Pooled apps, in English, French or Portuguese. Returns sections with their URLs: cite them. Use it for what a page, chart, indicator or method means and why it matters, and for any general Countdown question, even with no app open. Give url (a page, or page#anchor from a result) to read a whole page or section.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "What to look for, e.g. \"how is the denominator selected\"."
+            },
+            "url": {
+              "type": "string",
+              "description": "A docs page or section URL to read in full."
+            },
+            "lang": {
+              "type": "string",
+              "enum": [
+                "en",
+                "fr",
+                "pt"
+              ],
+              "description": "Language (default en)."
+            },
+            "limit": {
+              "type": "number",
+              "description": "Sections to return (default 5, at most 12)."
+            }
+          }
+        }
+      },
+      {
+        "name": "countdown_report",
+        "displayName": "Countdown: Reports",
+        "toolReferenceName": "countdownReport",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "List, build, save and generate Countdown reports.",
+        "modelDescription": "Countdown reports (Word, PowerPoint, PDF) are made of blocks: heading, paragraph, note, pagebreak, chart and table (a report kind with options; see listKinds), image. Actions: listPresets (the standard reports); listKinds (chart/table kinds and their options); build (validate a project { name, blocks }); save (validate, then save it in the dataset, where it opens in the app's Reports page for the user to edit; a custom graph goes in as { type: \"chart\", kind: \"custom_chart\", graph: \"<saved graph id>\" } or with spec); generate (write a file from a standard report (preset) or a saved report (reportId), format docx|pptx|pdf, into the tab's working folder). save and generate change the dataset or write files: only when the user asks. The user's permission setting may ask them to confirm.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "listPresets",
+                "listKinds",
+                "build",
+                "save",
+                "generate"
+              ]
+            },
+            "project": {
+              "type": "object",
+              "description": "For build/save: { name, blocks: [ { type, ... } ] }."
+            },
+            "preset": {
+              "type": "string",
+              "description": "For generate: a standard report id from listPresets."
+            },
+            "reportId": {
+              "type": "string",
+              "description": "For generate: a saved report's id."
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "docx",
+                "pptx",
+                "pdf"
+              ]
+            },
+            "query": {
+              "type": "string",
+              "description": "For listKinds: words to match."
+            },
+            "group": {
+              "type": "string",
+              "description": "For listKinds: a kind group."
+            },
+            "tabId": {
+              "type": "string",
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
+            }
+          },
+          "required": [
+            "action"
+          ]
+        }
+      },
+      {
+        "name": "countdown_graph",
+        "displayName": "Countdown: Custom Graph",
+        "toolReferenceName": "countdownGraph",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Draw a custom graph from the Countdown dataset, and save it.",
+        "modelDescription": "Draws a custom graph when no report kind fits, from a declarative custom_chart spec: { title, data: { member, args }, transform: [ ... ], plot: { geom, x, y, colour?, fill?, facet?, position?, labels?, percent?, flip? } }. data.member must be a chartable CacheConnection member (countdown_catalog shows 'chartable'); transforms are filter, select, rename, mutate_ratio, aggregate { by, fun, cols }, pivot_longer, arrange, top_n; geoms are line, col, point, area, tile. It validates the spec and draws a preview image (preview, default true). With save: true it stores the graph in the dataset, where it redraws when the data changes and can be added to any report; do that only when the user wants to keep it (their permission setting may ask them to confirm). No code is stored.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "spec": {
+              "type": "object",
+              "description": "The custom_chart spec."
+            },
+            "preview": {
+              "type": "boolean",
+              "description": "Draw a preview image (default true)."
+            },
+            "save": {
+              "type": "boolean",
+              "description": "Save it in the dataset (default false)."
+            },
+            "tabId": {
+              "type": "string",
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
+            }
+          },
+          "required": [
+            "spec"
+          ]
+        }
+      },
+      {
+        "name": "countdown_run_r",
+        "displayName": "Countdown: Run R on the Dataset",
+        "toolReferenceName": "countdownRunR",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Run R on the open Countdown dataset for analysis no member covers.",
+        "modelDescription": "Runs R code in the tab's own R session, where `.cache` is the dataset's CacheConnection (read-only: nothing is saved). Only for analysis no single CacheConnection member covers: look with countdown_catalog first, and build on members (e.g. `.cache$reporting_rate_district`, `.cache$get_filtered_coverage(\"anc4\", \"district\")`) rather than raw data. Label what comes from here as computed, not shown in the app. The code is kept in the tab's working folder. Returns printed output and plots.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "R code; print() what you need."
+            },
+            "tabId": {
+              "type": "string",
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
+            }
+          },
+          "required": [
+            "code"
+          ]
+        }
+      },
+      {
+        "name": "countdown_open_dataset",
+        "displayName": "Countdown: Open a Dataset",
+        "toolReferenceName": "countdownOpenDataset",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Open a Countdown dataset in its own app tab.",
+        "modelDescription": "Opens a Countdown dataset (a saved .rds, a data file, or for Pooled a folder of .rds files) in its own app tab, so it gets its own context. Use it when the user names a dataset other than the ones open. Picks RMNCAH or Vaxx from the dataset's indicators unless app is given, and Pooled for a folder. Returns the new tab's id for the other countdown_* tools. Asks the user to confirm.",
         "inputSchema": {
           "type": "object",
           "properties": {
             "path": {
               "type": "string",
-              "description": "Absolute path to the Shiny app's source file or its .rds cache (see the \"Shiny App\" chat context for the active app's selected file)."
+              "description": "Absolute path of the dataset."
+            },
+            "app": {
+              "type": "string",
+              "enum": [
+                "rmncah",
+                "vaxx",
+                "pooled"
+              ]
             }
           },
           "required": [
@@ -111,6 +350,9 @@
         "description": "Launch the RMNCAH App to keep working",
         "icon": "graph",
         "location": "apps/rmncah",
+        "cache": {
+          "file": "<stem>.rds"
+        },
         "package": {
           "name": "cd2030.rmncah",
           "version": "2.0.0",
@@ -136,6 +378,9 @@
         "description": "Launch the Vaxx App to keep working",
         "icon": "graph",
         "location": "apps/vaxx",
+        "cache": {
+          "file": "<stem>.rds"
+        },
         "package": {
           "name": "cd2030.vaxx",
           "version": "2.0.0",
@@ -161,6 +406,9 @@
         "description": "Launch the Pooled App to keep working",
         "icon": "graph",
         "location": "apps/pooled",
+        "cache": {
+          "file": "<stem>.rds"
+        },
         "package": {
           "name": "cd2030.pooled",
           "version": "2.0.0",
@@ -179,6 +427,17 @@
         },
         "showOnStartPage": false
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Countdown Analytics",
+      "properties": {
+        "countdown.ai.useDraftBriefs": {
+          "type": "boolean",
+          "default": false,
+          "scope": "application",
+          "markdownDescription": "Let the Countdown AI use the methodology docs' AI briefs that are still drafts (not yet checked against the pages). Off: it uses reviewed briefs only, and the full docs sections for pages without one. For trying out briefs before they are reviewed."
+        }
+      }
+    }
   }
 }

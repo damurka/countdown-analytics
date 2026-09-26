@@ -1,0 +1,45 @@
+name: Countdown AI
+
+# Keeps the Countdown AI in step with the released cd2030.core (docs/AI-PLAN.md section 3):
+# - ai-guide: the guides (ai/cache-guide.json, ai/report-kinds.json) must match the released CacheConnection and
+#   report kinds. When they don't, run `Rscript scripts/generate-ai-guide.R` -- or merge the pull request that
+#   cd2030.core's ai-guide-sync workflow opens on each release.
+# - eval: the deterministic part of the evaluation (ai/eval/questions.yaml) on cd2030.core's sample dataset.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 5 * * 1'   # weekly: catches a cd2030.core release that changed CacheConnection
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ai-guide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install cd2030.core and datasuite.ui (r-universe)
+        run: |
+          Rscript -e 'install.packages(c("cd2030.core", "datasuite.ui", "jsonlite", "yaml"), repos = c("https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev", getOption("repos")))'
+      - name: The guides match the released cd2030.core
+        run: Rscript scripts/generate-ai-guide.R --corpus ai/corpus.json --check
+
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install cd2030.core and datasuite.ui (r-universe)
+        run: |
+          Rscript -e 'install.packages(c("cd2030.core", "datasuite.ui", "jsonlite", "yaml"), repos = c("https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev", getOption("repos")))'
+      - name: Evaluation (deterministic part)
+        run: Rscript scripts/run-eval.R

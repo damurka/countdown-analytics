@@ -13,7 +13,8 @@ DataSuite (VS Code fork, repo damurka/datasuite_ai)
  +-- countdown-analytics (this extension)
  |     package.json    shinyApps entries (RMNCAH, Vaxx, Pooled), each naming its R package
  |     apps/<app>/     launch stubs only: app.R = cd2030.<app>::run_app(), plus the JSON the AI tools read
- |     src/            the cd2030Docs and readCd2030Cache chat tools
+ |     src/, ai/       the Countdown AI: countdown_* chat tools, the CacheConnection and report-kind guides, the docs
+ |                     corpus snapshot (see docs/AI-PLAN.md)
  |
  +-- R packages, published at https://damurka.r-universe.dev
        cd2030.rmncah   cd2030.vaxx   cd2030.pooled      the apps: their own pages, config, translations, intro
@@ -126,7 +127,7 @@ committed, so installing the package needs no Node.
 | Run an app from its repo | `shiny::runApp()` in the app repo: its `app.R` loads the package source with `pkgload::load_all()`. |
 | Use local changes to a library in an app | `devtools::install()` the library. Install cd2030.core with `devtools::install(quick = TRUE, upgrade = FALSE, dependencies = FALSE)`, or its `Remotes:` reinstalls datasuite.ui from GitHub over your local one. Stop running apps first (Windows locks loaded packages). |
 | Try DataSuite's install/update flow | In the datasuite repo: `npm run transpile-client` (~5 s), then `scripts\code.bat --user-data-dir=<empty folder> --extensions-dir=<empty folder> --extensionDevelopmentPath=<this repo>` with `VSCODE_SKIP_PRELAUNCH=1`. A fresh user-data dir is a fresh install; bump `version` in this package.json to simulate an update. Read the log `<user-data-dir>/logs/<time>/datasuiteSessionService.log`. |
-| Regenerate the AI tools' JSON | `data-reference.json`: `Rscript scripts/generate-cd2030-reference.R <app-dir> <output> [docs-repo] [package]` in the datasuite repo. `docs-index.json`: `node scripts/generate-docs-index.js <datasuite-docs checkout> <output>`. Both are copied into `apps/<app>/` here. |
+| Regenerate the AI guides | `Rscript scripts/generate-ai-guide.R` (from the installed cd2030.core and the docs corpus; `--check` to only compare). Refresh the docs snapshot: copy datasuite-docs `out/ai/corpus.json` (after its build) to `ai/corpus.json`. Check the evaluation: `Rscript scripts/run-eval.R`. |
 
 ## Troubleshooting
 
@@ -139,15 +140,30 @@ committed, so installing the package needs no Node.
 | Something works on your machine but not a user's | Your library has packages theirs doesn't -- a missing declaration. `R CMD check` catches undeclared `pkg::` calls; `requireNamespace()` ones must be in Suggests (installed best effort) or Imports. |
 | Reset a user's app packages | Close DataSuite and delete `%APPDATA%\DataSuite\R\library\<R version>`; the next start or launch reinstalls. |
 
+## The Countdown AI
+
+The design, the decisions and the contracts are in [AI-PLAN.md](AI-PLAN.md). In short:
+
+- **Screen**: a running app tells DataSuite where the user is through the AI bridge (datasuite.ui, protocol 2:
+  `docs/AI-BRIDGE.md` there): page, cards and tabs in view, each chart's report kind, filters, dataset and revision.
+  DataSuite's generic `shinyApp` tool reads a chart's data, takes screenshots and changes the view (under the setting
+  `datasuite.shinyApps.aiAppControl`).
+- **Data**: `countdown_cache` calls one `CacheConnection` member -- the single source of truth -- in the tab's own
+  read-only R session (DataSuite's `datasuite.r.*` API), reloaded when the app saves; `countdown_catalog` finds the
+  member (from `ai/cache-guide.json`); `countdown_run_r` for what no member covers.
+- **Knowledge**: `countdown_docs` searches the methodology docs corpus (`ai/corpus.json`, refreshed from
+  https://datasuite.damurka.com/ai/corpus.json).
+- **Adding**: `countdown_report` (standard and custom reports) and `countdown_graph` (`custom_chart` graphs that redraw),
+  saved through the app.
+- **Other datasets**: `countdown_open_dataset` opens them in their own tab.
+- **Kept current**: CI regenerates the guides from each cd2030.core release (`scripts/generate-ai-guide.R`, the
+  `ai-guide` workflow here and `ai-guide-sync` in cd2030.core) and runs the evaluation (`ai/eval/questions.yaml`).
+
 ## Known loose ends
 
-- DataSuite's workbench still names Countdown in a few places: the `.rds` cache naming (`resolveShinySourcePath.ts`), the
-  chat context mentioning `cd2030Docs`, the Start page title, the Countdown themes.
-- `scripts/generate-cd2030-reference.R` (datasuite repo) was written for the old app layout (`<app>/modules/`); it needs
-  updating for the package layout (`R/page-*.R`) before `data-reference.json` can be regenerated.
+- DataSuite's Start page still has the "Countdown to 2030" title and the Countdown themes (wired into its Start page
+  code rather than contributed).
+- The guides' drafted fields (group, question, related report kinds -- drawn from docs pages that name both) need a
+  person's review; reviewed entries keep their text on regeneration.
 - The launch stubs exist because DataSuite launches a folder. A `package` app could be launched with
-  `pkg::run_app()` directly, and the JSON could ship inside the packages, which would remove `apps/` entirely.
-</content>
-</invoke>
-<invoke name="Bash">
-<parameter name="command">cd C:/Users/Murage/Documents/Dev/JS/datasuite-infrastructure && git -C datasuite remote get-url origin; grep -n "rawNamespace\|fontawesome" cd2030.core/DESCRIPTION | head -2; grep -n "Remotes" -A3 cd2030.rmncah/DESCRIPTION; grep -n "data-reference.json\|docs-index" datasuite/src/vs/workbench/contrib/datasuite/electron-browser/datasuite.contribution.ts | head -3; sed -n 40,60p countdown-analytics/src/extension.ts
+  `pkg::run_app()` directly, which would remove `apps/` entirely.

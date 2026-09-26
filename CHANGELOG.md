@@ -4,6 +4,27 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The Countdown AI, rebuilt (docs/AI-PLAN.md): every Countdown AI feature now lives in this extension, grounded in the
+  dataset's `CacheConnection`, the methodology docs and what is on screen. New tools: `countdown_context`,
+  `countdown_catalog`, `countdown_cache`, `countdown_docs`, `countdown_report`, `countdown_graph`, `countdown_run_r`,
+  `countdown_open_dataset`. Data questions run in the tab's own read-only R session, reloaded when the app saves.
+- The chat instructions apply to any Countdown tab (they never matched before: the app id key held the full id).
+- Each app declares its saved dataset (`cache: { file: "<stem>.rds" }`), now that DataSuite no longer assumes it.
+
+### Removed
+
+- `cd2030Docs`, `readCd2030Cache` and the `data-reference.json` / `docs-index.json` files they read.
+
+### Added
+
+- `ai/`: the `CacheConnection` guide and report-kind guide (generated from cd2030.core by `scripts/generate-ai-guide.R`),
+  the docs corpus snapshot, and the evaluation (`ai/eval/questions.yaml`, `scripts/run-eval.R`); CI checks the guides
+  against the released cd2030.core.
+
 ## [2.0.1] - 2026-09-26
 
 ### Changed
