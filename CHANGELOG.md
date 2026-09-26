@@ -6,6 +6,16 @@ All notable changes to this extension are documented here. The format is based o
 
 ## [2.0.0] - Unreleased
 
+### Changed
+
+- The apps are now R packages -- cd2030.rmncah, cd2030.vaxx and cd2030.pooled, in their own repos and published at
+  https://damurka.r-universe.dev -- instead of app folders bundled in this extension. Each `shinyApps` entry names its
+  package (`package: { name, version, repos }`); DataSuite installs it with the extension, updates it when the
+  extension is updated and checks it before every launch. `apps/<app>/` keeps only a launch stub
+  (`cd2030.<app>::run_app()`) and the JSON the AI tools read. Requires R 4.1 or newer and an internet connection for the
+  first install. See `docs/ARCHITECTURE.md`.
+- The Bayesian coverage packages install from https://alkemalab.r-universe.dev.
+
 ### Added
 
 - Single extension bundling the **RMNCAH**, **Vaxx** and **Pooled** Shiny apps, replacing the
