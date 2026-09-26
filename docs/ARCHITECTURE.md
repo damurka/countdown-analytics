@@ -97,7 +97,7 @@ own library stays untouched but visible. The `datasuite.rLibs` setting overrides
 1. Raise the minimum in the dependent DESCRIPTION (`cd2030.core (>= 1.2.0)`) and release that package as above.
 2. In this repo, raise `package.version` for the apps that need it, add a CHANGELOG.md entry, then
    `npm version <patch|minor|major>` and `git push --follow-tags`. The `v*` tag makes CI publish the extension to the
-   DataSuite registry (Open VSX at open-dsx.damurka.com) and cut a GitHub release; the tag must equal package.json's
+   DataSuite registry (Open VSX at https://datasuite.damurka.com/registry) and cut a GitHub release; the tag must equal package.json's
    version.
 3. DataSuite updates the extension, sees the new stamp, and installs the new package versions.
 

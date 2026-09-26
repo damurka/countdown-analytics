@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 env:
-  OVSX_REGISTRY_URL: https://open-dsx.damurka.com
+  OVSX_REGISTRY_URL: https://datasuite.damurka.com/registry
 
 jobs:
   build:
