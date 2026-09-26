@@ -21,7 +21,7 @@ All notable changes to this extension are documented here. The format is based o
   be opened or saved; the R it runs goes in `scripts/`; generated reports in `reports/`, with a link in the answer.
 - Reports can include a figure the AI drew (an image block, stored in the dataset). Changes to the app are confirmed in
   the chat, and only when they replace something saved.
-- The apps ask for the balanced model tier (`aiModelRole`); they need cd2030.rmncah / cd2030.vaxx 2.0.2 (Pooled is pinned to cd2030.pooled 2.0.1).
+- The apps ask for the balanced model tier (`aiModelRole`); they need cd2030.rmncah, cd2030.vaxx and cd2030.pooled 2.0.1 (the apps are pinned at 2.0.1).
 
 ### Removed
 

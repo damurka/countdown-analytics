@@ -360,7 +360,7 @@
         },
         "package": {
           "name": "cd2030.rmncah",
-          "version": "2.0.2",
+          "version": "2.0.1",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -389,7 +389,7 @@
         },
         "package": {
           "name": "cd2030.vaxx",
-          "version": "2.0.2",
+          "version": "2.0.1",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
