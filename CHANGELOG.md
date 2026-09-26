@@ -4,7 +4,7 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
-## [2.0.0] - Unreleased
+## [2.0.1] - 2026-09-26
 
 ### Changed
 
@@ -15,6 +15,10 @@ All notable changes to this extension are documented here. The format is based o
   (`cd2030.<app>::run_app()`) and the JSON the AI tools read. Requires R 4.1 or newer and an internet connection for the
   first install. See `docs/ARCHITECTURE.md`.
 - The Bayesian coverage packages install from https://alkemalab.r-universe.dev.
+- Needs a DataSuite that installs app packages (the `shinyApps` `package` field) and finds a system R: DataSuite no
+  longer bundles R. On an older DataSuite the apps do not open.
+
+## [2.0.0] - 2026-09-21
 
 ### Added
 
