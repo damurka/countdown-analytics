@@ -11,7 +11,7 @@
     "r",
     "datasuite"
   ],
-  "version": "2.0.0",
+  "version": "2.0.1",
   "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
@@ -78,7 +78,9 @@
               "description": "A specific CacheConnection method or field name (e.g. \"calculate_coverage\") to look up directly, independent of any page."
             }
           },
-          "required": ["appId"]
+          "required": [
+            "appId"
+          ]
         }
       },
       {
@@ -96,7 +98,9 @@
               "description": "Absolute path to the Shiny app's source file or its .rds cache (see the \"Shiny App\" chat context for the active app's selected file)."
             }
           },
-          "required": ["path"]
+          "required": [
+            "path"
+          ]
         }
       }
     ],
@@ -110,9 +114,17 @@
         "package": {
           "name": "cd2030.rmncah",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
+          "repos": [
+            "https://damurka.r-universe.dev",
+            "https://alkemalab.r-universe.dev"
+          ]
         },
-        "accepts": ["xls", "xlsx", "dta", "rds"],
+        "accepts": [
+          "xls",
+          "xlsx",
+          "dta",
+          "rds"
+        ],
         "capabilities": {
           "requiresFile": true
         },
@@ -127,9 +139,17 @@
         "package": {
           "name": "cd2030.vaxx",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
+          "repos": [
+            "https://damurka.r-universe.dev",
+            "https://alkemalab.r-universe.dev"
+          ]
         },
-        "accepts": ["xls", "xlsx", "dta", "rds"],
+        "accepts": [
+          "xls",
+          "xlsx",
+          "dta",
+          "rds"
+        ],
         "capabilities": {
           "requiresFile": true
         },
@@ -144,9 +164,14 @@
         "package": {
           "name": "cd2030.pooled",
           "version": "2.0.0",
-          "repos": ["https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev"]
+          "repos": [
+            "https://damurka.r-universe.dev",
+            "https://alkemalab.r-universe.dev"
+          ]
         },
-        "accepts": ["rds"],
+        "accepts": [
+          "rds"
+        ],
         "capabilities": {
           "requiresFile": true,
           "canSelectFiles": false,
