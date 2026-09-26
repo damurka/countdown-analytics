@@ -6,6 +6,8 @@ All notable changes to this extension are documented here. The format is based o
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-09-27
+
 ### Changed
 
 - The Countdown AI, rebuilt (docs/AI-PLAN.md): every Countdown AI feature now lives in this extension, grounded in the
@@ -13,7 +15,13 @@ All notable changes to this extension are documented here. The format is based o
   `countdown_catalog`, `countdown_cache`, `countdown_docs`, `countdown_report`, `countdown_graph`, `countdown_run_r`,
   `countdown_open_dataset`. Data questions run in the tab's own read-only R session, reloaded when the app saves.
 - The chat instructions apply to any Countdown tab (they never matched before: the app id key held the full id).
-- Each app declares its saved dataset (`cache: { file: "<stem>.rds" }`), now that DataSuite no longer assumes it.
+- Each app declares its saved dataset as the apps write it (`<stem>_rmncah.rds`, `<stem>_vaccine.rds`), so reopening
+  a data file finds its saved copy and RMNCAH and Vaxx on the same file keep separate analysis folders.
+- Figures the AI draws are saved in the dataset's analysis folder (`figures/`) and shown in the answer, where they can
+  be opened or saved; the R it runs goes in `scripts/`; generated reports in `reports/`, with a link in the answer.
+- Reports can include a figure the AI drew (an image block, stored in the dataset). Changes to the app are confirmed in
+  the chat, and only when they replace something saved.
+- The apps ask for the balanced model tier (`aiModelRole`); they need cd2030.rmncah / cd2030.vaxx 2.0.2 (Pooled is pinned to cd2030.pooled 2.0.1).
 
 ### Removed
 
