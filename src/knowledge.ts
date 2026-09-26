@@ -107,6 +107,11 @@ const SITE = 'https://datasuite.damurka.com';
  * is its introduction) -- and the page's `url` is given once, so the link to cite is `url` + `#anchor`; `(/en/...)`
  * sources become full site links.
  */
+/** The docs folders (slug prefixes) that describe an app's screens. */
+function appDocs(app: string): string[] {
+	return app === 'rmncah' || app === 'vaxx' ? ['apps/countdown/', `apps/${app}/`] : [`apps/${app}/`];
+}
+
 function citedBrief(page: ICorpusPage): IPageBrief {
 	const brief = page.ai!;
 	const cite = (item: string) => item.replace(/\((\/(?:en|fr|pt)\/[^)\s]*)\)/g, (_, route: string) => `(${SITE}${route})`);
@@ -193,9 +198,12 @@ export class Knowledge {
 		const linked = pages.filter(page =>
 			(link.appPage && (page.frontmatter.appPages ?? []).includes(link.appPage)) ||
 			(link.reportKind && (page.frontmatter.reportKinds ?? []).includes(link.reportKind)))
-			// another app's pages describe that app's screens, not this one's
-			.filter(page => !page.slug.startsWith('apps/') || page.slug.startsWith(`apps/${app}`));
-		const ordered = [...linked.filter(p => p.slug.includes('framework')), ...linked.filter(p => !p.slug.includes('framework'))];
+			// another app's pages describe that app's screens, not this one's (RMNCAH and Vaxx share apps/countdown/,
+			// their differences in [RMNCAH] / [Vaxx] labelled tabs)
+			.filter(page => !page.slug.startsWith('apps/') || appDocs(app).some(prefix => page.slug.startsWith(prefix)));
+		// the method pages (docs/methodology/; docs/framework/ before the docs moved) first
+		const isMethod = (page: ICorpusPage) => /(^|\/)(methodology|framework)\//.test(page.slug);
+		const ordered = [...linked.filter(isMethod), ...linked.filter(page => !isMethod(page))];
 		// a page with a usable brief is sent as its brief (short, explicit, every item cited); the others as sections
 		const useDrafts = vscode.workspace.getConfiguration('countdown.ai').get<boolean>('useDraftBriefs', false);
 		const briefs: IPageBrief[] = [];

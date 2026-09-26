@@ -18,3 +18,8 @@ node_modules/**
 
 # React source and build tooling: only the built bundle ships
 js/**
+
+# Countdown AI: the guides and docs corpus ship; their generators, the evaluation and the design docs don't
+scripts/**
+ai/eval/**
+docs/**

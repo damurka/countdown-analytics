@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generatedAt": "2026-09-26T08:58:21Z",
+  "generatedAt": "2026-09-26T16:05:25Z",
   "kinds": {
     "adj_comparison": {
       "label": "Numbers before and after adjustment",
@@ -22,9 +22,8 @@
         "k_factors"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-preparation/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-preparation/",
-        "https://datasuite.damurka.com/en/docs/framework/3-data-adjustment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-preparation/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-adjustment/"
       ],
       "status": "draft"
     },
@@ -47,8 +46,8 @@
         "survey_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/advanced-analysis/",
-        "https://datasuite.damurka.com/en/docs/framework/5.1-bayesian-coverage/"
+        "https://datasuite.damurka.com/en/apps/countdown/advanced-analysis/",
+        "https://datasuite.damurka.com/en/docs/methodology/bayesian-coverage/"
       ],
       "status": "draft"
     },
@@ -90,9 +89,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -122,8 +120,8 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/advanced-analysis/",
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/apps/countdown/advanced-analysis/",
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -153,8 +151,8 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/advanced-analysis/",
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/apps/countdown/advanced-analysis/",
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -182,7 +180,7 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -212,9 +210,8 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/vaxx/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/apps/countdown/coverage-equity-targets/",
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -244,9 +241,8 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/vaxx/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/apps/countdown/coverage-equity-targets/",
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -291,9 +287,8 @@
         "un_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/denominators/",
-        "https://datasuite.damurka.com/en/apps/vaxx/denominators/",
-        "https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/"
+        "https://datasuite.damurka.com/en/apps/countdown/denominators/",
+        "https://datasuite.damurka.com/en/docs/methodology/denominators/"
       ],
       "status": "draft"
     },
@@ -323,9 +318,8 @@
         "un_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/denominators/",
-        "https://datasuite.damurka.com/en/apps/vaxx/denominators/",
-        "https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/"
+        "https://datasuite.damurka.com/en/apps/countdown/denominators/",
+        "https://datasuite.damurka.com/en/docs/methodology/denominators/"
       ],
       "status": "draft"
     },
@@ -355,9 +349,8 @@
         "un_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/denominators/",
-        "https://datasuite.damurka.com/en/apps/vaxx/denominators/",
-        "https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/"
+        "https://datasuite.damurka.com/en/apps/countdown/denominators/",
+        "https://datasuite.damurka.com/en/docs/methodology/denominators/"
       ],
       "status": "draft"
     },
@@ -387,9 +380,8 @@
         "inequality_district"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     },
@@ -431,9 +423,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -475,9 +466,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -519,9 +509,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -563,9 +552,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -607,9 +595,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -651,9 +638,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -685,9 +671,8 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/vaxx/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/docs/framework/6-equity-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/coverage-equity-targets/",
+        "https://datasuite.damurka.com/en/docs/methodology/equity/"
       ],
       "status": "draft"
     },
@@ -725,8 +710,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -764,8 +749,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -803,8 +788,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -842,8 +827,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -869,7 +854,7 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/"
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/"
       ],
       "status": "draft"
     },
@@ -906,11 +891,9 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/coverage-equity-targets/",
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     },
@@ -940,9 +923,8 @@
         "inequality_district"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     },
@@ -980,8 +962,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/10-service-utilisation/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/service-utilisation/"
       ],
       "status": "draft"
     },
@@ -1007,8 +989,8 @@
         "un_mortality_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/mortality/",
-        "https://datasuite.damurka.com/en/docs/framework/9-mortality/"
+        "https://datasuite.damurka.com/en/apps/countdown/mortality/",
+        "https://datasuite.damurka.com/en/docs/methodology/mortality/"
       ],
       "status": "draft"
     },
@@ -1034,8 +1016,8 @@
         "un_mortality_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/mortality/",
-        "https://datasuite.damurka.com/en/docs/framework/9-mortality/"
+        "https://datasuite.damurka.com/en/apps/countdown/mortality/",
+        "https://datasuite.damurka.com/en/docs/methodology/mortality/"
       ],
       "status": "draft"
     },
@@ -1061,8 +1043,8 @@
         "un_mortality_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/mortality/",
-        "https://datasuite.damurka.com/en/docs/framework/9-mortality/"
+        "https://datasuite.damurka.com/en/apps/countdown/mortality/",
+        "https://datasuite.damurka.com/en/docs/methodology/mortality/"
       ],
       "status": "draft"
     },
@@ -1088,8 +1070,8 @@
         "un_mortality_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/mortality/",
-        "https://datasuite.damurka.com/en/docs/framework/9-mortality/"
+        "https://datasuite.damurka.com/en/apps/countdown/mortality/",
+        "https://datasuite.damurka.com/en/docs/methodology/mortality/"
       ],
       "status": "draft"
     },
@@ -1115,8 +1097,8 @@
         "un_mortality_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/mortality/",
-        "https://datasuite.damurka.com/en/docs/framework/9-mortality/"
+        "https://datasuite.damurka.com/en/apps/countdown/mortality/",
+        "https://datasuite.damurka.com/en/docs/methodology/mortality/"
       ],
       "status": "draft"
     },
@@ -1148,9 +1130,8 @@
         "inequality_district"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     },
@@ -1172,7 +1153,7 @@
         "get_bayes_model"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/advanced-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/advanced-analysis/"
       ],
       "status": "draft"
     },
@@ -1229,9 +1210,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -1269,8 +1249,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -1308,8 +1288,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -1347,8 +1327,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/11-health-system-performance/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/health-system/"
       ],
       "status": "draft"
     },
@@ -1384,10 +1364,9 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/coverage/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     },
@@ -1429,9 +1408,8 @@
         "reporting_rate_national"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/data-quality/",
-        "https://datasuite.damurka.com/en/apps/vaxx/data-quality/",
-        "https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/"
+        "https://datasuite.damurka.com/en/apps/countdown/data-quality/",
+        "https://datasuite.damurka.com/en/docs/methodology/data-quality/"
       ],
       "status": "draft"
     },
@@ -1469,8 +1447,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/10-service-utilisation/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/service-utilisation/"
       ],
       "status": "draft"
     },
@@ -1508,8 +1486,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/10-service-utilisation/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/service-utilisation/"
       ],
       "status": "draft"
     },
@@ -1547,8 +1525,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/10-service-utilisation/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/service-utilisation/"
       ],
       "status": "draft"
     },
@@ -1586,8 +1564,8 @@
         "utilization_mapping_years"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/service-utilization-health-system/",
-        "https://datasuite.damurka.com/en/docs/framework/10-service-utilisation/"
+        "https://datasuite.damurka.com/en/apps/countdown/service-utilization-health-system/",
+        "https://datasuite.damurka.com/en/docs/methodology/service-utilisation/"
       ],
       "status": "draft"
     },
@@ -1624,11 +1602,9 @@
         "wuenic_estimates"
       ],
       "docs": [
-        "https://datasuite.damurka.com/en/apps/rmncah/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/rmncah/subnational/",
-        "https://datasuite.damurka.com/en/apps/vaxx/coverage-equity-targets/",
-        "https://datasuite.damurka.com/en/apps/vaxx/subnational/",
-        "https://datasuite.damurka.com/en/docs/framework/7-subnational-analysis/"
+        "https://datasuite.damurka.com/en/apps/countdown/coverage-equity-targets/",
+        "https://datasuite.damurka.com/en/apps/countdown/subnational/",
+        "https://datasuite.damurka.com/en/docs/methodology/subnational/"
       ],
       "status": "draft"
     }

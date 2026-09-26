@@ -10,7 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { appRequest, appState, countdownTabs, EXTENSION_ID, IAppState, ITab, pickTab, tabDataset, workspaceDir } from './app';
+import { appRequest, appState, countdownTabs, EXTENSION_ID, IAppState, ITab, pickTab, tabDataset, workspaceDir, appPlan } from './app';
 import { IGuideMember, Knowledge } from './knowledge';
 import { CountdownR, IRReply, rString, toR } from './r';
 
@@ -79,8 +79,14 @@ export class CountdownTools {
 			vscode.lm.registerTool('countdown_cache', { invoke: options => this._cache(options.input as ICacheInput) }),
 			vscode.lm.registerTool('countdown_catalog', { invoke: options => this._catalog(options.input as ICatalogInput) }),
 			vscode.lm.registerTool('countdown_docs', { invoke: options => this._docs(options.input as IDocsInput) }),
-			vscode.lm.registerTool('countdown_report', { invoke: options => this._report(options.input as IReportInput) }),
-			vscode.lm.registerTool('countdown_graph', { invoke: options => this._graph(options.input as IGraphInput) }),
+			vscode.lm.registerTool('countdown_report', {
+				prepareInvocation: options => this._prepareChange(options.input as IReportInput, reportChange(options.input as IReportInput)),
+				invoke: options => this._report(options.input as IReportInput)
+			}),
+			vscode.lm.registerTool('countdown_graph', {
+				prepareInvocation: options => this._prepareChange(options.input as IGraphInput, graphChange(options.input as IGraphInput)),
+				invoke: options => this._graph(options.input as IGraphInput)
+			}),
 			vscode.lm.registerTool('countdown_run_r', { invoke: options => this._runR(options.input as { code: string; tabId?: string }) }),
 			vscode.lm.registerTool('countdown_open_dataset', {
 				prepareInvocation: options => ({
@@ -106,6 +112,32 @@ export class CountdownTools {
 		this._r.prune(new Set(tabs.map(t => t.tabId)));
 		const state = await appState(picked);
 		return { tab: picked, state, dataset: tabDataset(picked, state), label: `Countdown AI: ${picked.title ?? picked.localId}` };
+	}
+
+	/**
+	 * Before a tool changes the app: what the change would do, in words, and -- when the user's setting wants a
+	 * replace confirmed -- the chat's Allow/Skip. Adding a report, chart or file and changing the view are not asked
+	 * about. The tool then tells DataSuite the call is confirmed, so it doesn't ask again in a dialog.
+	 */
+	private async _prepareChange(input: { tabId?: string }, change: IAppChange | undefined): Promise<vscode.PreparedToolInvocation | undefined> {
+		if (!change) {
+			return undefined;
+		}
+		const tab = await pickTab(input.tabId);
+		if (typeof tab === 'string') {
+			return undefined;
+		}
+		const plan = await appPlan(tab, change.action, change.args);
+		if (!plan) {
+			return undefined;
+		}
+		return {
+			invocationMessage: `${plan.summary}...`,
+			confirmationMessages: plan.policy === 'confirm' ? {
+				title: 'Replace something saved?',
+				message: new vscode.MarkdownString(`${plan.summary}?\n\n(Setting: \`datasuite.shinyApps.aiAppControl\`.)`)
+			} : undefined
+		};
 	}
 
 	private async _needDataset(tabId: string | undefined): Promise<ITabContext | string> {
@@ -338,8 +370,9 @@ export class CountdownTools {
 		if (!input?.query) {
 			return failure('Give query (a search) or url (a page or section to read).');
 		}
-		const hits = await this._knowledge.search(input.query, input.lang ?? 'en', Math.min(input.limit ?? 5, 12));
-		return text({ query: input.query, results: hits.map(h => ({ ...h, text: h.text.length > 1500 ? `${h.text.slice(0, 1500)}...` : h.text })), cite: 'Cite the url of each section you use.' });
+		// small results: a search is for finding the right sections; fetch one (url) for its full text
+		const hits = await this._knowledge.search(input.query, input.lang ?? 'en', Math.min(input.limit ?? 5, 8));
+		return text({ query: input.query, results: hits.map(h => ({ ...h, text: h.text.length > 600 ? `${h.text.slice(0, 600)}... (fetch this url for the full section)` : h.text })), cite: 'Cite the url of each section you use.' });
 	}
 
 	// ---------------------------------------------------------------------------------------------- countdown_report
@@ -374,7 +407,8 @@ export class CountdownTools {
 				if (input.action === 'build') {
 					return text({ valid: true, ...(reply.result as object), next: 'Save it with action "save" (it opens in the Reports page), or export with "generate" after saving.' });
 				}
-				const saved = await appRequest(context.tab, 'saveReport', { project: input.project });
+				// confirmed: the chat asked the user when the setting wanted it (prepareInvocation)
+				const saved = await appRequest(context.tab, 'saveReport', reportChange(input)!.args, { confirmed: true });
 				return saved.ok ? text({ saved: saved.result, where: 'the Reports page of the app' }) : failure(saved.error ?? 'The app did not save the report.');
 			}
 			case 'generate': {
@@ -385,11 +419,14 @@ export class CountdownTools {
 				if (!input.preset && !input.reportId) {
 					return failure('Give preset (a standard report id, see listPresets) or reportId (a saved report).');
 				}
-				const args: Record<string, unknown> = { format: input.format ?? 'docx' };
-				if (input.preset) { args.preset = input.preset; }
-				if (input.reportId) { args.reportId = input.reportId; }
-				const made = await appRequest(context.tab, 'generateReport', args);
-				return made.ok ? text({ generated: made.result }) : failure(made.error ?? 'The app did not generate the report.');
+				const made = await appRequest(context.tab, 'generateReport', reportChange(input)!.args, { confirmed: true });
+				if (!made.ok) {
+					return failure(made.error ?? 'The app did not generate the report.');
+				}
+				// a link the user can click: DataSuite opens a Word/PowerPoint file in its default application
+				const file = (made.result as { file?: unknown } | undefined)?.file;
+				const link = typeof file === 'string' ? `[${path.basename(file)}](${vscode.Uri.file(file).toString()})` : undefined;
+				return text({ generated: made.result, link, note: link ? 'Give the user this link to the file (it opens in Word or PowerPoint).' : undefined });
 			}
 			default:
 				return failure('action must be one of listPresets, listKinds, build, save, generate.');
@@ -412,6 +449,11 @@ export class CountdownTools {
 	checked <- datasuite.ui::report_validate_spec(spec, members = cd2030.core::cd_chartable_members())
 	if (is.list(checked)) spec <- checked
 	data <- cd2030.core::cd_custom_chart_data(.cache, spec)
+	# the plot's columns must be in the data (checked even without a preview, so a chart that can't be drawn isn't passed)
+	used <- unlist(spec$plot[c("x", "y", "colour", "fill", "facet")], use.names = FALSE)
+	unknown <- setdiff(used[is.character(used) & nzchar(used)], names(data))
+	if (length(unknown)) stop(sprintf("The plot uses %s, which the data doesn't have. Its columns are: %s.", paste(unknown, collapse = ", "), paste(names(data), collapse = ", ")), call. = FALSE)
+	invisible(ggplot2::ggplot_build(datasuite.ui::report_plot_spec(data, spec$plot, spec$title)))
 	out <- list(rows = nrow(data), columns = names(data))
 	if (${preview ? 'TRUE' : 'FALSE'}) {
 		file <- tempfile(fileext = ".png")
@@ -428,15 +470,17 @@ export class CountdownTools {
 		const parts: (vscode.LanguageModelTextPart | vscode.LanguageModelDataPart)[] = [];
 		let saved: unknown;
 		if (input.save) {
-			const added = await appRequest(context.tab, 'addGraph', { spec: input.spec });
+			const added = await appRequest(context.tab, 'addGraph', graphChange(input)!.args, { confirmed: true });
 			if (!added.ok) {
 				return failure(`Drawn, but not saved: ${added.error}`);
 			}
 			saved = added.result;
 		}
-		parts.push(new vscode.LanguageModelTextPart(JSON.stringify({ valid: true, rows: reply.result?.rows, columns: reply.result?.columns, saved, note: saved ? 'Saved in the dataset: it redraws with the data and can be added to any report.' : 'Not saved: pass save: true when the user wants to keep it.' })));
-		if (reply.result?.png) {
-			parts.push(vscode.LanguageModelDataPart.image(Buffer.from(reply.result.png, 'base64'), 'image/png'));
+		const png = reply.result?.png ? Buffer.from(reply.result.png, 'base64') : undefined;
+		const figure = png ? saveFigure(context.tab, png, graphTitle(input.spec)) : undefined;
+		parts.push(new vscode.LanguageModelTextPart(JSON.stringify({ valid: true, rows: reply.result?.rows, columns: reply.result?.columns, saved, note: saved ? 'Saved in the dataset: it redraws with the data and can be added to any report.' : 'Not saved: pass save: true when the user wants to keep it.', figure })));
+		if (png) {
+			parts.push(vscode.LanguageModelDataPart.image(png, 'image/png'));
 		}
 		return new vscode.LanguageModelToolResult(parts);
 	}
@@ -456,11 +500,16 @@ export class CountdownTools {
 		if ('ok' in result) {
 			return failure((result as IRReply).error ?? 'R failed.');
 		}
+		const figures = result.images
+			.filter(image => image.mimeType === 'image/png')
+			.map((image, i) => saveFigure(context.tab, Buffer.from(image.data, 'base64'), result.images.length > 1 ? `R plot ${i + 1}` : 'R plot'))
+			.filter(figure => !!figure);
 		const parts: (vscode.LanguageModelTextPart | vscode.LanguageModelDataPart)[] = [
 			new vscode.LanguageModelTextPart(JSON.stringify({
 				label: 'computed (not from the app screen or a single CacheConnection member)',
-				success: result.success, output: result.text.slice(0, MAX_RESULT_CHARS), error: result.error,
-				dataset: context.dataset!.path, revision: context.dataset!.revision, codeSavedTo: kept
+				success: result.success, output: stripColours(result.text).slice(0, MAX_RESULT_CHARS), error: result.error && stripColours(result.error),
+				dataset: context.dataset!.path, revision: context.dataset!.revision, codeSavedTo: kept,
+				figures: figures.length ? figures : undefined
 			}))
 		];
 		for (const image of result.images) {
@@ -499,7 +548,29 @@ interface ICacheInput { readonly member: string; readonly args?: Record<string, 
 interface ICatalogInput { readonly query?: string; readonly group?: string; readonly what?: 'members' | 'reportKinds' }
 interface IDocsInput { readonly query?: string; readonly url?: string; readonly lang?: string; readonly limit?: number }
 interface IReportInput { readonly action: string; readonly tabId?: string; readonly project?: unknown; readonly preset?: string; readonly reportId?: string; readonly format?: string; readonly query?: string; readonly group?: string }
-interface IGraphInput { readonly spec: unknown; readonly preview?: boolean; readonly save?: boolean; readonly tabId?: string }
+interface IGraphInput { readonly spec: unknown; readonly preview?: boolean; readonly save?: boolean; readonly graphId?: string; readonly tabId?: string }
+
+/** An app action a tool call would run, with its arguments. */
+interface IAppChange { readonly action: string; readonly args: Record<string, unknown> }
+
+/** The app change a countdown_report call makes: save (saveReport) or generate (generateReport); none for the others. */
+function reportChange(input: IReportInput): IAppChange | undefined {
+	if (input?.action === 'save' && input.project) {
+		return { action: 'saveReport', args: input.reportId ? { project: input.project, reportId: input.reportId } : { project: input.project } };
+	}
+	if (input?.action === 'generate' && (input.preset || input.reportId)) {
+		const args: Record<string, unknown> = { format: input.format ?? 'docx' };
+		if (input.preset) { args.preset = input.preset; }
+		if (input.reportId) { args.reportId = input.reportId; }
+		return { action: 'generateReport', args };
+	}
+	return undefined;
+}
+
+/** The app change a countdown_graph call makes: addGraph when it saves the graph. */
+function graphChange(input: IGraphInput): IAppChange | undefined {
+	return input?.save && input.spec ? { action: 'addGraph', args: input.graphId ? { spec: input.spec, graphId: input.graphId } : { spec: input.spec } } : undefined;
+}
 interface IOpenInput { readonly path: string; readonly app?: 'rmncah' | 'vaxx' | 'pooled' }
 
 /** Checks a member's arguments against the guide, filling missing ones from the app's filters where the guide maps them. */
@@ -544,14 +615,57 @@ export function checkArgs(name: string, member: IGuideMember, given: Record<stri
 	return { args, defaultsUsed };
 }
 
-/** Keeps free R code in the tab's working folder (`<stem>.shiny-workspace/ai/`), for the record. */
+/** A figure the AI drew, kept in the dataset's analysis folder. */
+interface IFigure {
+	/** The saved PNG, in the dataset's analysis folder. */
+	readonly path: string;
+	/** Paste this into the answer to show the figure (the user can open or save it from there). */
+	readonly markdown: string;
+}
+
+/** The title of a custom_chart spec, for a figure's name and alt text. */
+function graphTitle(spec: unknown): string {
+	const title = (spec as { title?: unknown } | undefined)?.title;
+	return typeof title === 'string' && title.trim() ? title.trim() : 'Custom graph';
+}
+
+/** R's console colour codes (tibbles, cli messages) mean nothing to the model and cost tokens: drop them. */
+const COLOUR_CODES = new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g');
+function stripColours(text: string): string {
+	return text.replace(COLOUR_CODES, '');
+}
+
+/**
+ * Keeps a figure the AI drew with the data it is about: `<stem>.shiny-workspace/figures/<title>-<time>.png`
+ * (the dataset's analysis folder; chats live elsewhere). Returns the file and a Markdown image to embed, or undefined
+ * when the tab has no analysis folder or it can't be written.
+ */
+function saveFigure(tab: ITab, png: Buffer, title: string): IFigure | undefined {
+	const dir = workspaceDir(tab);
+	if (!dir) {
+		return undefined;
+	}
+	try {
+		const target = path.join(dir, 'figures');
+		fs.mkdirSync(target, { recursive: true });
+		const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'figure';
+		const file = path.join(target, `${slug}-${new Date().toISOString().replace(/[:.]/g, '-')}.png`);
+		fs.writeFileSync(file, png);
+		const alt = title.replace(/[\[\]\\]/g, '');
+		return { path: file, markdown: `![${alt}](${vscode.Uri.file(file).toString()})` };
+	} catch {
+		return undefined;
+	}
+}
+
+/** Keeps the R code the AI ran on the dataset: `<stem>.shiny-workspace/scripts/analysis-<time>.R`. */
 function saveCode(tab: ITab, code: string): string | undefined {
 	const dir = workspaceDir(tab);
 	if (!dir) {
 		return undefined;
 	}
 	try {
-		const target = path.join(dir, 'ai');
+		const target = path.join(dir, 'scripts');
 		fs.mkdirSync(target, { recursive: true });
 		const file = path.join(target, `analysis-${new Date().toISOString().replace(/[:.]/g, '-')}.R`);
 		fs.writeFileSync(file, `# Written by the Countdown AI; .cache is the dataset (read-only CacheConnection).\n${code}\n`);
