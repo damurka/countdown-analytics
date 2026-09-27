@@ -136,6 +136,7 @@ committed, so installing the package needs no Node.
 
 | Task | How |
 | --- | --- |
+| Test everything locally, fast | `scripts\dev-test.ps1` (PowerShell): installs the local datasuite.ui, cd2030.core and app packages into your R library in order, compiles this extension, the DataSuite assistant and client -- each only if it changed since the last run -- and starts DataSuite with this extension from source. `-Fresh` for an empty profile, `-Only core,rmncah`, `-Test`, `-NoLaunch`, `-Open <file>`, `-Force`. No r-universe or registry involved. |
 | Run an app from its repo | `shiny::runApp()` in the app repo: its `app.R` loads the package source with `pkgload::load_all()`. |
 | Use local changes to a library in an app | `devtools::install()` the library. Install cd2030.core with `devtools::install(quick = TRUE, upgrade = FALSE, dependencies = FALSE)`, or its `Remotes:` reinstalls datasuite.ui from GitHub over your local one. Stop running apps first (Windows locks loaded packages). |
 | Try DataSuite's install/update flow | In the datasuite repo: `npm run transpile-client` (~5 s), then `scripts\code.bat --user-data-dir=<empty folder> --extensions-dir=<empty folder> --extensionDevelopmentPath=<this repo>` with `VSCODE_SKIP_PRELAUNCH=1`. A fresh user-data dir is a fresh install; bump `version` in this package.json to simulate an update. Read the log `<user-data-dir>/logs/<time>/datasuiteSessionService.log`. |
