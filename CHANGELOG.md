@@ -4,7 +4,7 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
-## [2.1.0] - 2026-09-27
+## [2.0.3] - 2026-09-27
 
 ### Added
 
@@ -16,6 +16,10 @@ All notable changes to this extension are documented here. The format is based o
   account may see Countdown data. When it may not, the panel says so and offers **Request Access** (DataSuite's
   request-access page) and **Try Again**.
   Published datasets come from the cycle's Publication activities; each shows its activity.
+- Every data result the AI gets carries what its columns mean (`columnMeanings`, from cd2030.core's data dictionary),
+  and `countdown_catalog` returns the dictionary; the AI guide carries each CacheConnection member's definition (grain,
+  unit, defaults, where it is set and shown, its methodology section). The AI no longer reads meaning from ids: the
+  ids ending in `derived` are the population-growth denominators.
 
 ### Changed
 
@@ -27,20 +31,6 @@ All notable changes to this extension are documented here. The format is based o
   `scripts/session-<date>.R`.
 - The AI instructions gain a "Writing R" section (inspect first, compact tables, plots, when to use
   `countdown_cache` instead of R, never `readRDS` the dataset).
-- The apps still need cd2030.rmncah / cd2030.vaxx 2.0.3 and cd2030.pooled 2.0.2 (cd2030.core 1.3.1, datasuite.ui
-  0.3.1), as on r-universe.
-
-## [2.0.3] - 2026-09-27
-
-### Added
-
-- Every data result the AI gets carries what its columns mean (`columnMeanings`, from cd2030.core's data dictionary),
-  and `countdown_catalog` returns the dictionary; the AI guide carries each CacheConnection member's definition (grain,
-  unit, defaults, where it is set and shown, its methodology section). The AI no longer reads meaning from ids: the
-  ids ending in `derived` are the population-growth denominators.
-
-### Changed
-
 - The apps need cd2030.rmncah / cd2030.vaxx 2.0.3 and cd2030.pooled 2.0.2 (cd2030.core 1.3.1).
 
 ## [2.0.2] - 2026-09-27
