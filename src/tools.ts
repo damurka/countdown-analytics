@@ -251,6 +251,14 @@ export class CountdownTools {
 		if (!reply.ok) {
 			return failure(reply.error ?? 'The app could not return the data.');
 		}
+		// what the chart's columns mean (cd2030.core's data dictionary), read in the tab's R session
+		const dataColumns = (reply.result as { columns?: unknown } | undefined)?.columns;
+		let columnMeanings: unknown;
+		if (context.dataset && Array.isArray(dataColumns) && dataColumns.length) {
+			const described = await this._r.call(context.tab.tabId, context.label, context.dataset,
+				`.cdai$run(.cdai$meanings(.cdai$arg("${toR(dataColumns)}")))`);
+			columnMeanings = described.ok ? described.result : undefined;
+		}
 		const kinds = await this._knowledge.reportKinds();
 		const kindId = component.about?.kind;
 		const kind = kindId ? kinds.kinds[kindId] : undefined;
@@ -269,6 +277,7 @@ export class CountdownTools {
 				},
 			sourcesMarkdown: sourcesMarkdown([...method.briefs.map(b => ({ title: b.title, url: b.url })), ...method.sections], [`Chart on screen: \`${id}\` (${dataset})`]),
 			provenance: { source: 'the chart on screen', componentId: id, dataset: state.dataset?.path, revision: state.dataset?.revision, filters: state.filters, cacheMembers: kind?.members },
+			columnMeanings: columnMeanings ?? undefined,
 			data: reply.result
 		});
 	}
@@ -357,7 +366,13 @@ export class CountdownTools {
 			// compact: the answer usually needs one member; the full entry is a second, narrower call away
 			.map(([name, m], i) => ({ member: name, kind: m.kind, group: m.group, question: m.question.length > 160 ? `${m.question.slice(0, 157)}...` : m.question, precomputed: m.precomputed, args: m.args.map(a => `${a.name}${a.required ? '' : '?'}${a.choices?.length ? `: ${a.choices.join('|')}` : ''}`), ...(i < 5 ? { returns: m.returns || undefined, chartable: m.chartable, reportKinds: m.reportKinds, docs: m.docs } : {}) }));
 		const groups = [...new Set(Object.values(guide.members).filter(m => m.access === 'read').map(m => m.group))].sort();
-		return text({ cacheConnection: `cd2030.core ${guide.version}`, groups, members: found.slice(0, 25), total: found.length, hint: found.length > 25 ? 'Only the first 25: narrow with query (and group).' : undefined });
+		// the naming conventions come with every catalog answer: column names and ids are read with them, never guessed
+		const dictionary = guide.dictionary ? {
+			note: 'What ids and column names mean. anc1/penta1 are the ANC1-/Penta1-derived denominators; ids ending in "derived" are the population-growth options. Results also carry columnMeanings.',
+			denominators: guide.dictionary.denominators?.map(d => ({ id: d.id, label: d.label, meaning: d.meaning })),
+			naming: guide.dictionary.grammar?.map(g => `${g.pattern}: ${g.meaning} (e.g. ${g.example})`)
+		} : undefined;
+		return text({ cacheConnection: `cd2030.core ${guide.version}`, dictionary, groups, members: found.slice(0, 25), total: found.length, hint: found.length > 25 ? 'Only the first 25: narrow with query (and group).' : undefined });
 	}
 
 	// ---------------------------------------------------------------------------------------------- countdown_docs

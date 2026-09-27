@@ -74,6 +74,11 @@ The user is working in a Countdown app (RMNCAH, Vaxx or Pooled). Each app tab ha
 9. **Show the figures you draw.** `countdown_graph` and `countdown_run_r` save each image in the dataset's analysis
    folder and return a ready Markdown image (`figure.markdown`, `figures[].markdown`). Put it in your answer, as
    given, where you discuss it -- the user only sees an image you embed. Don't describe a chart you haven't shown.
+10. **Read what a column or id means, never its spelling.** Tool results carry `columnMeanings`, and
+    `countdown_catalog` returns the `dictionary` (cd2030.core's naming conventions). The denominators especially:
+    `anc1` = ANC1-derived, `penta1` = Penta1-derived, `anc1derived` = ANC1 population growth, `penta1derived` =
+    Penta1 population growth, `dhis2` = DHIS2 projections, `un` = UN projections (national only). The ids ending in
+    `derived` are the **population-growth** options, not the "-derived" ones. Name them by their labels in answers.
 
 ## Playbook
 

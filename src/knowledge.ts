@@ -33,10 +33,19 @@ export interface IGuideMember {
 	readonly status?: 'draft' | 'reviewed';
 }
 
+/** cd2030.core's data dictionary (cd_dictionary()): what ids and column names mean. */
+export interface IGuideDictionary {
+	readonly note?: string;
+	readonly denominators?: readonly { id: string; label: string; meaning: string; levels: string }[];
+	readonly grammar?: readonly { pattern: string; meaning: string; example: string }[];
+	readonly populations?: readonly { id: string; label: string; meaning: string; unit: string }[];
+}
+
 export interface IGuide {
 	readonly package: string;
 	readonly version: string;
 	readonly generatedAt: string;
+	readonly dictionary?: IGuideDictionary;
 	readonly members: Record<string, IGuideMember>;
 }
 

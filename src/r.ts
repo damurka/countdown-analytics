@@ -50,11 +50,22 @@ local({
 		if (!nzchar(b64)) return(list())
 		jsonlite::fromJSON(rawToChar(jsonlite::base64_dec(b64)), simplifyVector = simplify)
 	}
+	# What each column means, from cd2030.core's data dictionary (cd_describe_columns(); NULL with an older core or
+	# when no column is known): names like anc1derived mislead, so the AI reads meanings, never spellings.
+	e$meanings <- function(cols) {
+		describe <- tryCatch(getExportedValue("cd2030.core", "cd_describe_columns"), error = function(err) NULL)
+		if (is.null(describe) || !length(cols)) return(NULL)
+		d <- describe(as.character(cols))
+		d <- d[!is.na(d$description), , drop = FALSE]
+		if (!nrow(d)) return(NULL)
+		as.list(stats::setNames(d$description, d$column))
+	}
 	e$table <- function(x, max_rows = 200) {
 		if (inherits(x, "sf")) x <- sf::st_drop_geometry(x)
 		x <- as.data.frame(x, stringsAsFactors = FALSE)
 		n <- nrow(x)
-		list(columns = I(names(x)), rows = utils::head(x, max_rows), totalRows = n, truncated = n > max_rows)
+		list(columns = I(names(x)), columnMeanings = e$meanings(names(x)), rows = utils::head(x, max_rows), totalRows = n,
+			truncated = n > max_rows)
 	}
 	e$shape <- function(x, max_rows = 200) {
 		if (is.data.frame(x)) return(c(list(type = "table"), e$table(x, max_rows)))
