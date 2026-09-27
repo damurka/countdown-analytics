@@ -4,6 +4,15 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.4] - 2026-09-27
+
+### Changed
+
+- The apps pick up datasuite.ui 0.3.2: the Reports page has a **Reference documents** card to add, list and remove the
+  files the AI reads as context for a dataset (kept in its analysis folder, `documents/`). Updating the extension
+  brings datasuite.ui up to date for RMNCAH, Vaxx and Pooled; the apps themselves are unchanged (cd2030.rmncah /
+  cd2030.vaxx 2.0.3, cd2030.pooled 2.0.2).
+
 ## [2.0.3] - 2026-09-27
 
 ### Added
