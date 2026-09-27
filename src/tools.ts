@@ -7,12 +7,13 @@
 // the tab's own read-only R session; meaning comes from the methodology docs; the screen and anything that changes
 // the app go through DataSuite's AI bridge API. Every data answer carries its provenance.
 
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { appRequest, appState, countdownTabs, EXTENSION_ID, IAppState, ITab, pickTab, tabDataset, workspaceDir, appPlan } from './app';
 import { IGuideMember, Knowledge } from './knowledge';
-import { CountdownR, IRReply, rString, toR } from './r';
+import { CountdownR, IExecuteResult, IRReply, riskyRReasons, rString, toR, truncateMiddle } from './r';
 
 const MAX_RESULT_CHARS = 60000;
 
@@ -70,7 +71,7 @@ interface ITabContext {
 
 export class CountdownTools {
 
-	constructor(private readonly _knowledge: Knowledge, private readonly _r: CountdownR) { }
+	constructor(private readonly _knowledge: Knowledge, private readonly _r: CountdownR, private readonly _storageDir: string) { }
 
 	register(): vscode.Disposable[] {
 		return [
@@ -87,7 +88,14 @@ export class CountdownTools {
 				prepareInvocation: options => this._prepareChange(options.input as IGraphInput, graphChange(options.input as IGraphInput)),
 				invoke: options => this._graph(options.input as IGraphInput)
 			}),
-			vscode.lm.registerTool('countdown_run_r', { invoke: options => this._runR(options.input as { code: string; tabId?: string }) }),
+			vscode.lm.registerTool('countdown_documents', {
+				prepareInvocation: options => this._prepareDocuments(options.input as IDocumentsInput),
+				invoke: options => this._documents(options.input as IDocumentsInput)
+			}),
+			vscode.lm.registerTool('countdown_run_r', {
+				prepareInvocation: options => prepareRunR(options.input as IRunRInput),
+				invoke: (options, token) => this._runR(options.input as IRunRInput, token)
+			}),
 			vscode.lm.registerTool('countdown_open_dataset', {
 				prepareInvocation: options => ({
 					invocationMessage: `Opening ${path.basename((options.input as IOpenInput).path ?? '')}`,
@@ -307,7 +315,7 @@ export class CountdownTools {
 		}
 		const maxRows = Math.max(1, Math.min(input.maxRows ?? 200, 2000));
 		const reply = await this._r.call(context.tab.tabId, context.label, context.dataset,
-			`.cdai$run(.cdai$member(${rString(input.member)}, .cdai$arg("${toR(checked.args)}"), ${maxRows}))`);
+			`.cdai$run(.cdai$member(${rString(input.member)}, .cdai$arg("${toR(checked.args)}"), ${maxRows}, .cdai$arg("${toR(input.select ?? [])}"), .cdai$arg("${toR(input.where ?? {})}", FALSE)))`);
 		if (!reply.ok) {
 			return failure(reply.error ?? 'R failed.');
 		}
@@ -316,6 +324,8 @@ export class CountdownTools {
 				source: 'CacheConnection',
 				member: input.member,
 				args: checked.args,
+				select: input.select?.length ? input.select : undefined,
+				where: input.where && Object.keys(input.where).length ? input.where : undefined,
 				defaultsFromApp: checked.defaultsUsed,
 				dataset: context.dataset!.path,
 				country: context.state?.dataset?.country,
@@ -502,7 +512,7 @@ export class CountdownTools {
 
 	// ---------------------------------------------------------------------------------------------- countdown_run_r
 
-	private async _runR(input: { code: string; tabId?: string }): Promise<vscode.LanguageModelToolResult> {
+	private async _runR(input: IRunRInput, token: vscode.CancellationToken): Promise<vscode.LanguageModelToolResult> {
 		if (!input?.code) {
 			return failure('code is required.');
 		}
@@ -510,27 +520,214 @@ export class CountdownTools {
 		if (typeof context === 'string') {
 			return failure(context);
 		}
-		const kept = saveCode(context.tab, input.code);
-		const result = await this._r.executeRaw(context.tab.tabId, context.label, context.dataset, input.code);
+		const timeoutSeconds = Math.max(1, Math.min(Math.round(typeof input.timeoutSeconds === 'number' ? input.timeoutSeconds : 300), 3600));
+		// the chat's Stop interrupts R (the objects made so far remain)
+		const stop = token.onCancellationRequested(() => this._r.interrupt(context.tab.tabId));
+		let result: IExecuteResult | IRReply;
+		try {
+			result = await this._r.executeRaw(context.tab.tabId, context.label, context.dataset, input.code, timeoutSeconds * 1000);
+		} finally {
+			stop.dispose();
+		}
 		if ('ok' in result) {
 			return failure((result as IRReply).error ?? 'R failed.');
 		}
-		const figures = result.images
+		const executed = result;
+		// only code that ran to the end is kept, as a script that re-runs on its own
+		const kept = executed.success ? saveCode(context.tab, input.code, context.dataset!, input.title) : undefined;
+		const figures = executed.images
 			.filter(image => image.mimeType === 'image/png')
-			.map((image, i) => saveFigure(context.tab, Buffer.from(image.data, 'base64'), result.images.length > 1 ? `R plot ${i + 1}` : 'R plot'))
+			.map((image, i) => saveFigure(context.tab, Buffer.from(image.data, 'base64'), `${input.title?.trim() || 'R plot'}${executed.images.length > 1 ? ` ${i + 1}` : ''}`))
 			.filter(figure => !!figure);
+		const status = executed.success ? 'ok' : executed.timedOut ? 'timed out' : executed.sessionEnded !== undefined ? 'session ended' : executed.interrupted ? 'interrupted' : 'error';
+		const notes = [
+			executed.restartNotice,
+			executed.timedOut ? `Interrupted after ${timeoutSeconds} s (the timeout). Objects created before the interrupt still exist; run the slow part on less data, or call again with a larger timeoutSeconds.` : undefined,
+			executed.sessionEnded !== undefined ? `The R session ended during this run (${executed.sessionEnded}); the next call starts a new one with .cache loaded again, but objects from earlier runs are gone.` : undefined,
+			!executed.success && workspaceDir(context.tab) ? 'Not kept in scripts/ (only code that runs without error is kept).' : undefined,
+			executed.images.length > MAX_R_IMAGES ? `${executed.images.length - MAX_R_IMAGES} more plots not attached (draw at most ${MAX_R_IMAGES} per call); all are kept in figures/.` : undefined
+		].filter((note): note is string => !!note);
 		const parts: (vscode.LanguageModelTextPart | vscode.LanguageModelDataPart)[] = [
 			new vscode.LanguageModelTextPart(JSON.stringify({
 				label: 'computed (not from the app screen or a single CacheConnection member)',
-				success: result.success, output: stripColours(result.text).slice(0, MAX_RESULT_CHARS), error: result.error && stripColours(result.error),
+				status, success: executed.success,
+				output: truncateMiddle(stripColours(executed.text), R_OUTPUT_CHARS),
+				error: executed.error ? truncateMiddle(stripColours(executed.error), 6000) : undefined,
+				notes: notes.length ? notes : undefined,
 				dataset: context.dataset!.path, revision: context.dataset!.revision, codeSavedTo: kept,
 				figures: figures.length ? figures : undefined
 			}))
 		];
-		for (const image of result.images) {
+		for (const image of executed.images.slice(0, MAX_R_IMAGES)) {
 			parts.push(vscode.LanguageModelDataPart.image(Buffer.from(image.data, 'base64'), image.mimeType));
 		}
 		return new vscode.LanguageModelToolResult(parts);
+	}
+
+	// ---------------------------------------------------------------------------------------------- countdown_documents
+
+	/**
+	 * Documents the user gives the AI for context: the dataset's analysis folder `documents/`, or a file they attached.
+	 * Reading a file outside that folder asks the user first (the chat's Allow/Skip).
+	 */
+	private async _prepareDocuments(input: IDocumentsInput): Promise<vscode.PreparedToolInvocation | undefined> {
+		if (!input?.file || !path.isAbsolute(input.file)) {
+			return undefined;
+		}
+		const tab = await pickTab(input.tabId);
+		const home = typeof tab === 'string' ? undefined : workspaceDir(tab);
+		if (home && isInside(input.file, home)) {
+			return undefined;
+		}
+		return {
+			invocationMessage: `Reading ${path.basename(input.file)}...`,
+			confirmationMessages: {
+				title: 'Read a document?',
+				message: new vscode.MarkdownString(`Let the AI read \`${input.file}\`? It is outside the dataset's documents folder.`)
+			}
+		};
+	}
+
+	private async _documents(input: IDocumentsInput): Promise<vscode.LanguageModelToolResult> {
+		const context = await this._tabContext(input?.tabId);
+		if (typeof context === 'string') {
+			return failure(context);
+		}
+		const home = workspaceDir(context.tab);
+		const folder = home ? path.join(home, 'documents') : undefined;
+		const action = input?.action ?? 'list';
+
+		if (action === 'list') {
+			const files = folder ? listDocuments(folder) : [];
+			return text({
+				folder: folder ?? null,
+				documents: files.map(f => ({ file: path.relative(folder!, f.path).replace(/\\/g, '/'), path: f.path, type: f.type, size: f.size, modified: f.modified, units: this._cachedUnits(f.path) })),
+				note: files.length
+					? 'Read one with action "read" (file = its name; range = pages/slides/sections, e.g. "3-5"), or look for a phrase in all with "search". Cite as "<file>, <marker>".'
+					: `No documents yet. The user can put PDF, Word, PowerPoint, Excel, CSV or text files in ${folder ?? "the dataset's analysis folder"}\\documents, or attach one to the chat (then pass its full path as file).`
+			});
+		}
+
+		if (action === 'read') {
+			const file = resolveDocument(input.file, folder);
+			if (typeof file !== 'string' || !fs.existsSync(file)) {
+				return failure(typeof file === 'string' ? `There is no document ${input.file}.` : file.error);
+			}
+			const doc = await this._docText(context, file);
+			if (typeof doc === 'string') {
+				return failure(doc);
+			}
+			const [from, to] = parseRange(input.range, doc.units.length);
+			let body = '';
+			let last = from - 1;
+			for (let i = from; i <= to; i++) {
+				const piece = `[${doc.units[i - 1].marker}]\n${doc.units[i - 1].text.trim()}\n\n`;
+				if (body.length && body.length + piece.length > DOC_READ_CHARS) {
+					break;
+				}
+				body += piece.length > DOC_READ_CHARS ? `${piece.slice(0, DOC_READ_CHARS)}\n... (cut)\n` : piece;
+				last = i;
+			}
+			return text({
+				file: path.basename(file), path: file, type: doc.type, units: doc.units.length,
+				shown: `${from}-${last}`, next: last < to ? `${last + 1}-${to}` : undefined,
+				cite: `Cite as "${path.basename(file)}, <marker>" (the [marker] before each part).`,
+				text: body || '(no text: a scanned PDF has no text layer)'
+			});
+		}
+
+		if (action === 'search') {
+			if (!input.query) {
+				return failure('query is required for search.');
+			}
+			let pattern: RegExp;
+			try {
+				pattern = new RegExp(input.isRegexp ? input.query : input.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+			} catch (error) {
+				return failure(`Not a valid regular expression: ${error instanceof Error ? error.message : String(error)}`);
+			}
+			const single = input.file ? resolveDocument(input.file, folder) : undefined;
+			if (single && typeof single !== 'string') {
+				return failure(single.error);
+			}
+			const files = single ? [single] : folder ? listDocuments(folder).map(f => f.path) : [];
+			const max = Math.max(1, Math.min(input.maxResults ?? 30, 200));
+			const matches: { file: string; marker: string; snippet: string }[] = [];
+			const problems: string[] = [];
+			for (const file of files) {
+				const doc = await this._docText(context, file);
+				if (typeof doc === 'string') {
+					problems.push(`${path.basename(file)}: ${doc}`);
+					continue;
+				}
+				for (const u of doc.units) {
+					for (const m of u.text.matchAll(pattern)) {
+						const at = m.index ?? 0;
+						matches.push({ file: path.basename(file), marker: u.marker, snippet: u.text.slice(Math.max(0, at - 160), at + m[0].length + 160).replace(/\s+/g, ' ').trim() });
+						if (matches.length >= max) {
+							break;
+						}
+					}
+					if (matches.length >= max) {
+						break;
+					}
+				}
+				if (matches.length >= max) {
+					break;
+				}
+			}
+			return text({ query: input.query, searched: files.map(f => path.basename(f)), matches, more: matches.length >= max ? 'more matches: narrow the query or raise maxResults' : undefined, problems: problems.length ? problems : undefined });
+		}
+		return failure('action must be list, read or search.');
+	}
+
+	/** A document's text as citable units, extracted once in the tab's R session and cached by file, size and time. */
+	private async _docText(context: ITabContext, file: string): Promise<IDocText | string> {
+		const cache = this._docCachePath(file);
+		if (cache && fs.existsSync(cache)) {
+			try {
+				return JSON.parse(fs.readFileSync(cache, 'utf8')) as IDocText;
+			} catch {
+				// re-extract
+			}
+		}
+		if (!cache) {
+			return `Can't read ${file}.`;
+		}
+		fs.mkdirSync(path.dirname(cache), { recursive: true });
+		// R writes the text to the cache file (a long document would be too much to pass back through the session)
+		const reply = await this._r.call<{ units: number }>(context.tab.tabId, context.label, undefined,
+			`.cdai$run({ x <- .cdai$doc_units(${rString(file)}); jsonlite::write_json(x, ${rString(cache)}, auto_unbox = TRUE, null = "null"); list(units = length(x$units)) })`, 600000);
+		if (!reply.ok) {
+			return reply.error ?? 'R could not read the document.';
+		}
+		try {
+			return JSON.parse(fs.readFileSync(cache, 'utf8')) as IDocText;
+		} catch (error) {
+			return `Could not read the extracted text: ${error instanceof Error ? error.message : String(error)}`;
+		}
+	}
+
+	private _docCachePath(file: string): string | undefined {
+		try {
+			const stat = fs.statSync(file);
+			const key = crypto.createHash('sha1').update(`${path.resolve(file).toLowerCase()}|${stat.size}|${stat.mtimeMs}`).digest('hex');
+			return path.join(this._storageDir, 'documents', `${key}.json`);
+		} catch {
+			return undefined;
+		}
+	}
+
+	private _cachedUnits(file: string): number | undefined {
+		const cache = this._docCachePath(file);
+		if (!cache || !fs.existsSync(cache)) {
+			return undefined;
+		}
+		try {
+			return (JSON.parse(fs.readFileSync(cache, 'utf8')) as IDocText).units.length;
+		} catch {
+			return undefined;
+		}
 	}
 
 	// ---------------------------------------------------------------------------------------------- countdown_open_dataset
@@ -559,7 +756,7 @@ export class CountdownTools {
 	}
 }
 
-interface ICacheInput { readonly member: string; readonly args?: Record<string, unknown>; readonly tabId?: string; readonly maxRows?: number }
+interface ICacheInput { readonly member: string; readonly args?: Record<string, unknown>; readonly tabId?: string; readonly maxRows?: number; readonly select?: string[]; readonly where?: Record<string, unknown> }
 interface ICatalogInput { readonly query?: string; readonly group?: string; readonly what?: 'members' | 'reportKinds' }
 interface IDocsInput { readonly query?: string; readonly url?: string; readonly lang?: string; readonly limit?: number }
 interface IReportInput { readonly action: string; readonly tabId?: string; readonly project?: unknown; readonly preset?: string; readonly reportId?: string; readonly format?: string; readonly query?: string; readonly group?: string }
@@ -587,6 +784,106 @@ function graphChange(input: IGraphInput): IAppChange | undefined {
 	return input?.save && input.spec ? { action: 'addGraph', args: input.graphId ? { spec: input.spec, graphId: input.graphId } : { spec: input.spec } } : undefined;
 }
 interface IOpenInput { readonly path: string; readonly app?: 'rmncah' | 'vaxx' | 'pooled' }
+interface IRunRInput { readonly code: string; readonly tabId?: string; readonly title?: string; readonly timeoutSeconds?: number }
+
+/** The most R output countdown_run_r returns (the start and end are kept) and the most plots it attaches. */
+const R_OUTPUT_CHARS = 20000;
+const MAX_R_IMAGES = 4;
+
+/**
+ * Before countdown_run_r runs: the code's purpose as the chat's message, and -- when the code looks risky, or the
+ * user's setting (datasuite.r.aiCodeConfirmation, shared with DataSuite's runR) wants every run confirmed -- the
+ * chat's Allow/Skip with the code.
+ */
+function prepareRunR(input: IRunRInput): vscode.PreparedToolInvocation {
+	const code = typeof input?.code === 'string' ? input.code : '';
+	const what = input?.title?.trim() || code.split(/\r?\n/).map(l => l.trim()).find(l => l && !l.startsWith('#'))?.slice(0, 80) || 'R';
+	const invocationMessage = `Running R on the dataset: ${what}`;
+	const setting = vscode.workspace.getConfiguration('datasuite.r').get<string>('aiCodeConfirmation') ?? 'risky';
+	const reasons = riskyRReasons(code);
+	if (setting === 'never' || (setting !== 'always' && !reasons.length)) {
+		return { invocationMessage };
+	}
+	const fence = '`'.repeat(3);
+	return {
+		invocationMessage,
+		confirmationMessages: {
+			title: reasons.length ? `Run this R code? It ${reasons.join('; ')}.` : 'Run this R code?',
+			message: new vscode.MarkdownString(`${fence}r\n${code}\n${fence}\n\n(Setting: \`datasuite.r.aiCodeConfirmation\`.)`)
+		}
+	};
+}
+interface IDocumentsInput { readonly action?: 'list' | 'read' | 'search'; readonly file?: string; readonly range?: string; readonly query?: string; readonly isRegexp?: boolean; readonly maxResults?: number; readonly tabId?: string }
+interface IDocText { readonly type: string; readonly units: readonly { readonly marker: string; readonly text: string }[] }
+
+/** The most text one read returns; `next` gives the rest. */
+const DOC_READ_CHARS = 20000;
+const DOC_TYPES = new Set(['pdf', 'docx', 'pptx', 'xlsx', 'xls', 'xlsm', 'csv', 'tsv', 'txt', 'md', 'markdown', 'json', 'html', 'htm', 'rmd']);
+
+function isInside(file: string, folder: string): boolean {
+	const rel = path.relative(path.resolve(folder), path.resolve(file));
+	return !!rel && !rel.startsWith('..') && !path.isAbsolute(rel);
+}
+
+/** The documents in a folder (and one level of subfolders): the types the tool can read. */
+function listDocuments(folder: string): { path: string; type: string; size: number; modified: string }[] {
+	const out: { path: string; type: string; size: number; modified: string }[] = [];
+	const walk = (dir: string, depth: number) => {
+		let entries: fs.Dirent[] = [];
+		try {
+			entries = fs.readdirSync(dir, { withFileTypes: true });
+		} catch {
+			return;
+		}
+		for (const entry of entries) {
+			const full = path.join(dir, entry.name);
+			if (entry.isDirectory() && depth < 1) {
+				walk(full, depth + 1);
+			} else if (entry.isFile() && !entry.name.startsWith('~$')) {
+				const type = path.extname(entry.name).slice(1).toLowerCase();
+				if (DOC_TYPES.has(type)) {
+					const stat = fs.statSync(full);
+					out.push({ path: full, type, size: stat.size, modified: stat.mtime.toISOString() });
+				}
+			}
+		}
+	};
+	walk(folder, 0);
+	return out.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+/** A document named by the model: a full path (an attached file), or a name in the dataset's documents folder. */
+function resolveDocument(file: string | undefined, folder: string | undefined): string | { error: string } {
+	if (!file) {
+		return { error: 'file is required: a document name from action "list", or the full path of an attached file.' };
+	}
+	if (path.isAbsolute(file)) {
+		return file;
+	}
+	if (!folder) {
+		return { error: 'This tab has no analysis folder; give the full path of the document.' };
+	}
+	const direct = path.join(folder, file);
+	if (fs.existsSync(direct)) {
+		return direct;
+	}
+	const byName = listDocuments(folder).find(f => path.basename(f.path).toLowerCase() === path.basename(file).toLowerCase());
+	return byName ? byName.path : direct;
+}
+
+/** "3", "3-5" or "3-" as 1-based units, clamped; everything when empty. */
+function parseRange(range: string | undefined, count: number): [number, number] {
+	if (!count) {
+		return [1, 0];
+	}
+	const m = /^\s*(\d+)?\s*(?:-\s*(\d+)?)?\s*$/.exec(range ?? '');
+	if (!m || (!m[1] && !m[2])) {
+		return [1, count];
+	}
+	const from = Math.min(Math.max(1, Number(m[1] ?? 1)), count);
+	const to = range!.includes('-') ? Math.min(count, Number(m[2] ?? count)) : from;
+	return [from, Math.max(from, to)];
+}
 
 /** Checks a member's arguments against the guide, filling missing ones from the app's filters where the guide maps them. */
 export function checkArgs(name: string, member: IGuideMember, given: Record<string, unknown>, filters: Record<string, unknown>): { args: Record<string, unknown>; defaultsUsed: Record<string, unknown> } | string {
@@ -673,8 +970,29 @@ function saveFigure(tab: ITab, png: Buffer, title: string): IFigure | undefined 
 	}
 }
 
-/** Keeps the R code the AI ran on the dataset: `<stem>.shiny-workspace/scripts/analysis-<time>.R`. */
-function saveCode(tab: ITab, code: string): string | undefined {
+/**
+ * The R code the AI ran on the dataset, as a script that re-runs on its own: it attaches what the AI's session has and
+ * opens the same dataset read-only as `.cache` (the revision it ran on is noted), then the code.
+ */
+export function rerunnableScript(code: string, dataset: { path: string; revision?: number }, title: string | undefined, when: Date): string {
+	return [
+		`# ${title?.trim() || 'Countdown analysis'} -- run by the Countdown AI on ${when.toISOString()}`,
+		`# Dataset: ${dataset.path.replace(/\\/g, '/')}${dataset.revision !== undefined ? ` (revision ${dataset.revision})` : ''}`,
+		'# Re-run: source() this file in R with cd2030.core installed. The dataset is opened read-only.',
+		'suppressPackageStartupMessages({ library(cd2030.core); library(dplyr); library(tidyr) })',
+		`.cache <- cd2030.core::init_CacheConnection(rds_path = ${rString(dataset.path)}, read_only = TRUE)`,
+		'',
+		code,
+		''
+	].join('\n');
+}
+
+/**
+ * Keeps the R code the AI ran on the dataset (only code that ran without error):
+ * `<stem>.shiny-workspace/scripts/<title>-<time>.R`, re-runnable on its own, and appended to the day's
+ * `scripts/session-<date>.R` (the analysis in order).
+ */
+function saveCode(tab: ITab, code: string, dataset: { path: string; revision?: number }, title?: string): string | undefined {
 	const dir = workspaceDir(tab);
 	if (!dir) {
 		return undefined;
@@ -682,8 +1000,14 @@ function saveCode(tab: ITab, code: string): string | undefined {
 	try {
 		const target = path.join(dir, 'scripts');
 		fs.mkdirSync(target, { recursive: true });
-		const file = path.join(target, `analysis-${new Date().toISOString().replace(/[:.]/g, '-')}.R`);
-		fs.writeFileSync(file, `# Written by the Countdown AI; .cache is the dataset (read-only CacheConnection).\n${code}\n`);
+		const now = new Date();
+		const slug = (title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'analysis';
+		const file = path.join(target, `${slug}-${now.toISOString().replace(/[:.]/g, '-')}.R`);
+		fs.writeFileSync(file, rerunnableScript(code, dataset, title, now));
+		const session = path.join(target, `session-${now.toISOString().slice(0, 10)}.R`);
+		fs.appendFileSync(session, fs.existsSync(session)
+			? `\n# ---- ${title?.trim() || 'analysis'} (${now.toISOString()})\n${code}\n`
+			: rerunnableScript(code, dataset, `Countdown AI session of ${now.toISOString().slice(0, 10)}: ${title?.trim() || 'analysis'}`, now));
 		return file;
 	} catch {
 		return undefined;

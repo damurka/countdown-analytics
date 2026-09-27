@@ -4,7 +4,31 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.1.0] - 2026-09-27
+
+### Added
+
+- A **Datasets** panel (Countdown in the activity bar): the published Countdown datasets your DataSuite account may
+  see, by cycle and country. Download a dataset's files, or open its .rds in RMNCAH or Vaxx (kept in
+  `Documents/Countdown datasets/<cycle>/<country> v<version>/`, setting `countdown.datasets.folder`). It signs in
+  with its own read-only DataSuite session (scope `data_read`), so the AI's sign-in is unchanged -- but already
+  signed in to the DataSuite AI, there is nothing to sign in to: that sign-in is exchanged for the panel's when your
+  account may see Countdown data. When it may not, the panel says so and offers **Request Access** (DataSuite's
+  request-access page) and **Try Again**.
+  Published datasets come from the cycle's Publication activities; each shows its activity.
+
+### Changed
+
+- `countdown_run_r` returns the full error message and backtrace (tidyverse errors included), keeps the start and end
+  of long output, takes `title` and `timeoutSeconds`, and says when the app's R session was restarted. Code that
+  deletes files, runs system commands or installs packages asks first (DataSuite's `datasuite.r.aiCodeConfirmation`).
+- Saved analysis scripts can be rerun: each opens the dataset read-only (`init_CacheConnection(..., read_only = TRUE)`)
+  and notes its revision; only runs without errors are kept, and each run is also appended to
+  `scripts/session-<date>.R`.
+- The AI instructions gain a "Writing R" section (inspect first, compact tables, plots, when to use
+  `countdown_cache` instead of R, never `readRDS` the dataset).
+- The apps still need cd2030.rmncah / cd2030.vaxx 2.0.3 and cd2030.pooled 2.0.2 (cd2030.core 1.3.1, datasuite.ui
+  0.3.1), as on r-universe.
 
 ## [2.0.3] - 2026-09-27
 

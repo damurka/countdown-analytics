@@ -11,7 +11,7 @@
     "r",
     "datasuite"
   ],
-  "version": "2.0.3",
+  "version": "2.1.0",
   "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
@@ -82,7 +82,7 @@
         "toolReferenceName": "countdownComponent",
         "canBeReferencedInPrompt": true,
         "userDescription": "The data behind a chart or table on screen, with the methodology that explains it.",
-        "modelDescription": "Returns the data behind a chart or table in a Countdown app (exactly what its data download writes), together with what it is (its report kind and options, what that kind shows, the CacheConnection members behind it) and the ESTABLISHED COUNTDOWN METHODOLOGY for that chart and its page (full docs sections with URLs), plus the source URLs to cite. Use it -- not screenshots, read_page or shinyApp getComponentData -- whenever the user asks about, interprets or questions a chart or table they are looking at ('tell me about these results', 'what is wrong with my selection', 'does subnational show the same'). Without componentId it takes the one chart in view; if several are in view it fails with their names so you can ask which. Base the answer on the methodology returned and list its URLs under Sources.",
+        "modelDescription": "Returns the data behind a chart or table in a Countdown app (exactly what its data download writes), together with what it is (its report kind and options, what that kind shows, the CacheConnection members behind it) and the ESTABLISHED COUNTDOWN METHODOLOGY for that chart and its page (full docs sections with URLs), plus the source URLs to cite. Use it -- not screenshots, read_page or shinyApp getComponentData -- whenever the user asks about, interprets or questions a chart or table they are looking at ('tell me about these results', 'what is wrong with my selection', 'does subnational show the same'). Without componentId it takes the one chart in view; if several are in view it fails with their names so you can ask which. Base the answer on the methodology returned and list its URLs under Sources. Prefer it to the generic shinyApp getComponentData: it adds the methodology, the column meanings and the sources.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -111,7 +111,7 @@
         "toolReferenceName": "countdownCache",
         "canBeReferencedInPrompt": true,
         "userDescription": "Get data from the open Countdown dataset (CacheConnection).",
-        "modelDescription": "Gets data from the Countdown dataset open in a tab by calling ONE member of its CacheConnection, the single source of truth for Countdown numbers (most results are precomputed). Runs in the tab's own read-only R session, on exactly the dataset the app has (reloaded when the app saves). Find the right member with countdown_catalog first; never guess member names or arguments. Arguments not given are filled from the app's current filters where they match (admin_level, region, indicator, denominator), and the reply says which were used. Returns the table (capped at maxRows) with provenance (member, arguments, dataset, revision, time): cite it. Use it for any number, on this page or another, national or sub-national, and for drill-downs (decompose_change: which units drive a change between two years). Setters are refused: the AI does not change the dataset.",
+        "modelDescription": "Gets data from the Countdown dataset open in a tab by calling ONE member of its CacheConnection, the single source of truth for Countdown numbers (most results are precomputed). Runs in the tab's own read-only R session, on exactly the dataset the app has (reloaded when the app saves). Find the right member with countdown_catalog first; never guess member names or arguments. Arguments not given are filled from the app's current filters where they match (admin_level, region, indicator, denominator), and the reply says which were used. Narrow big results instead of saving and searching them: `where` keeps rows (e.g. {\"year\": [2021, 2024], \"adminlevel_1\": \"Alibori\"}) and `select` keeps columns by name or * pattern (e.g. [\"cov_measles1_*\"]; the country, level, year and month columns are always kept). Returns the table (capped at maxRows) with provenance (member, arguments, dataset, revision, time): cite it. Use it for any number, on this page or another, national or sub-national, and for drill-downs (decompose_change: which units drive a change between two years). Setters are refused: the AI does not change the dataset.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -130,6 +130,17 @@
             "tabId": {
               "type": "string",
               "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
+            },
+            "select": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Columns to keep: names or * patterns, e.g. [\"cov_penta3_*\", \"r_penta3\"]. The identifying columns (country, adminlevel_1, district, year, month) are always kept."
+            },
+            "where": {
+              "type": "object",
+              "description": "Rows to keep: column = value or list of values, e.g. {\"year\": [2021], \"adminlevel_1\": [\"Alibori\", \"Borgou\"]}."
             }
           },
           "required": [
@@ -295,18 +306,72 @@
         }
       },
       {
+        "name": "countdown_documents",
+        "displayName": "Countdown: Documents",
+        "toolReferenceName": "countdownDocuments",
+        "canBeReferencedInPrompt": true,
+        "userDescription": "Read or search the documents given for this dataset (its documents folder, or a file attached to the chat).",
+        "modelDescription": "Reference documents the user gives for the open dataset -- reports, strategies, survey reports, notes -- to use as context (e.g. for a report's text) and to compare with the dataset's results. They are the files in the dataset's analysis folder `documents/`, plus any file the user attached to the chat (pass its full path as `file`; a file outside the documents folder is confirmed with the user first). Actions: list (the documents, with type and size); read (a document's text by `range` of units -- PDF pages, PowerPoint slides, Word sections by heading, Excel sheets, text chunks -- e.g. \"3-5\"; each part is headed by its [marker], and at most about 20,000 characters come back, with `next` giving the rest); search (a phrase, or a regex with isRegexp, across all documents or one `file`, returning file, marker and a snippet). Formats: PDF (text layer only; scanned PDFs have none), .docx, .pptx, .xlsx/.xls, .csv, text/Markdown. Documents give context, never the dataset's numbers: every figure you give as the dataset's still comes from countdown_cache / countdown_component; when a document's figure differs, show both and say which is which. Cite a document as \"<file>, <marker>\" (e.g. \"National HMIS report 2023.pdf, p. 14\") in the Sources.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "list",
+                "read",
+                "search"
+              ],
+              "description": "list (default), read or search."
+            },
+            "file": {
+              "type": "string",
+              "description": "read/search: a document's name from list, or the full path of a file attached to the chat. search without it looks in every document."
+            },
+            "range": {
+              "type": "string",
+              "description": "read: which units (pages, slides, sections, sheets), 1-based: \"3\", \"3-5\" or \"3-\". Default: from the start."
+            },
+            "query": {
+              "type": "string",
+              "description": "search: the phrase (case-insensitive) or, with isRegexp, a regular expression."
+            },
+            "isRegexp": {
+              "type": "boolean",
+              "description": "search: query is a regular expression (default false)."
+            },
+            "maxResults": {
+              "type": "number",
+              "description": "search: most matches to return (default 30)."
+            },
+            "tabId": {
+              "type": "string",
+              "description": "A Countdown app tab id (from countdown_context). Default: the active Countdown tab."
+            }
+          }
+        }
+      },
+      {
         "name": "countdown_run_r",
         "displayName": "Countdown: Run R on the Dataset",
         "toolReferenceName": "countdownRunR",
         "canBeReferencedInPrompt": true,
         "userDescription": "Run R on the open Countdown dataset for analysis no member covers.",
-        "modelDescription": "Runs R code in the tab's own R session, where `.cache` is the dataset's CacheConnection (read-only: nothing is saved). Only for analysis no single CacheConnection member covers: look with countdown_catalog first, and build on members (e.g. `.cache$reporting_rate_district`, `.cache$get_filtered_coverage(\"anc4\", \"district\")`) rather than raw data. Label what comes from here as computed, not shown in the app. The code is kept in the dataset's analysis folder (scripts/). Returns printed output and plots; each plot is saved in the dataset's analysis folder and listed in `figures` with a ready `markdown` image -- put the ones you discuss in your answer so the user sees them. Read all data from .cache (CacheConnection members) -- never type numbers from earlier results or the screen into the code -- and apply only criteria the methodology states.",
+        "modelDescription": "Runs R code in the tab's own R session (separate from runR's), where `.cache` is the dataset's CacheConnection, opened read-only: the dataset can't be changed from here (reports and graphs are saved with countdown_report / countdown_graph). dplyr, tidyr and cd2030.core are attached. Objects persist between calls on the same tab until its session restarts (the result says so; `.cache` is reloaded then). Only for analysis no single CacheConnection member covers: look with countdown_catalog first, narrow with countdown_cache where/select, and build on members (e.g. `.cache$reporting_rate_district`, `.cache$get_filtered_coverage(\"anc4\", \"district\")`) rather than raw data. Read all data from .cache -- never type numbers from earlier results or the screen into the code -- and apply only criteria the methodology states. Label what comes from here as computed, not shown in the app. Output: the last visible value is auto-printed; over ~20,000 characters is cut (head and tail kept) -- print compact tables (head(), summarise, select the columns you need); warnings come under [stderr]; errors come with message and backtrace (`status`, `error`). Plots: print() a ggplot (up to 4 attached per call); each is saved in the dataset's analysis folder and listed in `figures` with a ready `markdown` image -- put the ones you discuss in your answer. Code that runs without error is kept in scripts/ as a re-runnable script (`codeSavedTo`). Stops after timeoutSeconds (default 300); objects made before remain. Code that deletes or writes files, runs system commands or installs packages asks the user first.",
         "inputSchema": {
           "type": "object",
           "properties": {
             "code": {
               "type": "string",
               "description": "R code; print() what you need."
+            },
+            "title": {
+              "type": "string",
+              "description": "A few words saying what the code does (e.g. \"District reporting gaps 2023\"). Names the kept script and figures."
+            },
+            "timeoutSeconds": {
+              "type": "number",
+              "description": "Seconds before the run is interrupted (default 300, max 3600)."
             },
             "tabId": {
               "type": "string",
@@ -435,6 +500,132 @@
         "showOnStartPage": false
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "countdown",
+          "title": "Countdown",
+          "icon": "assets/datasets.svg"
+        }
+      ]
+    },
+    "views": {
+      "countdown": [
+        {
+          "id": "countdown.datasets",
+          "name": "Datasets",
+          "icon": "assets/datasets.svg",
+          "contextualTitle": "Countdown"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "countdown.datasets",
+        "when": "countdown.datasets.state == signedOut",
+        "contents": "Sign in with your DataSuite account to see the published Countdown datasets you have access to, download them and open them in the RMNCAH or Vaxx app.\n[Sign in to DataSuite](command:countdown.datasets.signIn)"
+      },
+      {
+        "view": "countdown.datasets",
+        "when": "countdown.datasets.state == noAccess",
+        "contents": "You're signed in to DataSuite, but your account doesn't have access to Countdown data yet. Request access: the administrators for your country decide, and the datasets appear here once you're approved.\n[Request Access](command:countdown.datasets.requestAccess)\n[Try Again](command:countdown.datasets.refresh)"
+      },
+      {
+        "view": "countdown.datasets",
+        "when": "countdown.datasets.state == empty",
+        "contents": "No published datasets for your countries yet. Datasets appear here once a country's final dataset is published. If you expected some, ask your DataSuite administrator which countries you are assigned to.\n[Refresh](command:countdown.datasets.refresh)"
+      },
+      {
+        "view": "countdown.datasets",
+        "when": "countdown.datasets.state == error",
+        "contents": "[Try Again](command:countdown.datasets.refresh)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "countdown.datasets.refresh",
+        "title": "Refresh",
+        "category": "Countdown Datasets",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "countdown.datasets.signIn",
+        "title": "Sign In to DataSuite",
+        "category": "Countdown Datasets"
+      },
+      {
+        "command": "countdown.datasets.requestAccess",
+        "title": "Request Access to Countdown Data",
+        "category": "Countdown Datasets"
+      },
+      {
+        "command": "countdown.datasets.download",
+        "title": "Download...",
+        "category": "Countdown Datasets",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "countdown.datasets.openInRmncah",
+        "title": "Open in RMNCAH",
+        "category": "Countdown Datasets",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "countdown.datasets.openInVaxx",
+        "title": "Open in Vaxx",
+        "category": "Countdown Datasets"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "countdown.datasets.refresh",
+          "when": "view == countdown.datasets",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "countdown.datasets.openInRmncah",
+          "when": "view == countdown.datasets && viewItem =~ /\\.rds$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "countdown.datasets.download",
+          "when": "view == countdown.datasets && viewItem =~ /^(dataset|file)/",
+          "group": "inline@2"
+        },
+        {
+          "command": "countdown.datasets.openInRmncah",
+          "when": "view == countdown.datasets && viewItem =~ /\\.rds$/",
+          "group": "1_open@1"
+        },
+        {
+          "command": "countdown.datasets.openInVaxx",
+          "when": "view == countdown.datasets && viewItem =~ /\\.rds$/",
+          "group": "1_open@2"
+        },
+        {
+          "command": "countdown.datasets.download",
+          "when": "view == countdown.datasets && viewItem =~ /^(dataset|file)/",
+          "group": "2_download@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "countdown.datasets.download",
+          "when": "false"
+        },
+        {
+          "command": "countdown.datasets.openInRmncah",
+          "when": "false"
+        },
+        {
+          "command": "countdown.datasets.openInVaxx",
+          "when": "false"
+        }
+      ]
+    },
     "configuration": {
       "title": "Countdown Analytics",
       "properties": {
@@ -443,6 +634,18 @@
           "default": false,
           "scope": "application",
           "markdownDescription": "Let the Countdown AI use the methodology docs' AI briefs that are still drafts (not yet checked against the pages). Off: it uses reviewed briefs only, and the full docs sections for pages without one. For trying out briefs before they are reviewed."
+        },
+        "countdown.datasets.folder": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "Where the Datasets panel keeps the datasets it opens in the apps (each in `<cycle>/<country> v<version>/`, with the app's saved file and analysis folder next to it). Empty: `Documents/Countdown datasets` in your home folder."
+        },
+        "countdown.datasets.apiUrl": {
+          "type": "string",
+          "default": "https://datasuite.damurka.com/api",
+          "scope": "application",
+          "markdownDescription": "The DataSuite API the Datasets panel lists and downloads published datasets from. Change it only to test against another DataSuite server."
         }
       }
     }
