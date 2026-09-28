@@ -188,9 +188,46 @@ local({
 		)
 		list(type = ext, units = unname(units))
 	}
+	# The dataset's key selections, compactly, for countdown_context: enough to answer "what is the denominator",
+	# "which survey", "which years" without further calls. Each field on its own, so an older core just leaves it out.
+	e$selections <- function() {
+		cache <- get(".cache", envir = globalenv())
+		val <- function(member) tryCatch(cache[[member]], error = function(err) NULL)
+		labels <- tryCatch(cd2030.core::cd_denominator_labels(), error = function(err) NULL)
+		denom <- function(id) {
+			if (is.null(id) || !length(id)) return(NULL)
+			list(id = id, label = if (!is.null(labels) && id %in% names(labels)) unname(labels[[id]]) else NULL)
+		}
+		years <- val("data_years")
+		sy <- val("survey_year")
+		survey <- val("national_survey")
+		source <- if (is.data.frame(survey) && all(c("year", "source") %in% names(survey)) && length(sy)) unique(as.character(survey$source[survey$year %in% sy])) else NULL
+		regions <- val("subnational_regions")
+		pop <- val("derivation_population")
+		group <- tryCatch(cd2030.core::get_selected_group(), error = function(err) NULL)
+		out <- list(
+			country = val("country"), iso3 = val("country_iso"), group = group,
+			denominator = c(denom(val("denominator")), list(for_indicators = "immunization and child indicators")),
+			maternal_denominator = if (!identical(group, "vaccine")) c(denom(val("maternal_denominator")), list(for_indicators = "maternal and newborn indicators")),
+			derivation_population = if (length(pop)) list(id = pop, meaning = e$meanings(pop)[[pop]]),
+			survey = list(year = sy, source = source, start_year = val("start_survey_year"), years_available = val("survey_years"),
+				uploaded = tryCatch(!cache$is_default("national_survey"), error = function(err) NULL),
+				coverage = as.list(val("survey_estimates"))),
+			national_rates = val("national_estimates"),
+			years = if (length(years)) list(start = min(years), end = max(years), excluded = val("excluded_years")),
+			admin_levels = list(levels = c("national", intersect(c("adminlevel_1", "district"), names(regions))),
+				regions = if (is.data.frame(regions)) length(unique(regions$adminlevel_1)), districts = if (is.data.frame(regions)) nrow(regions)),
+			adjustment = list(adjusted = val("adjusted_flag"), k_factors = as.list(val("k_factors"))),
+			reporting_threshold = val("performance_threshold")
+		)
+		Filter(Negate(is.null), out)
+	}
 	e$member <- function(member, args = list(), max_rows = 200, select = NULL, where = NULL) {
 		cache <- get(".cache", envir = globalenv())
 		generator <- get("CacheConnection", envir = asNamespace("cd2030.core"))
+		if (!member %in% c(names(generator$public_methods), names(generator$active))) {
+			stop(sprintf("cd2030.core %s has no member %s. Find members with countdown_catalog; if the catalog lists it, the installed cd2030.core is older than this extension's guide: update the app's R packages (use calculate_derived_coverage for denominator_comparison meanwhile).", as.character(utils::packageVersion("cd2030.core")), member), call. = FALSE)
+		}
 		value <- if (member %in% names(generator$active)) cache[[member]] else do.call(cache[[member]], args)
 		e$shape(e$narrow(value, select, where), max_rows)
 	}

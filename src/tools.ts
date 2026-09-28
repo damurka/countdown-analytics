@@ -171,6 +171,13 @@ export class CountdownTools {
 		if (!state) {
 			return text({ tabs, tab: picked, note: 'The app is not ready (or does not answer the AI bridge yet).' });
 		}
+		// the dataset's key selections (country, denominators, survey, years, levels, adjustment), read in the tab's R
+		// session while the rest is gathered: most simple questions are answered from these alone
+		const dataset = tabDataset(picked, state);
+		const selectionsPromise = dataset
+			? this._r.call<Record<string, unknown>>(picked.tabId, `Countdown AI: ${picked.title ?? picked.localId}`, dataset, '.cdai$run(.cdai$selections())', 120000)
+				.then(reply => reply.ok ? reply.result : { note: `Could not read them: ${reply.error}` }, () => undefined)
+			: Promise.resolve(undefined);
 		const kinds = await this._knowledge.reportKinds();
 		const pageDocs = (state.page ? await this._knowledge.pagesForAppPage(state.page.id) : [])
 			.filter(page => !page.slug.startsWith('apps/') || page.slug.startsWith(`apps/${picked.localId}`));
@@ -197,8 +204,10 @@ export class CountdownTools {
 		});
 		const method = state.page ? await this._knowledge.methodology({ appPage: state.page.id }, picked.localId, 'en', 4500) : { briefs: [], sections: [], truncated: false };
 		const sent = methodAlreadySent(`${picked.tabId}|page|${state.page?.id}`, input?.includeMethodology);
+		const selections = await selectionsPromise;
 		return text({
 			tab: { tabId: picked.tabId, app: picked.localId, title: picked.title, file: picked.file },
+			selections: selections && { ...selections, note: 'The dataset\'s current settings, read from its CacheConnection (cite as the dataset\'s settings). Answer questions about them (the denominator, survey, years, levels, adjustment) from here without further calls.' },
 			otherTabs: tabs.filter(t => t.tabId !== picked.tabId).map(t => ({ tabId: t.tabId, app: t.localId, title: t.title })),
 			page: state.page && {
 				...state.page,

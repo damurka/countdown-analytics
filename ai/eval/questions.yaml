@@ -27,13 +27,13 @@ questions:
     context: { page: reporting_rate }
     type: docs
     tools: [countdown_context, countdown_docs]
-    docs: https://datasuite.damurka.com/en/docs/framework/2-data-quality-assessment/
+    docs: https://datasuite.damurka.com/en/docs/methodology/data-quality/
   - id: significance-coverage
     ask: "What is the significance of what I'm seeing?"
     context: { page: national_coverage }
     type: docs
     tools: [countdown_context, countdown_component]
-    docs: https://datasuite.damurka.com/en/docs/framework/5-coverage-estimation/
+    docs: https://datasuite.damurka.com/en/docs/methodology/coverage/
 
   # From a real test (2026-09-26): the AI recommended the UN denominator and said Penta-1 derived "is a vaccination
   # denominator, inappropriate for ANC4" -- neither is in the methodology. A correct answer applies the method's six
@@ -43,15 +43,33 @@ questions:
     context: { page: denominator_selection }
     type: docs
     tools: [countdown_component]
-    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/#selecting-the-best-denominator-option
+    docs: https://datasuite.damurka.com/en/docs/methodology/denominators/#selecting-the-best-denominator-option
     must_not: ["recommends a denominator the method does not list for the level", "calls Penta-1 derived a vaccination-only denominator"]
   - id: method-denominator-pushback
     ask: "But the Penta1 population growth does not change the ANC4 visits in Arusha"
     context: { page: subnational_coverage }
     type: docs
     tools: [countdown_component, countdown_docs]
-    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/#denominator-options
+    docs: https://datasuite.damurka.com/en/docs/methodology/denominators/#denominator-options
     must_not: ["defends an earlier claim the methodology does not support"]
+
+  # From a real chat (2026-09-27): "what is the denominator" took 11 model calls (countdown_context, then cache,
+  # catalog x3, docs, read_file...). countdown_context's `selections` hold the answer.
+  - id: context-denominator
+    ask: "What is the denominator?"
+    type: screen
+    tools: [countdown_context]      # its `selections` only: no countdown_cache, countdown_catalog, docs or files
+    must_not: ["calls countdown_cache or countdown_catalog before answering", "reads files to find the denominator"]
+    note: "Names both: the denominator (immunization and child indicators) and the maternal denominator, by their labels."
+  # From the same chat: comparing the denominators took 5 countdown_run_r calls of trial and error.
+  - id: compare-denominators
+    ask: "Do you agree with these denominator selections?"
+    context: { page: denominator_selection }
+    type: tool-choice
+    tools: [countdown_context, countdown_cache]
+    member: denominator_comparison
+    args: { indicator: [instlivebirths, penta3], admin_level: national }
+    must_not: ["uses countdown_run_r to reshape calculate_derived_coverage"]
 
   - id: data-country
     ask: "Which country is this dataset?"
@@ -115,23 +133,23 @@ questions:
     tools: [countdown_context, countdown_cache]
     member: decompose_change
     args: { indicator: anc4, from_year: 2022, to_year: 2023, admin_level: district }
-    note: "Say the national figure is rebuilt from districts (rule 7) and check reporting rates."
+    note: "Say the national figure is rebuilt from districts (rule 8) and check reporting rates."
 
   - id: general-denominator
     ask: "What is a denominator and how is it chosen?"
     type: docs
     tools: [countdown_docs]
-    docs: https://datasuite.damurka.com/en/docs/framework/4-denominator-selection/
+    docs: https://datasuite.damurka.com/en/docs/methodology/denominators/
   - id: general-indicators
     ask: "How is ANC4 defined?"
     type: docs
     tools: [countdown_docs]
-    docs: https://datasuite.damurka.com/en/docs/framework/8-indicator-definitions/
+    docs: https://datasuite.damurka.com/en/docs/reference/indicator-definitions/
   - id: general-adjustment
     ask: "Why does the app adjust the data?"
     type: docs
     tools: [countdown_docs]
-    docs: https://datasuite.damurka.com/en/docs/framework/3-data-adjustment/
+    docs: https://datasuite.damurka.com/en/docs/methodology/data-adjustment/
 
   - id: report-standard
     ask: "Generate the data quality report."

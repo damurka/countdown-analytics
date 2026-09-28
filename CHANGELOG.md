@@ -4,6 +4,35 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.5] - 2026-09-28
+
+### Added
+
+- `countdown_context` returns the dataset's current **selections** -- country, the denominator and maternal
+  denominator with their labels, the survey (year, source, coverage), the population the growth options use, the
+  national rates, the years, the admin levels and the adjustment -- so "what is the denominator?" is answered in one
+  call instead of ten.
+- Comparing the denominators takes one call: `countdown_cache` `denominator_comparison` (cd2030.core 1.3.3) gives
+  every option's coverage next to the survey, the difference and the chosen one, per indicator and year; the
+  instructions use it instead of reshaping `calculate_derived_coverage` in R. The AI's guide is regenerated from
+  cd2030.core 1.3.3; with an older core, the member says the app's R packages need updating.
+- The Countdown instructions stay attached while any Countdown app tab is open, not only while it is the active
+  editor (with DataSuite builds that have the `shinyAppOpenExtensionIds` context key), so follow-up questions keep
+  them and the prompt cache.
+
+### Changed
+
+- Portuguese as written in Mozambique and Angola across the apps and their docs: the apps need cd2030.rmncah /
+  cd2030.vaxx 2.0.4 and cd2030.pooled 2.0.3 (cd2030.core 1.3.2, datasuite.ui 0.3.3); the AI's docs corpus is
+  refreshed.
+- Each AI tool has one name: its reference name (in `#` references, tool lists and custom agents) is now the name the
+  AI calls it by, e.g. `countdown_run_r` (was `countdownRunR`). A custom agent or prompt file that lists a tool by its
+  old camelCase name needs the new one. DataSuite's own tools did the same, so the `runR` and `shinyApp` the
+  instructions name are now exactly the tools the AI sees.
+- Leaner AI instructions (about 2,000 characters shorter, sent with every request in a Countdown tab): they keep what
+  is specific to Countdown -- the `countdown_*` tools, the dataset, the methodology and the app -- and point to
+  DataSuite's general rules for numbers and sources, R habits and recording decisions instead of repeating them.
+
 ## [2.0.4] - 2026-09-27
 
 ### Changed
