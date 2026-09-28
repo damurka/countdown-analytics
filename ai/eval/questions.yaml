@@ -161,6 +161,24 @@ questions:
     type: tool-choice
     tools: [countdown_report]
     note: "build (validate), then save -- it opens in the Reports page."
+  - id: report-narrative
+    ask: "Fill in the narrative of my report."
+    type: tool-choice
+    tools: [countdown_report]
+    note: "listReports (which report; ask if several), readReport, then updateBlocks: { blockId, text } for the empty paragraphs and { afterBlockId, insert } for an introduction and a conclusion, in the report's lang, numbers only from the charts' data."
+    must_not: ["saves the whole report again (save) to change its text", "writes a number that is not in readReport's data"]
+  - id: report-paragraph-button
+    ask: "In the report \"Benin National Coverage\" (id r1), write the paragraph p2 after the chart \"Coverage trend: DHIS2 and survey\" (ANC4), from its data."
+    type: tool-choice
+    tools: [countdown_report]
+    note: "readReport r1, then updateBlocks with one change { blockId: p2, text } from the chart's data (the Reports page's Write with AI button)."
+    must_not: ["changes other blocks"]
+  - id: report-change-block
+    ask: "Make the ANC4 chart in my report a map for 2023 and show the values."
+    type: tool-choice
+    tools: [countdown_report]
+    note: "readReport (data: false), then updateBlocks { blockId, kind: map, year: 2023, options: { show_labels: true } }; nothing else changes."
+    must_not: ["saves the whole report again (save)"]
   - id: graph-custom
     ask: "Plot the ANC and vaccination reporting rates by year."
     type: tool-choice

@@ -11,7 +11,7 @@
     "r",
     "datasuite"
   ],
-  "version": "2.0.5",
+  "version": "2.0.6",
   "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
@@ -23,6 +23,9 @@
     "Data Science"
   ],
   "api": "none",
+  "enabledApiProposals": [
+    "embeddings"
+  ],
   "extensionKind": [
     "ui",
     "workspace"
@@ -34,7 +37,8 @@
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "vscode:prepublish": "npm run compile"
+    "vscode:prepublish": "npm run compile",
+    "test": "tsc -p ./ && node --test \"out/test/**/*.test.js\""
   },
   "devDependencies": {
     "@types/node": "24.x",
@@ -216,8 +220,8 @@
         "displayName": "Countdown: Reports",
         "toolReferenceName": "countdown_report",
         "canBeReferencedInPrompt": true,
-        "userDescription": "List, build, save and generate Countdown reports.",
-        "modelDescription": "Countdown reports (Word, PowerPoint, PDF) are made of blocks: heading, paragraph, note, pagebreak, chart and table (a report kind with options; see listKinds), image. Actions: listPresets (the standard reports); listKinds (chart/table kinds and their options); build (validate a project { name, blocks }); save (validate, then save it in the dataset, where it opens in the app's Reports page for the user to edit; a custom graph goes in as { type: \"chart\", kind: \"custom_chart\", graph: \"<saved graph id>\" } or with spec; a figure you drew (countdown_graph `figure.path` or countdown_run_r `figures[].path`) goes in as { type: \"image\", path: \"<that path>\", caption? } -- saving stores the picture in the dataset, so the report keeps it, but it does not redraw when the data changes: prefer a custom_chart when its data comes from a chartable member); generate (write a file from a standard report (preset) or a saved report (reportId), format docx|pptx|pdf, into the tab's working folder). save and generate change the dataset or write files: only when the user asks. The user's permission setting may ask them to confirm.",
+        "userDescription": "List, build, save, read, change and generate Countdown reports.",
+        "modelDescription": "Countdown reports (Word, PowerPoint, PDF) are made of blocks: heading, paragraph, note, pagebreak, chart and table (a report kind with options; see listKinds), image. Actions: listPresets (the standard reports); listKinds (chart/table kinds and their options); build (validate a project { name, blocks }); save (validate, then save a NEW report in the dataset, where it opens in the app's Reports page for the user to edit; a custom graph goes in as { type: \"chart\", kind: \"custom_chart\", graph: \"<saved graph id>\" } or with spec; a figure you drew (countdown_graph `figure.path` or countdown_run_r `figures[].path`) goes in as { type: \"image\", path: \"<that path>\", caption? } -- saving stores the picture in the dataset, so the report keeps it, but it does not redraw when the data changes: prefer a custom_chart when its data comes from a chartable member); listReports (the saved reports: id, name, kind, lang, blocks); readReport (reportId: its blocks in order -- ids, the text of headings/paragraphs/notes, and for each chart and table its kind, settings, options and a short table of the data it shows -- and its language); updateBlocks (reportId + changes, applied in order, checked as a whole, everything else untouched: { blockId, text } writes or rewrites a heading/paragraph/note (plain text, **bold**, a line break for a new line); { blockId, type: heading|paragraph|note, level }; { blockId, kind, indicator, admin_level, region, year, variant, options: { chart options, null removes one }, size: full|half|third, title, caption: false, pageBreakBefore }; { afterBlockId (or \"@start\"), insert: { type: paragraph|heading|note|pagebreak|chart|table, text | kind, ... } }; { blockId, delete: true }; { blockId, moveAfter }). To fill in or change a saved report -- its narrative, one paragraph, a chart's kind or options -- readReport then updateBlocks with only what was asked; never save the whole report again (it would wipe the user's edits). generate (write a file from a standard report (preset) or a saved report (reportId), format docx|pptx|pdf, into the tab's working folder). save, updateBlocks and generate change the dataset or write files: only when the user asks. The user's permission setting may ask them to confirm.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -228,7 +232,10 @@
                 "listKinds",
                 "build",
                 "save",
-                "generate"
+                "generate",
+                "listReports",
+                "readReport",
+                "updateBlocks"
               ]
             },
             "project": {
@@ -241,7 +248,22 @@
             },
             "reportId": {
               "type": "string",
-              "description": "For generate: a saved report's id. For save: only to replace that saved report (the user is asked first)."
+              "description": "For readReport/updateBlocks/generate: a saved report's id (listReports). For save: only to replace that saved report (the user is asked first)."
+            },
+            "changes": {
+              "type": "array",
+              "description": "For updateBlocks: the changes, applied in order, each naming a block id from readReport.",
+              "items": {
+                "type": "object"
+              }
+            },
+            "maxRows": {
+              "type": "number",
+              "description": "For readReport: rows of each chart's data (default 25, at most 100)."
+            },
+            "data": {
+              "type": "boolean",
+              "description": "For readReport: false leaves out the charts' data (faster, for text or layout changes)."
             },
             "format": {
               "type": "string",
@@ -311,7 +333,7 @@
         "toolReferenceName": "countdown_documents",
         "canBeReferencedInPrompt": true,
         "userDescription": "Read or search the documents given for this dataset (its documents folder, or a file attached to the chat).",
-        "modelDescription": "Reference documents the user gives for the open dataset -- reports, strategies, survey reports, notes -- to use as context (e.g. for a report's text) and to compare with the dataset's results. They are the files in the dataset's analysis folder `documents/`, plus any file the user attached to the chat (pass its full path as `file`; a file outside the documents folder is confirmed with the user first). Actions: list (the documents, with type and size); read (a document's text by `range` of units -- PDF pages, PowerPoint slides, Word sections by heading, Excel sheets, text chunks -- e.g. \"3-5\"; each part is headed by its [marker], and at most about 20,000 characters come back, with `next` giving the rest); search (a phrase, or a regex with isRegexp, across all documents or one `file`, returning file, marker and a snippet). Formats: PDF (text layer only; scanned PDFs have none), .docx, .pptx, .xlsx/.xls, .csv, text/Markdown. Documents give context, never the dataset's numbers: every figure you give as the dataset's still comes from countdown_cache / countdown_component; when a document's figure differs, show both and say which is which. Cite a document as \"<file>, <marker>\" (e.g. \"National HMIS report 2023.pdf, p. 14\") in the Sources.",
+        "modelDescription": "Reference documents the user gives for the open dataset -- reports, strategies, survey reports, notes -- to use as context (e.g. for a report's text) and to compare with the dataset's results. They are the files in the dataset's analysis folder `documents/`, plus any file the user attached to the chat (pass its full path as `file`; a file outside the documents folder is confirmed with the user first). Actions: list (the documents, with type, size and whether each is indexed for meaning search); read (a document's text by `range` of units -- PDF pages, PowerPoint slides, Word sections by heading, Excel sheets, text chunks -- e.g. \"3-5\"; each part is headed by its [marker], and at most about 20,000 characters come back, with `next` giving the rest; a scanned page has no text, so its image is attached -- read it from the image); search (across all documents or one `file`: plain words are ranked by keywords and by meaning -- so a question in English, French or Portuguese finds passages in any of them, and scanned pages are found by their image -- best first, each with file, marker, snippet and how it matched (keyword, meaning or both; meaning-only matches can be loose, so read before citing); a \"quoted phrase\" or a regex with isRegexp finds exact matches instead). Meaning search uses DataSuite's AI service: the documents' text and scanned page images are sent to it to be embedded (once per file version; not when datasuite.embeddings.enabled is off or the user is signed out -- then search is by keywords alone and says why). Formats: PDF (text layer; scanned pages as images), .docx, .pptx, .xlsx/.xls, .csv, text/Markdown. Documents give context, never the dataset's numbers: every figure you give as the dataset's still comes from countdown_cache / countdown_component; when a document's figure differs, show both and say which is which. Cite a document as \"<file>, <marker>\" (e.g. \"National HMIS report 2023.pdf, p. 14\") in the Sources.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -334,7 +356,7 @@
             },
             "query": {
               "type": "string",
-              "description": "search: the phrase (case-insensitive) or, with isRegexp, a regular expression."
+              "description": "search: words or a question (ranked by keywords and meaning), a \"quoted phrase\" (exact, case-insensitive) or, with isRegexp, a regular expression."
             },
             "isRegexp": {
               "type": "boolean",
@@ -342,7 +364,7 @@
             },
             "maxResults": {
               "type": "number",
-              "description": "search: most matches to return (default 30)."
+              "description": "search: most matches to return (default 12 ranked, 30 exact)."
             },
             "tabId": {
               "type": "string",

@@ -45,7 +45,8 @@ The user is working in a Countdown app (RMNCAH, Vaxx or Pooled). Each app tab ha
    naming them. Nothing charted in view: the page. A question about an analysis ("interpret the denominators", "how is
    the inequality") is about the whole analysis, wherever the user is: answer it from the dataset (rule 5).
 4. **Don't change the dataset**, except to save a report or graph the user asked for (`countdown_report` save,
-   `countdown_graph` save). Change the view (`shinyApp` `navigate`, `selectTab`, `setFilters`) only when asked.
+   `updateBlocks`, `countdown_graph` save). A saved report is changed with `updateBlocks`, never saved again whole
+   (that wipes the user's edits). Change the view (`shinyApp` `navigate`, `selectTab`, `setFilters`) only when asked.
 5. **Another page's numbers don't need that page**: get them from the dataset (`countdown_cache`) and name the page
    where they are shown; don't navigate, take a screenshot or ask the user to open the page. Prefer
    `countdown_component` to `shinyApp` `getComponentData` for a chart on screen (it adds the methodology and what the
@@ -82,7 +83,9 @@ The user is working in a Countdown app (RMNCAH, Vaxx or Pooled). Each app tab ha
     data?". Ask only when the question is genuinely ambiguous or the method leaves the choice to the analyst (then lay
     out the evidence and the options).
 12. **Documents are context, not the data.** `countdown_documents` reads the user's documents (the dataset's
-    `documents/` folder, or a file they attached -- pass its full path) for background, wording and comparison. Numbers
+    `documents/` folder, or a file they attached -- pass its full path) for background, wording and comparison; its
+    `search` takes words or a question and also matches by meaning, across languages -- read a match before citing it
+    (a scanned page comes back as an image). Numbers
     given as the dataset's still come from `countdown_cache` / `countdown_component`; a figure from a document is
     labelled as the document's. When they differ, show both and say which is which (rule 0 says how to read the
     dataset's). Cite a document as "<file>, <marker>" (e.g. "HMIS report 2023.pdf, p. 14") in the Sources; report
@@ -107,6 +110,8 @@ The user is working in a Countdown app (RMNCAH, Vaxx or Pooled). Each app tab ha
 | Look at another dataset ("look at ghana.rds") | `countdown_open_dataset` (the user confirms); then use the new tab's id. Each tab is its own context. |
 | A standard report | `countdown_report` `listPresets`, then `generate` (docx, pptx or pdf). |
 | A custom report | `countdown_report` `listKinds`; write the text blocks and pick chart/table kinds with options; `build` to check; `save` (it opens in the Reports page for the user to edit); `generate` if they want a file. |
+| Fill in / rewrite a saved report's narrative (or one paragraph) | `countdown_report` `readReport` (`listReports` for the id), then `updateBlocks` with `{ blockId, text }` for the paragraphs asked (empty ones after a chart or table) and `{ afterBlockId, insert }` for new ones -- an introduction, a paragraph after each chart and table, a conclusion when the whole narrative is asked. Write in the report's `lang`, from the report's own charts and tables: numbers only from their `data` (title, subtitle, caption, rows), never invented or from memory; plain language, a few sentences each; name the period and, for coverage, the denominator (the caption says it). Say what you wrote. |
+| Change a block of a saved report (a chart's kind, years, options, size; move, remove, add) | `readReport` (`data: false` is enough), then `updateBlocks` with only the change asked, by block id; an error lists the allowed values -- use one or ask. A kind is changed only to one of the same data; otherwise ask before replacing the chart. |
 | A graph no report kind gives | `countdown_graph` with a `custom_chart` spec from a chartable member (see `countdown_catalog`); show the preview; `save: true` only when they want to keep it (it redraws with the data and can go in any report). |
 | Use this document for context in the report | `countdown_documents` `read` (or `search`); draft the report's text from it with its citations (rule 12), the numbers still from the dataset; `countdown_report` `build`/`save`, with a note block naming the documents used. |
 | Compare our results with this report | `countdown_documents` `search`/`read` for the report's figures (indicator, year, level); the same from the dataset (`countdown_cache`, same years and level, the denominator in use); a table -- document, dataset, difference -- and possible reasons from the methodology (denominator, adjustment, completeness, survey vs routine) (rule 12). |

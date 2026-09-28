@@ -188,6 +188,27 @@ local({
 		)
 		list(type = ext, units = unname(units))
 	}
+	# Scanned PDF pages (no text layer) as PNGs, for countdown_documents to embed and to show the AI: grayscale when the
+	# png package is there, re-rendered at 72 dpi when over 1.5 MB (the embedding service takes a data URL under 5 MB).
+	e$doc_render_pages <- function(path, pages, files, dpi = 110) {
+		if (!requireNamespace("pdftools", quietly = TRUE)) stop("Rendering PDF pages needs the R package pdftools.", call. = FALSE)
+		gray <- requireNamespace("png", quietly = TRUE)
+		render <- function(page, file, dpi) {
+			if (gray) {
+				b <- pdftools::pdf_render_page(path, page = page, dpi = dpi, numeric = TRUE)
+				g <- if (length(dim(b)) == 3 && dim(b)[[3]] >= 3) 0.299 * b[, , 1] + 0.587 * b[, , 2] + 0.114 * b[, , 3] else b
+				png::writePNG(g, file)
+			} else {
+				pdftools::pdf_convert(path, format = "png", pages = page, dpi = dpi, filenames = file, verbose = FALSE)
+			}
+			file.size(file)
+		}
+		vapply(seq_along(pages), function(i) {
+			size <- tryCatch(render(pages[[i]], files[[i]], dpi), error = function(err) NA_real_)
+			if (!is.na(size) && size > 1.5e6) size <- tryCatch(render(pages[[i]], files[[i]], 72), error = function(err) NA_real_)
+			size
+		}, numeric(1))
+	}
 	# The dataset's key selections, compactly, for countdown_context: enough to answer "what is the denominator",
 	# "which survey", "which years" without further calls. Each field on its own, so an older core just leaves it out.
 	e$selections <- function() {

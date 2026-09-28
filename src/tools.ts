@@ -7,13 +7,14 @@
 // the tab's own read-only R session; meaning comes from the methodology docs; the screen and anything that changes
 // the app go through DataSuite's AI bridge API. Every data answer carries its provenance.
 
-import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { appRequest, appState, countdownTabs, EXTENSION_ID, IAppState, ITab, pickTab, tabDataset, workspaceDir, appPlan } from './app';
 import { IGuideMember, Knowledge } from './knowledge';
 import { CountdownR, IExecuteResult, IRReply, riskyRReasons, rString, toR, truncateMiddle } from './r';
+import { DocVectors, embedQuery, IDocVectors } from './docindex';
+import { bm25, chunkUnits, cosine, docKey, IChunk, isScannedPage, quotedPhrase, rankBy, rrf, snippet, tokenize } from './docsearch';
 
 const MAX_RESULT_CHARS = 60000;
 
@@ -142,7 +143,7 @@ export class CountdownTools {
 		return {
 			invocationMessage: `${plan.summary}...`,
 			confirmationMessages: plan.policy === 'confirm' ? {
-				title: 'Replace something saved?',
+				title: change.title ?? 'Replace something saved?',
 				message: new vscode.MarkdownString(`${plan.summary}?\n\n(Setting: \`datasuite.shinyApps.aiAppControl\`.)`)
 			} : undefined
 		};
@@ -462,9 +463,92 @@ export class CountdownTools {
 				const link = typeof file === 'string' ? `[${path.basename(file)}](${vscode.Uri.file(file).toString()})` : undefined;
 				return text({ generated: made.result, link, note: link ? 'Give the user this link to the file (it opens in Word or PowerPoint).' : undefined });
 			}
+			case 'listReports': {
+				const context = await this._needDataset(input.tabId);
+				if (typeof context === 'string') {
+					return failure(context);
+				}
+				const reply = await this._r.call(context.tab.tabId, context.label, context.dataset,
+					`.cdai$run(${REPORT_FN('report_list')}(.cache$report_projects))`);
+				return reply.ok ? text({ reports: reply.result, next: 'Read one with action "readReport" (reportId).' }) : failure(reply.error ?? 'R failed.');
+			}
+			case 'readReport': {
+				if (!input.reportId) {
+					return failure('reportId is required (see listReports).');
+				}
+				const context = await this._needDataset(input.tabId);
+				if (typeof context === 'string') {
+					return failure(context);
+				}
+				const maxRows = Math.max(1, Math.min(input.maxRows ?? 25, 100));
+				const reply = await this._r.call(context.tab.tabId, context.label, context.dataset, `.cdai$run({
+	id <- ${rString(input.reportId)}
+	p <- .cache$report_projects[[id]]
+	if (!is.list(p)) stop(sprintf("There is no saved report %s. The saved reports: %s.", id, paste(names(.cache$report_projects), collapse = ", ")), call. = FALSE)
+	${REPORT_FN('report_read')}(.cache, p, id = id, lang = if (is.null(.cache$language)) "en" else .cache$language, data = ${input.data === false ? 'FALSE' : 'TRUE'}, max_rows = ${maxRows})
+})`);
+				if (!reply.ok) {
+					return failure(reply.error ?? 'R failed.');
+				}
+				return text({
+					report: reply.result,
+					provenance: { source: 'the saved report, its charts and tables drawn from the dataset', dataset: context.dataset!.path, revision: context.dataset!.revision },
+					note: 'To write or change text, or change blocks: action "updateBlocks" with this reportId and changes by block id -- never save the whole report again. Write in the report\'s language (lang), from these numbers only (a chart\'s data, title, subtitle and caption), in plain language, naming the period and the denominator where they matter.'
+				});
+			}
+			case 'updateText':
+			case 'updateBlocks': {
+				if (!input.reportId || !Array.isArray(input.changes) || !input.changes.length) {
+					return failure('reportId and changes are required: changes = [{ blockId, text } | { afterBlockId, insert: { type, text } } | { blockId, kind, options, ... } | { blockId, delete: true } | { blockId, moveAfter }] (block ids from readReport).');
+				}
+				const context = await this._needDataset(input.tabId);
+				if (typeof context === 'string') {
+					return failure(context);
+				}
+				const problem = await this._kindChangeProblem(context, input.reportId, input.changes);
+				if (problem) {
+					return failure(problem);
+				}
+				// confirmed: the chat asked the user when the setting wanted it (prepareInvocation)
+				const changed = await appRequest(context.tab, 'updateBlocks', reportChange(input)!.args, { confirmed: true });
+				return changed.ok ? text({ changed: changed.result, where: 'the Reports page of the app (an open report shows the change at once)' }) : failure(changed.error ?? 'The app did not change the report.');
+			}
 			default:
-				return failure('action must be one of listPresets, listKinds, build, save, generate.');
+				return failure('action must be one of listPresets, listKinds, build, save, generate, listReports, readReport, updateBlocks.');
 		}
+	}
+
+	/**
+	 * A change of a chart's kind must keep its data: the new kind must draw from a CacheConnection member the old one
+	 * does (ai/report-kinds.json). Returns why not, with the kinds that do, or undefined.
+	 */
+	private async _kindChangeProblem(context: ITabContext, reportId: string, changes: unknown[]): Promise<string | undefined> {
+		const wanted = changes
+			.map(c => c as { blockId?: unknown; kind?: unknown })
+			.filter(c => typeof c?.kind === 'string' && typeof c.blockId === 'string') as { blockId: string; kind: string }[];
+		if (!wanted.length) {
+			return undefined;
+		}
+		const reply = await this._r.call<{ id: string; kind?: string }[]>(context.tab.tabId, context.label, context.dataset,
+			`.cdai$run(lapply(datasuite.ui::report_project_blocks(.cache$report_projects[[${rString(reportId)}]]), function(b) list(id = if (is.null(b$id)) "" else b$id, kind = b$kind)))`);
+		if (!reply.ok || !Array.isArray(reply.result)) {
+			return undefined;
+		}
+		const kinds = (await this._knowledge.reportKinds()).kinds;
+		const members = (id: string | undefined) => (id ? kinds[id]?.members ?? [] : []);
+		for (const w of wanted) {
+			const from = reply.result.find(b => b.id === w.blockId)?.kind;
+			if (!from || from === w.kind || from === 'custom_chart' || w.kind === 'custom_chart') {
+				continue;
+			}
+			const old = members(from);
+			if (!old.length || !members(w.kind).length || members(w.kind).some(m => old.includes(m))) {
+				continue;
+			}
+			const same = Object.entries(kinds).filter(([id, k]) => id !== from && (k.members ?? []).some(m => old.includes(m))).map(([id]) => id);
+			return `Block ${w.blockId} is a "${from}", drawn from ${old.join(', ')}; "${w.kind}" draws other data. Kinds with the same data: ${same.join(', ') || 'none'}. Ask the user before replacing the chart with another one (delete it and insert the new kind).`;
+		}
+		return undefined;
 	}
 
 	// ---------------------------------------------------------------------------------------------- countdown_graph
@@ -575,6 +659,9 @@ export class CountdownTools {
 
 	// ---------------------------------------------------------------------------------------------- countdown_documents
 
+	/** The documents' embeddings for meaning search (docindex.ts). */
+	private readonly _vectors = new DocVectors();
+
 	/**
 	 * Documents the user gives the AI for context: the dataset's analysis folder `documents/`, or a file they attached.
 	 * Reading a file outside that folder asks the user first (the chat's Allow/Skip).
@@ -610,9 +697,9 @@ export class CountdownTools {
 			const files = folder ? listDocuments(folder) : [];
 			return text({
 				folder: folder ?? null,
-				documents: files.map(f => ({ file: path.relative(folder!, f.path).replace(/\\/g, '/'), path: f.path, type: f.type, size: f.size, modified: f.modified, units: this._cachedUnits(f.path) })),
+				documents: files.map(f => ({ file: path.relative(folder!, f.path).replace(/\\/g, '/'), path: f.path, type: f.type, size: f.size, modified: f.modified, units: this._cachedUnits(f.path), meaningSearch: this._vectors.status(this._docCachePath(f.path)) ?? 'not indexed yet (done on the first search)' })),
 				note: files.length
-					? 'Read one with action "read" (file = its name; range = pages/slides/sections, e.g. "3-5"), or look for a phrase in all with "search". Cite as "<file>, <marker>".'
+					? 'Read one with action "read" (file = its name; range = pages/slides/sections, e.g. "3-5"), or search all of them with "search" (by keywords and meaning; "quoted" for an exact phrase). Cite as "<file>, <marker>".'
 					: `No documents yet. The user can put PDF, Word, PowerPoint, Excel, CSV or text files in ${folder ?? "the dataset's analysis folder"}\\documents, or attach one to the chat (then pass its full path as file).`
 			});
 		}
@@ -627,39 +714,71 @@ export class CountdownTools {
 				return failure(doc);
 			}
 			const [from, to] = parseRange(input.range, doc.units.length);
+			// scanned pages (no text layer): their rendered image, for the AI to look at
+			const scanned: number[] = [];
+			for (let i = from; i <= to && scanned.length < DOC_READ_IMAGES; i++) {
+				if (isScannedPage(doc.type, doc.units[i - 1].text)) {
+					scanned.push(i - 1);
+				}
+			}
+			const cache = this._docCachePath(file);
+			const rendered = scanned.length && cache ? await this._renderPages(context, file, cache, scanned) : {};
+			const images: { marker: string; path: string; markdown: string }[] = [];
 			let body = '';
 			let last = from - 1;
 			for (let i = from; i <= to; i++) {
-				const piece = `[${doc.units[i - 1].marker}]\n${doc.units[i - 1].text.trim()}\n\n`;
+				const unit = doc.units[i - 1];
+				const isScanned = isScannedPage(doc.type, unit.text);
+				const png = isScanned && typeof rendered !== 'string' ? rendered[i - 1] : undefined;
+				const piece = isScanned
+					? `[${unit.marker}]\n(scanned page: no text layer. ${png ? `Its image is attached -- read it from the image; saved at ${png}` : typeof rendered === 'string' ? `Its image could not be rendered: ${rendered}` : `Read this page alone (range "${i}") to see its image`}.)\n\n`
+					: `[${unit.marker}]\n${unit.text.trim()}\n\n`;
 				if (body.length && body.length + piece.length > DOC_READ_CHARS) {
 					break;
 				}
 				body += piece.length > DOC_READ_CHARS ? `${piece.slice(0, DOC_READ_CHARS)}\n... (cut)\n` : piece;
 				last = i;
+				if (png) {
+					images.push({ marker: unit.marker, path: png, markdown: `![${path.basename(file)}, ${unit.marker}](${vscode.Uri.file(png).toString()})` });
+				}
 			}
-			return text({
+			const result = text({
 				file: path.basename(file), path: file, type: doc.type, units: doc.units.length,
 				shown: `${from}-${last}`, next: last < to ? `${last + 1}-${to}` : undefined,
 				cite: `Cite as "${path.basename(file)}, <marker>" (the [marker] before each part).`,
-				text: body || '(no text: a scanned PDF has no text layer)'
+				text: body || '(no text: a scanned PDF has no text layer)',
+				scannedPages: images.length ? { note: 'Scanned pages have no text: their images are attached (read the words from them; no OCR was run). Show one to the user with its markdown.', images } : undefined
 			});
+			if (!images.length) {
+				return result;
+			}
+			const parts: (vscode.LanguageModelTextPart | vscode.LanguageModelDataPart)[] = [...result.content as vscode.LanguageModelTextPart[]];
+			for (const image of images) {
+				parts.push(vscode.LanguageModelDataPart.image(fs.readFileSync(image.path), 'image/png'));
+			}
+			return new vscode.LanguageModelToolResult(parts);
 		}
 
 		if (action === 'search') {
 			if (!input.query) {
 				return failure('query is required for search.');
 			}
-			let pattern: RegExp;
-			try {
-				pattern = new RegExp(input.isRegexp ? input.query : input.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-			} catch (error) {
-				return failure(`Not a valid regular expression: ${error instanceof Error ? error.message : String(error)}`);
-			}
 			const single = input.file ? resolveDocument(input.file, folder) : undefined;
 			if (single && typeof single !== 'string') {
 				return failure(single.error);
 			}
 			const files = single ? [single] : folder ? listDocuments(folder).map(f => f.path) : [];
+			// a regex or a "quoted phrase" is found exactly; anything else is ranked by keywords and meaning
+			const exact = input.isRegexp ? input.query : quotedPhrase(input.query);
+			if (exact === undefined) {
+				return this._rankedSearch(context, input.query, files, Math.max(1, Math.min(input.maxResults ?? 12, 100)));
+			}
+			let pattern: RegExp;
+			try {
+				pattern = new RegExp(input.isRegexp ? exact : exact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+			} catch (error) {
+				return failure(`Not a valid regular expression: ${error instanceof Error ? error.message : String(error)}`);
+			}
 			const max = Math.max(1, Math.min(input.maxResults ?? 30, 200));
 			const matches: { file: string; marker: string; snippet: string }[] = [];
 			const problems: string[] = [];
@@ -710,18 +829,21 @@ export class CountdownTools {
 		if (!reply.ok) {
 			return reply.error ?? 'R could not read the document.';
 		}
+		let doc: IDocText;
 		try {
-			return JSON.parse(fs.readFileSync(cache, 'utf8')) as IDocText;
+			doc = JSON.parse(fs.readFileSync(cache, 'utf8')) as IDocText;
 		} catch (error) {
 			return `Could not read the extracted text: ${error instanceof Error ? error.message : String(error)}`;
 		}
+		// a new or changed document: index it for meaning search in the background (a search waits for it)
+		void this._index(context, file, cache, doc);
+		return doc;
 	}
 
 	private _docCachePath(file: string): string | undefined {
 		try {
 			const stat = fs.statSync(file);
-			const key = crypto.createHash('sha1').update(`${path.resolve(file).toLowerCase()}|${stat.size}|${stat.mtimeMs}`).digest('hex');
-			return path.join(this._storageDir, 'documents', `${key}.json`);
+			return path.join(this._storageDir, 'documents', `${docKey(path.resolve(file), stat.size, stat.mtimeMs)}.json`);
 		} catch {
 			return undefined;
 		}
@@ -737,6 +859,96 @@ export class CountdownTools {
 		} catch {
 			return undefined;
 		}
+	}
+
+	/** A document's vectors for meaning search, embedding it (text chunks and scanned pages) when it has none. */
+	private _index(context: ITabContext, file: string, cache: string, doc: IDocText) {
+		return this._vectors.ensure(path.basename(file), cache, doc.type, doc.units, units => this._renderPages(context, file, cache, units));
+	}
+
+	/** Scanned PDF pages (0-based units) rendered to PNGs next to the text cache, by unit; an error message when R can't. */
+	private async _renderPages(context: ITabContext, file: string, cache: string, units: readonly number[]): Promise<Record<number, string> | string> {
+		const pngFor = (unit: number) => cache.replace(/\.json$/, `-p${unit + 1}.png`);
+		const out: Record<number, string> = {};
+		const missing = units.filter(u => !fs.existsSync(pngFor(u)));
+		if (missing.length) {
+			const reply = await this._r.call<unknown>(context.tab.tabId, context.label, undefined,
+				`.cdai$run(.cdai$doc_render_pages(${rString(file)}, .cdai$arg("${toR(missing.map(u => u + 1))}"), .cdai$arg("${toR(missing.map(u => pngFor(u).replace(/\\/g, '/')))}")))`, 900000);
+			if (!reply.ok) {
+				return reply.error ?? 'R could not render the pages.';
+			}
+		}
+		for (const u of units) {
+			if (fs.existsSync(pngFor(u))) {
+				out[u] = pngFor(u);
+			}
+		}
+		return out;
+	}
+
+	/**
+	 * Search ranked by keywords (BM25 over ~1,500-character chunks) and, when DataSuite's embeddings are available, by
+	 * meaning (the query's embedding against the chunks' and the scanned pages'), fused by reciprocal rank (k = 60).
+	 * Without embeddings it is keyword alone, with a note saying why.
+	 */
+	private async _rankedSearch(context: ITabContext, query: string, files: readonly string[], max: number): Promise<vscode.LanguageModelToolResult> {
+		const problems: string[] = [];
+		const q = files.length ? await embedQuery(query) : undefined;
+		const entries: { file: string; doc: IDocText; chunk: IChunk; vector?: Float32Array }[] = [];
+		let embedded = 0;
+		for (const file of files) {
+			const doc = await this._docText(context, file);
+			if (typeof doc === 'string') {
+				problems.push(`${path.basename(file)}: ${doc}`);
+				continue;
+			}
+			let vectors: IDocVectors | undefined;
+			if (q?.ok) {
+				const indexed = await this._index(context, file, this._docCachePath(file)!, doc);
+				if ('ok' in indexed) {
+					problems.push(`${path.basename(file)}: keyword search only (${indexed.message})`);
+				} else if (indexed.model !== q.model || indexed.dimensions !== q.vector.length) {
+					problems.push(`${path.basename(file)}: keyword search only (indexed with ${indexed.model}, not ${q.model})`);
+				} else {
+					vectors = indexed;
+					embedded++;
+				}
+			}
+			const chunks = vectors?.chunks ?? chunkUnits(doc.type, doc.units);
+			chunks.forEach((chunk, i) => entries.push({ file, doc, chunk, vector: vectors?.vectors[i] }));
+		}
+		const chunkText = (e: typeof entries[number]) => e.chunk.image ? '' : e.doc.units[e.chunk.unit].text.slice(e.chunk.start, e.chunk.end);
+		const words = tokenize(query);
+		const keyword = rankBy(bm25(entries.map(e => tokenize(chunkText(e))), words), 100);
+		const similarity = entries.map(e => q?.ok && e.vector ? cosine(q.vector, e.vector) : -1);
+		const meaning = rankBy(similarity, 50, -1);
+		const seen = new Set<string>();
+		const matches: { file: string; marker: string; matched: string; similarity?: number; snippet: string }[] = [];
+		for (const hit of rrf([keyword, meaning])) {
+			const e = entries[hit.id];
+			const id = `${e.file}|${e.chunk.unit}`;
+			if (seen.has(id)) {
+				continue;
+			}
+			seen.add(id);
+			matches.push({
+				file: path.basename(e.file), marker: e.chunk.marker,
+				matched: hit.in.length > 1 ? 'both' : hit.in[0] === 0 ? 'keyword' : 'meaning',
+				similarity: similarity[hit.id] >= 0 ? Math.round(similarity[hit.id] * 100) / 100 : undefined,
+				snippet: e.chunk.image ? '(scanned page with no text: read it to see the page image)' : snippet(chunkText(e), words)
+			});
+			if (matches.length >= max) {
+				break;
+			}
+		}
+		const note = !q || q.ok
+			? (embedded ? undefined : files.length ? 'Keyword search only (no document is indexed for meaning search).' : undefined)
+			: `Keyword search only: meaning search is unavailable (${q.reason}: ${q.message}).`;
+		return text({
+			query, searchedBy: embedded ? 'keywords and meaning' : 'keywords', searched: files.map(f => path.basename(f)), matches,
+			note, howToRead: matches.length ? 'Ranked best first. Meaning-only matches may be loosely related: read the part before citing it. Put the query in "double quotes" for an exact phrase, or use isRegexp.' : undefined,
+			problems: problems.length ? problems : undefined
+		});
 	}
 
 	// ---------------------------------------------------------------------------------------------- countdown_open_dataset
@@ -768,14 +980,23 @@ export class CountdownTools {
 interface ICacheInput { readonly member: string; readonly args?: Record<string, unknown>; readonly tabId?: string; readonly maxRows?: number; readonly select?: string[]; readonly where?: Record<string, unknown> }
 interface ICatalogInput { readonly query?: string; readonly group?: string; readonly what?: 'members' | 'reportKinds' }
 interface IDocsInput { readonly query?: string; readonly url?: string; readonly lang?: string; readonly limit?: number }
-interface IReportInput { readonly action: string; readonly tabId?: string; readonly project?: unknown; readonly preset?: string; readonly reportId?: string; readonly format?: string; readonly query?: string; readonly group?: string }
+interface IReportInput { readonly action: string; readonly tabId?: string; readonly project?: unknown; readonly preset?: string; readonly reportId?: string; readonly format?: string; readonly query?: string; readonly group?: string; readonly changes?: unknown[]; readonly maxRows?: number; readonly data?: boolean }
+
+/** A datasuite.ui report function in the tab's R session, or an error saying the app's R packages need updating. */
+const REPORT_FN = (name: string) => `(function() { f <- tryCatch(getExportedValue("datasuite.ui", "${name}"), error = function(e) NULL); if (is.null(f)) stop("Reading and changing saved reports needs datasuite.ui 0.3.4 and cd2030.core 1.3.4: update the app's R packages (DataSuite updates them when the Countdown extension updates).", call. = FALSE); f })()`;
 interface IGraphInput { readonly spec: unknown; readonly preview?: boolean; readonly save?: boolean; readonly graphId?: string; readonly tabId?: string }
 
 /** An app action a tool call would run, with its arguments. */
-interface IAppChange { readonly action: string; readonly args: Record<string, unknown> }
+interface IAppChange { readonly action: string; readonly args: Record<string, unknown>; readonly title?: string }
 
-/** The app change a countdown_report call makes: save (saveReport) or generate (generateReport); none for the others. */
+/**
+ * The app change a countdown_report call makes: save (saveReport), generate (generateReport) or updateBlocks
+ * (updateBlocks; updateText is its older name); none for the others.
+ */
 function reportChange(input: IReportInput): IAppChange | undefined {
+	if ((input?.action === 'updateBlocks' || input?.action === 'updateText') && input.reportId && Array.isArray(input.changes) && input.changes.length) {
+		return { action: 'updateBlocks', args: { reportId: input.reportId, changes: input.changes }, title: 'Change a saved report?' };
+	}
 	if (input?.action === 'save' && input.project) {
 		return { action: 'saveReport', args: input.reportId ? { project: input.project, reportId: input.reportId } : { project: input.project } };
 	}
@@ -827,6 +1048,8 @@ interface IDocText { readonly type: string; readonly units: readonly { readonly 
 
 /** The most text one read returns; `next` gives the rest. */
 const DOC_READ_CHARS = 20000;
+/** Scanned page images one read attaches at most. */
+const DOC_READ_IMAGES = 4;
 const DOC_TYPES = new Set(['pdf', 'docx', 'pptx', 'xlsx', 'xls', 'xlsm', 'csv', 'tsv', 'txt', 'md', 'markdown', 'json', 'html', 'htm', 'rmd']);
 
 function isInside(file: string, folder: string): boolean {

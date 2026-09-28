@@ -4,6 +4,33 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.6] - 2026-09-28
+
+### Added
+
+- `countdown_documents` `search` finds passages by meaning as well as by words: plain words or a question are ranked
+  by keywords (BM25) and by meaning (DataSuite's embeddings, google/gemini-embedding-2), fused, best first, each
+  saying how it matched -- so a question in English, French or Portuguese finds passages in any of them. A "quoted
+  phrase" or a regex still finds exact matches. Documents are embedded once per file version, in ~1,500-character
+  chunks, on the first search (or when a document is first read); documents over 3,000 chunks stay keyword-only. The
+  documents' text and scanned page images are sent to DataSuite's AI service for this; signed out, with an older
+  DataSuite or with `datasuite.embeddings.enabled` off, search is by keywords alone and says why. `list` shows which
+  documents are indexed.
+- Scanned PDF pages (no text layer) are rendered to images: meaning search finds them, and `read` attaches the page
+  image so the AI reads it (no OCR).
+- The AI reads and changes saved reports instead of replacing them: `countdown_report` `listReports`, `readReport`
+  (the blocks in order -- text, and each chart's and table's kind, settings, options and a short table of the data it
+  shows -- and the report's language) and `updateBlocks` (targeted changes by block id: write or rewrite text; a
+  chart's kind -- only to one of the same data --, settings, chart options and layout; insert, remove, move blocks;
+  everything else untouched). "Fill in the narrative of my report" writes an introduction, a paragraph after each chart
+  and table and a conclusion, in the report's language, from its own numbers. The user's permission setting may ask
+  first, with a summary ("Write 5 paragraphs in the report ..."). A report open in the Reports page shows the change
+  at once.
+- The Reports page's **Write the narrative**, **Write with AI** and **Change with AI** buttons open the chat with a
+  prompt about the report or the block (datasuite.ui 0.3.4).
+- Needs cd2030.core 1.3.4 and datasuite.ui 0.3.4 (a report the AI saves now keeps its id, so the user's edits to it
+  are saved); with older packages the new actions say the app's R packages need updating.
+
 ## [2.0.5] - 2026-09-28
 
 ### Added
