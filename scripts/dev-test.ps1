@@ -44,7 +44,10 @@ param(
 	# A fresh, empty DataSuite profile (user data and extensions) for this launch.
 	[switch] $Fresh,
 	# A file or folder to open in DataSuite.
-	[string] $Open
+	[string] $Open,
+	# Chromium's remote debugging on this port (e.g. 9222): the app pages in DataSuite's window can then be inspected
+	# from outside (http://127.0.0.1:<port>/json lists them).
+	[int] $DebugPort
 )
 
 $ErrorActionPreference = 'Stop'
@@ -144,6 +147,7 @@ if ($Fresh) {
 	Write-Host "Fresh profile: $profileDir (you will need to sign in to DataSuite)." -ForegroundColor Yellow
 }
 if ($Open) { $arguments += (Resolve-Path $Open).Path }
+if ($DebugPort) { $arguments += "--remote-debugging-port=$DebugPort"; Write-Host "Remote debugging on http://127.0.0.1:$DebugPort/json" -ForegroundColor Yellow }
 
 Write-Step 'Launching DataSuite'
 $env:VSCODE_SKIP_PRELAUNCH = '1'
