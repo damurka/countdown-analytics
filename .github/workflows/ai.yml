@@ -25,6 +25,8 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
+      - name: System libraries (sf's udunits, GDAL, GEOS and PROJ; the CRAN binaries load them)
+        run: sudo apt-get update -q && sudo apt-get install -y -q libudunits2-dev libgdal-dev libgeos-dev libproj-dev
       - name: Install cd2030.core and datasuite.ui (r-universe)
         run: |
           Rscript -e 'install.packages(c("cd2030.core", "datasuite.ui", "jsonlite", "yaml"), repos = c("https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev", getOption("repos")))'
@@ -38,6 +40,8 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
+      - name: System libraries (sf's udunits, GDAL, GEOS and PROJ; the CRAN binaries load them)
+        run: sudo apt-get update -q && sudo apt-get install -y -q libudunits2-dev libgdal-dev libgeos-dev libproj-dev
       - name: Install cd2030.core and datasuite.ui (r-universe)
         run: |
           Rscript -e 'install.packages(c("cd2030.core", "datasuite.ui", "jsonlite", "yaml"), repos = c("https://damurka.r-universe.dev", "https://alkemalab.r-universe.dev", getOption("repos")))'
