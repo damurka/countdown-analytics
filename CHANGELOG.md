@@ -4,6 +4,30 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.7] - 2026-09-30
+
+### Added
+
+- **Countdown: Open Notebook** (on a Countdown app's tab: its toolbar and right-click menu, and the command palette):
+  a notebook beside the app, on the app's data, for analysis the app doesn't do or for checking its numbers. It goes
+  in the tab's analysis folder (`<workspace>/notebooks`) and runs on DataSuite's kernels (DataSuite with notebooks).
+  - R: reads the app's dataset itself, read-only (`init_CacheConnection(read_only = TRUE)`), so nothing in the notebook
+    changes the app or its file; rerun the first cell to follow the app. Starter cells: the data as loaded, kept and
+    adjusted, the adjustment's rules, and the Data Adjustment Changes check.
+  - Python and Stata: the data exported as Stata files (as loaded, kept, adjusted; names made Stata's), read with
+    pandas or `use`.
+- The AI's guide knows the adjustment settings (`adjustment_settings`, `set_adjustment_settings`) and the Bayesian
+  model members of cd2030.core 1.3.5.
+- The AI writes a report's narrative section by section, or only the section asked.
+- `scripts/dev-test.ps1 -DebugPort`: Chromium remote debugging, to inspect the app pages.
+
+### Changed
+
+- Installs cd2030.rmncah 2.0.5, cd2030.vaxx 2.0.5 and cd2030.pooled 2.0.4: the Quire report builder (datasuite.ui
+  0.4.0, quire 0.2.17), Data Adjustment with Remove Years in it and rules by indicator, region or district, the
+  reported-and-adjusted Changes page, the Bayesian analysis in the background, tables' loaders, Reports on the
+  header's button only.
+
 ## [2.0.6] - 2026-09-28
 
 ### Added

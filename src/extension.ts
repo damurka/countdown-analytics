@@ -9,6 +9,7 @@
 import * as vscode from 'vscode';
 import { Datasets } from './datasets';
 import { Knowledge } from './knowledge';
+import { CountdownNotebooks } from './notebook';
 import { CountdownR } from './r';
 import { CountdownTools } from './tools';
 
@@ -16,6 +17,8 @@ export function activate(context: vscode.ExtensionContext): void {
 	const knowledge = new Knowledge(context);
 	const r = new CountdownR();
 	context.subscriptions.push(r, ...new CountdownTools(knowledge, r, context.globalStorageUri.fsPath).register());
+	// a notebook beside an app, on the app's data (Open Notebook)
+	context.subscriptions.push(...new CountdownNotebooks(r).register());
 	// the published datasets the signed-in user may see (Datasets panel)
 	context.subscriptions.push(...new Datasets(context).register());
 	// a newer methodology corpus from the site, when online; the bundled snapshot is used until then
