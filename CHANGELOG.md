@@ -4,10 +4,15 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.0.9] - 2026-10-01
 
 ### Changed
 
+- The apps need their releases of today: cd2030.rmncah 2.0.7 (the Bayesian analysis's background processes start
+  when a Bayesian page is first opened; the shared Load Data screen and table cards), cd2030.vaxx 2.0.6 (the shared
+  Load Data screen; failed reference uploads say why) and cd2030.pooled 2.0.5 (the other apps' chart tools), on
+  cd2030.core 1.3.7 and datasuite.ui 0.4.2 (requests to DataSuite on Jovian's host channel). DataSuite updates an
+  installed app to these versions.
 - **countdown_graph**'s preview is the plot the R session draws and DataSuite returns with the run (as
   **countdown_run_r**'s plots are), instead of a PNG the extension wrote to a temporary file and passed back as text.
 
