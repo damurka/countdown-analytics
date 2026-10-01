@@ -4,6 +4,17 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.8] - 2026-10-01
+
+### Changed
+
+- **Open Notebook** puts the notebook in the dataset's workspace, where DataSuite (1.1.2 or later) gives it the
+  folder's datasets by name -- read-only, and read again once the app has saved -- through cd2030.core's
+  `notebook_data()`, which the apps declare as their `notebookData`. The starter cells no longer load the data
+  themselves.
+- RMNCAH needs cd2030.rmncah 2.0.6: the Bayesian analysis installs its model's packages when it is first opened
+  (DataSuite installs them and offers to restart the app), so the apps' first install is much smaller.
+
 ## [2.0.7] - 2026-09-30
 
 ### Added

@@ -11,7 +11,7 @@
     "r",
     "datasuite"
   ],
-  "version": "2.0.7",
+  "version": "2.0.8",
   "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
@@ -445,9 +445,10 @@
         "cache": {
           "file": "<stem>_rmncah.rds"
         },
+        "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.rmncah",
-          "version": "2.0.5",
+          "version": "2.0.6",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -474,6 +475,7 @@
         "cache": {
           "file": "<stem>_vaccine.rds"
         },
+        "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.vaxx",
           "version": "2.0.5",

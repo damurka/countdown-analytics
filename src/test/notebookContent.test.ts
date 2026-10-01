@@ -9,32 +9,30 @@ import * as assert from 'assert';
 import { describe, it } from 'node:test';
 import { notebookCells, notebookJson } from '../notebookContent';
 
-const dataset = { path: 'C:\\data\\Benin_rmncah.rds', revision: 12 };
+const code = (nb: { cells: { cell_type: string; source: string[] }[] }) => nb.cells.filter(c => c.cell_type === 'code').map(c => c.source.join(''));
 
 describe('notebookJson', () => {
-	it('writes an R notebook that reads the app\'s dataset read-only, and says it is R', () => {
-		const nb = JSON.parse(notebookJson('r', notebookCells('r', 'Benin', dataset)));
+	it('writes an R notebook that uses the tables by name, and says it is R', () => {
+		const nb = JSON.parse(notebookJson('r', notebookCells('r', 'Benin')));
 		assert.strictEqual(nb.nbformat, 4);
 		assert.strictEqual(nb.metadata.language_info.name, 'R');
-		const code = nb.cells.filter((cell: { cell_type: string }) => cell.cell_type === 'code').map((cell: { source: string[] }) => cell.source.join(''));
-		assert.match(code[0], /init_CacheConnection\(rds_path = "C:\/data\/Benin_rmncah\.rds", read_only = TRUE\)/);
 		assert.ok(nb.cells.every((cell: { id: string }) => typeof cell.id === 'string'));
+		const cells = code(nb);
+		assert.match(cells[0], /ds_list\(\)/);
+		assert.match(cells.join('\n'), /adjusted_data/);
+		// nothing loads a file by its path: the kernel gives the data by name
+		assert.doesNotMatch(cells.join('\n'), /init_CacheConnection|\.rds|read_stata/);
 		// lines keep their newlines, as nbformat has them
 		assert.deepStrictEqual(nb.cells[1].source.slice(0, 2), ['library(cd2030.core)\n', 'library(dplyr)\n']);
 	});
 
-	it('gives Python and Stata the exported files, the adjusted data first', () => {
-		const exported = { dir: 'C:\\ws\\notebooks\\data', files: ['countdown_data', 'adjusted_data'] };
-		const python = JSON.parse(notebookJson('python', notebookCells('python', 'Benin', dataset, exported)));
+	it('gives Python the tables as variables and Stata sysuse', () => {
+		const python = JSON.parse(notebookJson('python', notebookCells('python', 'Benin')));
 		assert.strictEqual(python.metadata.kernelspec.language, 'python');
-		const read = python.cells[1].source.join('');
-		assert.match(read, /countdown_data = pd\.read_stata\("C:\/ws\/notebooks\/data\/countdown_data\.dta"\)/);
-		assert.doesNotMatch(read, /data_kept/);
-		assert.match(read, /adjusted_data\.head\(\)$/);
+		assert.deepStrictEqual(code(python).slice(0, 2), ['ds.list()', 'adjusted_data.head()']);
 
-		const stata = JSON.parse(notebookJson('stata', notebookCells('stata', 'Benin', dataset, exported)));
+		const stata = JSON.parse(notebookJson('stata', notebookCells('stata', 'Benin')));
 		assert.strictEqual(stata.metadata.language_info.name, 'stata');
-		assert.match(stata.cells[1].source.join(''), /^use "C:\/ws\/notebooks\/data\/adjusted_data\.dta", clear/);
-		assert.match(stata.cells[0].source.join(''), /revision 12/);
+		assert.deepStrictEqual(code(stata).slice(0, 2), ['dslist', 'sysuse adjusted_data, clear\ndescribe, short']);
 	});
 });
