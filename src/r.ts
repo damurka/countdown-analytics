@@ -38,6 +38,8 @@ export interface IRReply<T = unknown> {
 	readonly output?: string;
 	/** Warnings R raised while answering (e.g. a column the dataset lacks). */
 	readonly warnings?: readonly string[];
+	/** The plots the code drew on the session's device (CountdownR.call). */
+	readonly images?: IExecuteResult['images'];
 }
 
 const START = '<<CDAI>>';
@@ -364,7 +366,8 @@ export class CountdownR implements vscode.Disposable {
 			if (sessionGone(executed) && attempt === 0) {
 				continue;
 			}
-			return parseReply<T>(executed.text ?? '', executed.error);
+			const reply = parseReply<T>(executed.text ?? '', executed.error);
+			return executed.images?.length ? { ...reply, images: executed.images } : reply;
 		}
 	}
 

@@ -4,6 +4,13 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **countdown_graph**'s preview is the plot the R session draws and DataSuite returns with the run (as
+  **countdown_run_r**'s plots are), instead of a PNG the extension wrote to a temporary file and passed back as text.
+
 ## [2.0.8] - 2026-10-01
 
 ### Changed

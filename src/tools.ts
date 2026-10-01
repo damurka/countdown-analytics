@@ -562,7 +562,7 @@ export class CountdownTools {
 			return failure(context);
 		}
 		const preview = input.preview !== false;
-		const reply = await this._r.call<{ rows: number; columns: string[]; png?: string }>(context.tab.tabId, context.label, context.dataset, `.cdai$run({
+		const reply = await this._r.call<{ rows: number; columns: string[] }>(context.tab.tabId, context.label, context.dataset, `.cdai$run({
 	spec <- .cdai$arg("${toR(input.spec)}", FALSE)
 	checked <- datasuite.ui::report_validate_spec(spec, members = cd2030.core::cd_chartable_members())
 	if (is.list(checked)) spec <- checked
@@ -571,16 +571,17 @@ export class CountdownTools {
 	used <- unlist(spec$plot[c("x", "y", "colour", "fill", "facet")], use.names = FALSE)
 	unknown <- setdiff(used[is.character(used) & nzchar(used)], names(data))
 	if (length(unknown)) stop(sprintf("The plot uses %s, which the data doesn't have. Its columns are: %s.", paste(unknown, collapse = ", "), paste(names(data), collapse = ", ")), call. = FALSE)
-	invisible(ggplot2::ggplot_build(datasuite.ui::report_plot_spec(data, spec$plot, spec$title)))
-	out <- list(rows = nrow(data), columns = names(data))
+	plot <- datasuite.ui::report_plot_spec(data, spec$plot, spec$title)
+	invisible(ggplot2::ggplot_build(plot))
 	if (${preview ? 'TRUE' : 'FALSE'}) {
-		file <- tempfile(fileext = ".png")
-		if (requireNamespace("ragg", quietly = TRUE)) ragg::agg_png(file, width = 1600, height = 1000, res = 160) else grDevices::png(file, width = 1600, height = 1000, res = 160)
-		print(datasuite.ui::report_plot_spec(data, spec$plot, spec$title))
-		grDevices::dev.off()
-		out$png <- jsonlite::base64_enc(readBin(file, "raw", file.size(file)))
+		# drawn on the session's own device: the kernel sends the plot, which comes back with the reply's images
+		# (at this size for this call only, where the kernel's hera can say so)
+		if (requireNamespace("hera", quietly = TRUE) && "cell_options" %in% getNamespaceExports("hera")) {
+			hera::cell_options(repr.plot.width = 10, repr.plot.height = 6.25, repr.plot.res = 160)
+		}
+		print(plot)
 	}
-	out
+	list(rows = nrow(data), columns = names(data))
 })`);
 		if (!reply.ok) {
 			return failure(`The graph is not valid: ${reply.error}`);
@@ -594,7 +595,8 @@ export class CountdownTools {
 			}
 			saved = added.result;
 		}
-		const png = reply.result?.png ? Buffer.from(reply.result.png, 'base64') : undefined;
+		const image = preview ? reply.images?.find(i => i.mimeType === 'image/png') : undefined;
+		const png = image ? Buffer.from(image.data, 'base64') : undefined;
 		const figure = png ? saveFigure(context.tab, png, graphTitle(input.spec)) : undefined;
 		parts.push(new vscode.LanguageModelTextPart(JSON.stringify({ valid: true, rows: reply.result?.rows, columns: reply.result?.columns, saved, note: saved ? 'Saved in the dataset: it redraws with the data and can be added to any report.' : 'Not saved: pass save: true when the user wants to keep it.', figure })));
 		if (png) {
