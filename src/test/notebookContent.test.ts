@@ -35,4 +35,16 @@ describe('notebookJson', () => {
 		assert.strictEqual(stata.metadata.language_info.name, 'stata');
 		assert.deepStrictEqual(code(stata).slice(0, 2), ['dslist', 'sysuse adjusted_data, clear\ndescribe, short']);
 	});
+
+	it('walks an R notebook through the Countdown 2030 analysis as the Stata do-files do, on the choices made in the app', () => {
+		const nb = JSON.parse(notebookJson('r', notebookCells('r', 'Benin')));
+		const headings = nb.cells.filter((c: { cell_type: string }) => c.cell_type === 'markdown').map((c: { source: string[] }) => c.source.join(''));
+		for (const doFile of ['1a_checks.do', '1b_remove_data.do', '1c_adjustment.do', '1d_admin1_checks.do', '2_denominators.do', '3_national.do', '4a_subnational_equity.do', '4b_subnational_integration.do', '5_Mapping.do']) {
+			assert.ok(headings.some((h: string) => h.includes(doFile)), doFile);
+		}
+		const all = code(nb).join('\n');
+		assert.match(all, /threshold <- cache\$performance_threshold/);
+		assert.match(all, /calculate_indicator_coverage\(adjusted_data, level/);
+		assert.match(all, /adjust_service_data\(kept_data, settings = cache\$adjustment_settings\)/);
+	});
 });

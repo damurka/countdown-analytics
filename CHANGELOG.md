@@ -4,6 +4,14 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- The R notebook ("Open Notebook") walks through the whole Countdown 2030 analysis as the Stata do-files run it
+  (1a data quality checks to 5 maps), one block per output, with cd2030.core on the dataset's tables and the choices
+  made in the app (threshold, rates, survey year, denominator, adjustment).
+
 ## [2.0.9] - 2026-10-01
 
 ### Changed
