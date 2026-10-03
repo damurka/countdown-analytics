@@ -448,7 +448,7 @@
         "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.rmncah",
-          "version": "2.0.7",
+          "version": "2.0.8",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -478,7 +478,7 @@
         "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.vaxx",
-          "version": "2.0.6",
+          "version": "2.0.8",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -507,7 +507,7 @@
         },
         "package": {
           "name": "cd2030.pooled",
-          "version": "2.0.5",
+          "version": "2.0.8",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"

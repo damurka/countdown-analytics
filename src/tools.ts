@@ -575,10 +575,11 @@ export class CountdownTools {
 	invisible(ggplot2::ggplot_build(plot))
 	if (${preview ? 'TRUE' : 'FALSE'}) {
 		# drawn on the session's own device: the kernel sends the plot, which comes back with the reply's images
-		# (at this size for this call only, where the kernel's hera can say so)
-		if (requireNamespace("hera", quietly = TRUE) && "cell_options" %in% getNamespaceExports("hera")) {
-			hera::cell_options(repr.plot.width = 10, repr.plot.height = 6.25, repr.plot.res = 160)
-		}
+		# (at this size for this call only, where the kernel can say so: .elara.cell_options() in tools:jovian from
+		# Jovian 0.2.6, hera::cell_options() before)
+		size <- if ("tools:jovian" %in% search()) get0(".elara.cell_options", envir = as.environment("tools:jovian"), inherits = FALSE)
+			else if (requireNamespace("hera", quietly = TRUE) && "cell_options" %in% getNamespaceExports("hera")) getExportedValue("hera", "cell_options")
+		if (is.function(size)) size(repr.plot.width = 10, repr.plot.height = 6.25, repr.plot.res = 160)
 		print(plot)
 	}
 	list(rows = nrow(data), columns = names(data))

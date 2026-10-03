@@ -5,9 +5,10 @@
 
 // The Countdown AI's own R sessions: one per dataset tab, created through DataSuite's R session API
 // (datasuite.r.createSession / execute / stopSession), each holding a read-only copy of the tab's dataset as
-// `.cache`. The app saves every change to its .rds at once and the bridge state carries the cache's revision, so a
-// session reloads when the revision moves: the AI computes on exactly what the app has, without waiting on the app.
+// `.cache`. The app saves every change to its .rds at once, so a session reloads when that file changes (or the
+// revision the bridge state carries moves): the AI computes on exactly what the app has, without waiting on the app.
 
+import * as fs from 'fs';
 import * as vscode from 'vscode';
 
 /**
@@ -271,7 +272,19 @@ interface ISession {
 	readonly id: string;
 	path?: string;
 	revision?: number;
+	/** The .rds file as it was when loaded (modified time and size): a newer one is loaded again. */
+	stamp?: string;
 	prelude: boolean;
+}
+
+/** The file's modified time and size, or undefined when it can't be read. */
+async function fileStamp(file: string): Promise<string | undefined> {
+	try {
+		const stat = await fs.promises.stat(file);
+		return `${stat.mtimeMs}:${stat.size}`;
+	} catch {
+		return undefined;
+	}
 }
 
 /** The start and end of R output too long to return: about two thirds from the start, the rest from the end. */
@@ -438,13 +451,29 @@ export class CountdownR implements vscode.Disposable {
 			}
 			session.prelude = true;
 		}
-		if (dataset && (session.path !== dataset.path || (dataset.revision !== undefined && session.revision !== dataset.revision))) {
-			const loaded = await this.run<{ revision?: number }>(session.id, `.cdai$run(.cdai$load(${rString(dataset.path)}))`, 600000);
+		if (!dataset) {
+			return session;
+		}
+		// Loaded again when the file changed, not only when the app's published revision did: the app writes the .rds
+		// as each change is made, but publishes the new revision a moment later (and only once its R is free), so
+		// the file is the first to know
+		const stamp = await fileStamp(dataset.path);
+		const stale = session.path !== dataset.path || session.stamp !== stamp
+			|| (dataset.revision !== undefined && session.revision !== undefined && dataset.revision > session.revision);
+		if (stale) {
+			let loaded = await this.run<{ revision?: number }>(session.id, `.cdai$run(.cdai$load(${rString(dataset.path)}))`, 600000);
+			if (!loaded.ok) {
+				// the app may have been writing the file just then: once more, after it is done
+				await new Promise(resolve => setTimeout(resolve, 1500));
+				loaded = await this.run<{ revision?: number }>(session.id, `.cdai$run(.cdai$load(${rString(dataset.path)}))`, 600000);
+			}
 			if (!loaded.ok) {
 				return { ok: false, error: `Could not open the dataset ${dataset.path}: ${loaded.error}` };
 			}
 			session.path = dataset.path;
-			session.revision = dataset.revision ?? loaded.result?.revision;
+			session.stamp = stamp;
+			// the file's own revision: what the AI's answers are on
+			session.revision = loaded.result?.revision ?? dataset.revision;
 		}
 		return session;
 	}

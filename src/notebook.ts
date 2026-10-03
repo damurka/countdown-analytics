@@ -24,6 +24,52 @@ function freeName(dir: string, stem: string): string {
 	}
 }
 
+/** One of DataSuite's notebook kernels (its datasuite.notebook.listKernels command). */
+interface IDatasuiteKernel {
+	readonly id: string;
+	readonly language: Language;
+	/** `Elara · R 4.6`, `Carpo · Python 3.12`, `Callisto · Stata 18 SE` */
+	readonly label: string;
+	/** Where the installation is */
+	readonly description: string;
+	readonly isDefault: boolean;
+}
+
+interface IKernelPick extends vscode.QuickPickItem {
+	readonly language: Language;
+	readonly kernelId?: string;
+}
+
+/** What each language's notebook gets of the app's data. */
+function whatItGets(language: Language): string {
+	return language === 'r' ? vscode.l10n.t('the tables by name, and the whole dataset with the Countdown functions')
+		: language === 'python' ? vscode.l10n.t('the tables as pandas DataFrames')
+			: vscode.l10n.t('sysuse adjusted_data, clear (Stata 17 or newer on this computer)');
+}
+
+/**
+ * The kernels to pick from: each installation DataSuite found, by its kernel's name, under its language; or the three
+ * languages when this DataSuite does not list its kernels.
+ */
+async function kernelPicks(): Promise<(IKernelPick | vscode.QuickPickItem)[]> {
+	const kernels = await Promise.resolve(vscode.commands.executeCommand<IDatasuiteKernel[]>('datasuite.notebook.listKernels')).catch(() => undefined);
+	if (!Array.isArray(kernels) || !kernels.length) {
+		return (['r', 'python', 'stata'] as Language[]).map(language => ({ label: language === 'r' ? 'R' : language === 'python' ? 'Python' : 'Stata', language, description: whatItGets(language) }));
+	}
+	const picks: (IKernelPick | vscode.QuickPickItem)[] = [];
+	for (const language of ['r', 'python', 'stata'] as Language[]) {
+		const own = kernels.filter(k => k.language === language);
+		if (!own.length) {
+			continue;
+		}
+		picks.push({ label: `${language === 'r' ? 'R' : language === 'python' ? 'Python' : 'Stata'}: ${whatItGets(language)}`, kind: vscode.QuickPickItemKind.Separator });
+		for (const kernel of own) {
+			picks.push({ label: kernel.label, language, kernelId: kernel.id, description: kernel.isDefault ? vscode.l10n.t('default') : undefined, detail: kernel.description });
+		}
+	}
+	return picks;
+}
+
 export class CountdownNotebooks {
 
 	register(): vscode.Disposable[] {
@@ -54,12 +100,12 @@ export class CountdownNotebooks {
 			void vscode.window.showErrorMessage(vscode.l10n.t('Load a dataset in the app first: the notebook works on the app\'s data.'));
 			return;
 		}
-		const picked = await vscode.window.showQuickPick([
-			{ label: 'R', language: 'r' as Language, description: vscode.l10n.t('the tables by name, and the whole dataset with the Countdown functions') },
-			{ label: 'Python', language: 'python' as Language, description: vscode.l10n.t('the tables as pandas DataFrames') },
-			{ label: 'Stata', language: 'stata' as Language, description: vscode.l10n.t('sysuse adjusted_data, clear (Stata 17 or newer on this computer)') },
-		], { title: vscode.l10n.t('Open a notebook on {0}', tab.title ?? path.basename(dataset.path)), placeHolder: vscode.l10n.t('The notebook\'s language') });
-		if (!picked) {
+		const picked = await vscode.window.showQuickPick(kernelPicks(), {
+			title: vscode.l10n.t('Open a notebook on {0}', tab.title ?? path.basename(dataset.path)),
+			placeHolder: vscode.l10n.t('The kernel the notebook runs on'),
+			matchOnDetail: true,
+		}) as IKernelPick | undefined;
+		if (!picked?.language) {
 			return;
 		}
 
@@ -73,6 +119,10 @@ export class CountdownNotebooks {
 		try {
 			const document = await vscode.workspace.openNotebookDocument(vscode.Uri.file(file));
 			await vscode.window.showNotebookDocument(document, { viewColumn: vscode.ViewColumn.Beside });
+			// the installation picked (DataSuite gives a new notebook its language's default kernel)
+			if (picked.kernelId) {
+				await Promise.resolve(vscode.commands.executeCommand('datasuite.notebook.selectKernel', document.uri, picked.kernelId)).catch(() => undefined);
+			}
 		} catch (error) {
 			// a DataSuite before notebooks (no ipynb extension): the file is written, it just can't be opened here
 			void vscode.window.showErrorMessage(vscode.l10n.t('The notebook was saved as {0}, but this DataSuite cannot open notebooks: update DataSuite. ({1})', file, error instanceof Error ? error.message : String(error)));

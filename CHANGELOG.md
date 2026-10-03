@@ -4,13 +4,29 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.0.10] - 2026-10-03
 
 ### Added
 
 - The R notebook ("Open Notebook") walks through the whole Countdown 2030 analysis as the Stata do-files run it
   (1a data quality checks to 5 maps), one block per output, with cd2030.core on the dataset's tables and the choices
   made in the app (threshold, rates, survey year, denominator, adjustment).
+- "Open Notebook" asks which kernel to open it on, listing each of DataSuite's kernels by name (its R, Python and
+  Stata installations), instead of always opening on the default one.
+
+### Changed
+
+- The apps need their releases of today: cd2030.rmncah, cd2030.vaxx and cd2030.pooled 2.0.8 (now released with the
+  same version), on cd2030.core 1.3.8 (every table of the dataset in its notebooks, explained when you hover a table
+  or a column) and datasuite.ui 0.4.3 (cards built outside a reactive context no longer fail; charts and tables
+  already drawn follow a change of language). DataSuite updates an installed app to these versions.
+- Works with Jovian 0.2.6's R kernel, whose helpers are in `tools:jovian` (cell options are looked up there, then in
+  the `hera` namespace of earlier kernels).
+
+### Fixed
+
+- Answers no longer use stale data after the app saves the dataset again: the R session reloads the `.rds` when its
+  modification time or size changes (retrying while the app is still writing it).
 
 ## [2.0.9] - 2026-10-01
 
