@@ -4,6 +4,19 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.12] - 2026-10-08
+
+### Changed
+
+- The apps need their 2.0.10 releases: cd2030.rmncah, cd2030.vaxx and cd2030.pooled, on cd2030.core 1.3.10 and
+  datasuite.ui 0.4.4. DataSuite updates an installed app to these versions.
+  - Bayesian Analysis no longer holds the app up when a fit ends, nor slows every later change to the dataset: a
+    fitted model is kept without the sampler's draws (megabytes each), and a dataset that has such models saved
+    gets smaller at its next save.
+  - Maps: choosing years one after another no longer sets the maps redrawing without end.
+  - Reports made in the vaccine app are in its blue; charts in reports have no tick marks on their axes.
+  - The Ask AI button's hint is its text, not the markup around it.
+
 ## [2.0.11] - 2026-10-08
 
 ### Changed
