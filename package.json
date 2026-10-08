@@ -11,7 +11,7 @@
     "r",
     "datasuite"
   ],
-  "version": "2.0.10",
+  "version": "2.0.11",
   "publisher": "datasuite",
   "license": "MIT",
   "icon": "assets/code.png",
@@ -448,7 +448,7 @@
         "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.rmncah",
-          "version": "2.0.8",
+          "version": "2.0.9",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -478,7 +478,7 @@
         "notebookData": "cd2030.core::notebook_data",
         "package": {
           "name": "cd2030.vaxx",
-          "version": "2.0.8",
+          "version": "2.0.9",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"
@@ -507,7 +507,7 @@
         },
         "package": {
           "name": "cd2030.pooled",
-          "version": "2.0.8",
+          "version": "2.0.9",
           "repos": [
             "https://damurka.r-universe.dev",
             "https://alkemalab.r-universe.dev"

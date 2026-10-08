@@ -4,6 +4,21 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.11] - 2026-10-08
+
+### Changed
+
+- The apps need their 2.0.9 releases: cd2030.rmncah, cd2030.vaxx and cd2030.pooled, on cd2030.core 1.3.9. DataSuite
+  updates an installed app to these versions.
+  - RMNCAH: the sub-national Bayesian model is fitted (it stopped with "Column `source` doesn't exist").
+  - Vaxx: Bayesian Analysis (national and sub-national) for penta3 and measles1; national and sub-national coverage
+    and inequality show penta3, measles1 and the two dropouts; Denominator Selection's three cards have the same
+    four tabs.
+  - Pooled: a pooled file has the Bayesian model's estimates, national and by region.
+  - Load Data, in every app: a workbook without a column the analysis needs is told so at the Data Quality step,
+    by sheet and column, where it used to fail at Finish; every data quality issue can be downloaded as an Excel
+    workbook.
+
 ## [2.0.10] - 2026-10-03
 
 ### Added
