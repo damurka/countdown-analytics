@@ -18,6 +18,10 @@ All notable changes to this extension are documented here. The format is based o
     axes are titled for what they hold.
   - A dataset's country is matched to a country it names, not to the closest spelling ("Sudan" loaded as South
     Sudan).
+- The AI's guide to the dataset and to the report blocks is made from cd2030.core 1.4.0 (two new tables: the
+  adjustment's values and the Bayesian estimates).
+- The analysis notebook calls `select_coverage()`, `select_inequality()`, `select_mapping_data()` and
+  `select_adjustment_value()`, cd2030.core 1.4.0's names for the `filter_*()` functions.
 
 ## [2.0.12] - 2026-10-08
 

@@ -49,7 +49,7 @@ const R_PIPELINE: ICell[] = [
 	{ kind: 'code', source: 'cache$excluded_years\nsetdiff(unique(countdown_data$year), unique(kept_data$year))' },
 
 	{ kind: 'markdown', source: '## 1c. Adjustment for incomplete reporting and outliers (1c_adjustment.do)\n\nThe adjusted numerators, with the k factors and switches set in the app; and, for one indicator, what each step added.' },
-	{ kind: 'code', source: 'adjusted <- adjust_service_data(kept_data, settings = cache$adjustment_settings)\nkept_data |>\n  generate_adjustment_values(settings = cache$adjustment_settings) |>\n  filter_adjustment_value("penta1")' },
+	{ kind: 'code', source: 'adjusted <- adjust_service_data(kept_data, settings = cache$adjustment_settings)\nkept_data |>\n  generate_adjustment_values(settings = cache$adjustment_settings) |>\n  select_adjustment_value("penta1")' },
 
 	{ kind: 'markdown', source: '## 1d. First-level region checks (1d_admin1_checks.do)' },
 	{ kind: 'code', source: 'calculate_average_reporting_rate(countdown_data, "adminlevel_1")\ncalculate_completeness_summary(countdown_data, "adminlevel_1", threshold = threshold)\ncalculate_outliers_summary(countdown_data, "adminlevel_1")' },
@@ -62,16 +62,16 @@ const R_PIPELINE: ICell[] = [
 	{ kind: 'code', source: 'calculate_threshold(cov_admin1, den, "dropout")\nfilter_high_performers(cov_admin1, "penta3", den, threshold = 90)' },
 
 	{ kind: 'markdown', source: '## 3. National: DHIS2 against the surveys and WUENIC (3_national.do)' },
-	{ kind: 'code', source: 'national <- calculate_coverage(cov_national, survey_data = cache$national_survey, wuenic_data = cache$wuenic_estimates, subnational_map = cache$survey_mapping)\nplot(filter_coverage(national, "penta3", den))' },
+	{ kind: 'code', source: 'national <- calculate_coverage(cov_national, survey_data = cache$national_survey, wuenic_data = cache$wuenic_estimates, subnational_map = cache$survey_mapping)\nplot(select_coverage(national, "penta3", den))' },
 
 	{ kind: 'markdown', source: '## 4a. Subnational equity (4a_subnational_equity.do)\n\nMADM and MRDM against the national value, each year.' },
-	{ kind: 'code', source: 'inequality <- calculate_inequality(cov_admin1, cov_national)\nplot(filter_inequality(inequality, "penta3", den))\ncalculate_threshold(cov_admin1, den, "vaccine")' },
+	{ kind: 'code', source: 'inequality <- calculate_inequality(cov_admin1, cov_national)\nplot(select_inequality(inequality, "penta3", den))\ncalculate_threshold(cov_admin1, den, "vaccine")' },
 
 	{ kind: 'markdown', source: '## 4b. First-level regions: DHIS2 against the surveys (4b_subnational_integration.do)' },
-	{ kind: 'code', source: 'regional <- calculate_coverage(cov_admin1, survey_data = cache$regional_survey, wuenic_data = cache$wuenic_estimates, subnational_map = cache$survey_mapping)\nfor (region in unique(cov_admin1$adminlevel_1)) print(plot(filter_coverage(regional, "penta3", den, region = region)))' },
+	{ kind: 'code', source: 'regional <- calculate_coverage(cov_admin1, survey_data = cache$regional_survey, wuenic_data = cache$wuenic_estimates, subnational_map = cache$survey_mapping)\nfor (region in unique(cov_admin1$adminlevel_1)) print(plot(select_coverage(regional, "penta3", den, region = region)))' },
 
 	{ kind: 'markdown', source: '## 5. Maps (5_Mapping.do)\n\nFirst-level regions. (The district maps of 5b_Mapping_districts.do have no cd2030.core equivalent.)' },
-	{ kind: 'code', source: 'cov_admin1 |>\n  get_mapping_data(subnational_map = cache$map_mapping) |>\n  filter_mapping_data("penta3", den, plot_year = max(cov_admin1$year)) |>\n  plot()' },
+	{ kind: 'code', source: 'cov_admin1 |>\n  get_mapping_data(subnational_map = cache$map_mapping) |>\n  select_mapping_data("penta3", den, plot_year = max(cov_admin1$year)) |>\n  plot()' },
 ];
 
 export function notebookCells(language: Language, title: string): ICell[] {
