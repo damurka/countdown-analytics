@@ -4,6 +4,23 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.14] - 2026-10-11
+
+### Changed
+
+- The apps need their 2.0.12 releases: cd2030.rmncah, cd2030.vaxx and cd2030.pooled, on cd2030.core 1.4.1. DataSuite
+  updates an installed app to these versions.
+  - Bayesian Analysis no longer holds the app while a model is fitted. In 2.0.11 every page waited for the whole fit.
+  - Sub-national Bayesian Analysis has a region and a year to choose: one region followed over the years, as the
+    national page follows the country, or every region compared in the year chosen, with the facility-data values
+    and the national one.
+  - Public/Private Share: the C-section bars are each country's own (they were a fraction of its rate).
+  - Sub-National Inequality with a region chosen shows the region's own coverage beside the national.
+  - The tables have one look, and the data tables write numbers the same way.
+  - Institutional deliveries have a coverage of their own, heat maps name indicators in the app's language, and the
+    PHC performance chart draws its quadrants as the preventive against curative chart does.
+- The AI's guide to the dataset is made from cd2030.core 1.4.1.
+
 ## [2.0.13] - 2026-10-11
 
 ### Changed
