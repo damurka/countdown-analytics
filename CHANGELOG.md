@@ -4,6 +4,21 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.13] - 2026-10-11
+
+### Changed
+
+- The apps need their 2.0.11 releases: cd2030.rmncah, cd2030.vaxx and cd2030.pooled, on cd2030.core 1.4.0 and
+  datasuite.ui 0.5.0. DataSuite updates an installed app to these versions.
+  - An app opens faster: a page is started the first time it is opened, and a change to the dataset is saved once.
+  - A Stata master file is saved when the Load Data wizard is finished.
+  - The Custom tab of the coverage, inequality, map and equity cards follows the indicator chosen, and no longer
+    writes one chart's options under the indicators chosen before. The Bayesian page has no Custom tab.
+  - A table downloads the year it shows. The Sub-National Inequality card has its own title. The outlier heat map's
+    axes are titled for what they hold.
+  - A dataset's country is matched to a country it names, not to the closest spelling ("Sudan" loaded as South
+    Sudan).
+
 ## [2.0.12] - 2026-10-08
 
 ### Changed
