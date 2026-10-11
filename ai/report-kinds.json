@@ -1,6 +1,6 @@
 {
-  "version": "1.4.1",
-  "generatedAt": "2026-10-11T15:59:06Z",
+  "version": "1.4.2",
+  "generatedAt": "2026-10-11T20:44:55Z",
   "kinds": {
     "adj_comparison": {
       "label": "Numbers before and after adjustment",
