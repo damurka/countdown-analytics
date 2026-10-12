@@ -4,6 +4,17 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.17] - 2026-10-12
+
+### Changed
+
+- The charts are written in one scale of text sizes, on the pages and in reports: a bold, centred title, axis
+  titles of one size, axis and legend text of one size, bold panel names, and two sizes for the numbers drawn on a
+  chart. A chart had set its own. The chart settings (text scale, font, title size) change them as before. The
+  apps need cd2030.rmncah, cd2030.vaxx and cd2030.pooled 2.0.15, on cd2030.core 1.4.4; DataSuite updates an
+  installed app to these versions.
+- The AI's guide to the dataset is made from cd2030.core 1.4.4.
+
 ## [2.0.16] - 2026-10-12
 
 ### Fixed
