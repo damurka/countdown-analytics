@@ -4,6 +4,16 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.16] - 2026-10-12
+
+### Fixed
+
+- The Reports page lists the dataset's reports and the standard reports again, and the report builder has its kinds
+  of chart, its themes, years and regions. The page said "No reports yet" over a dataset that has reports, and
+  often showed no standard reports. The apps need cd2030.rmncah and cd2030.vaxx 2.0.14, on cd2030.core 1.4.3 and
+  datasuite.ui 0.5.2; DataSuite updates an installed app to these versions.
+- The AI's guide to the dataset is made from cd2030.core 1.4.3.
+
 ## [2.0.15] - 2026-10-11
 
 ### Fixed
