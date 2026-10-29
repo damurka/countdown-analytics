@@ -4,6 +4,19 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Submit to DataSuite** (on a file in the Explorer, or from the Command Palette): lists what you have to submit as
+  your country's uploader -- the open activities' items that take the file's type -- and uploads the file to the one
+  you choose, with a note for the reviewers. The file goes up in resumable 8 MB pieces, so a dropped connection
+  carries on where it stopped, with its SHA-256, which DataSuite checks on arrival. Signs in with the data client and
+  the `data_submit` scope (needs DataSuite with the data sign-in for uploads); only a country's own uploaders can
+  submit.
+- For other extensions (the Data Extractor): this extension's exports `submitFile`, `uploadToSubmission` and
+  `listTargets`.
+
 ## [2.0.17] - 2026-10-12
 
 ### Changed

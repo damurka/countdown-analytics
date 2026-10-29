@@ -11,9 +11,10 @@ import { Datasets } from './datasets';
 import { Knowledge } from './knowledge';
 import { CountdownNotebooks } from './notebook';
 import { CountdownR } from './r';
+import { ICountdownSubmitApi, Submissions } from './submit';
 import { CountdownTools } from './tools';
 
-export function activate(context: vscode.ExtensionContext): void {
+export function activate(context: vscode.ExtensionContext): ICountdownSubmitApi {
 	const knowledge = new Knowledge(context);
 	const r = new CountdownR();
 	context.subscriptions.push(r, ...new CountdownTools(knowledge, r, context.globalStorageUri.fsPath).register());
@@ -21,8 +22,12 @@ export function activate(context: vscode.ExtensionContext): void {
 	context.subscriptions.push(...new CountdownNotebooks().register());
 	// the published datasets the signed-in user may see (Datasets panel)
 	context.subscriptions.push(...new Datasets(context).register());
+	// submitting a country's data from the editor (Submit to DataSuite), and for other extensions (the Data Extractor)
+	const submissions = new Submissions();
+	context.subscriptions.push(...submissions.register());
 	// a newer methodology corpus from the site, when online; the bundled snapshot is used until then
 	void knowledge.refreshCorpus();
+	return submissions;
 }
 
 export function deactivate(): void { }
