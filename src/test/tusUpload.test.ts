@@ -103,7 +103,15 @@ describe('submitUpload', () => {
 		const id = await submitUpload('https://datasuite.test/api/data/submit/uploads/abc123', 'tok', { countryCycleId: 'cc', activityItemId: 'item', day: 2, note: 'from DHIS2' }, fetchFn);
 
 		assert.strictEqual(id, 'item-1');
-		assert.deepStrictEqual(state.submitted, { countryCycleId: 'cc', activityItemId: 'item', day: 2, note: 'from DHIS2' });
+		assert.deepStrictEqual(state.submitted, { countryCycleId: 'cc', activityItemId: 'item', day: 2, note: 'from DHIS2', provenance: null });
+	});
+
+	it('sends where the file came from with it', async () => {
+		const { state, fetchFn } = standIn();
+		const provenance = { source: 'dhis2', dhis2Url: 'https://hiskenya.example.org', mappingVersion: 2 };
+		await submitUpload('https://datasuite.test/api/data/submit/uploads/abc123', 'tok', { countryCycleId: 'cc', activityItemId: 'item', provenance }, fetchFn);
+
+		assert.deepStrictEqual((state.submitted as { provenance: unknown }).provenance, provenance);
 	});
 
 	it("passes the server's reason on", async () => {

@@ -610,6 +610,12 @@
         "title": "Submit to DataSuite...",
         "category": "Countdown",
         "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "countdown.submit.analysis",
+        "title": "Submit Analysis to DataSuite...",
+        "category": "Countdown",
+        "icon": "$(cloud-upload)"
       }
     ],
     "menus": {

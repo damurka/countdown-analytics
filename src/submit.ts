@@ -9,9 +9,14 @@
 // in resumable pieces (tusUpload.ts). Other extensions (the Data Extractor) call the same through this extension's
 // exports: `submitFile` (choose with the user) and `uploadToSubmission` (a known item).
 //
+// Submit Analysis to DataSuite uploads the .rds and the report together, each with the fingerprints of the data files
+// they were made from (`IAnalysisProvenance`): DataSuite warns the reviewer when those aren't the country's approved
+// DHIS2 data and additional data.
+//
 // It signs in with the DataSuite data client and the `data_submit` scope: its own session beside the Datasets
 // panel's (data_read). The scope only gets the request in: the Api lets only the country's own uploaders submit.
 
+import { randomUUID } from 'crypto';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { sha256File, submitUpload, uploadFile, UploadError } from './tusUpload';
@@ -40,6 +45,8 @@ interface ISlot {
 	readonly allowedExtensions: readonly string[];
 	readonly deadlineUtc: string;
 	readonly status: string;
+	readonly submissionId: string | null;
+	readonly itemRole?: string;
 }
 
 interface ICountryActivity {
@@ -55,23 +62,83 @@ export interface ISubmissionTarget {
 	/** For the user: "Kenya · Cycle 2026 · Data retrieval: Completed workbook". */
 	readonly label: string;
 	readonly allowedExtensions: readonly string[];
+	/** What the item is in the data process: Dhis2Data, AdditionalData, Analysis or Other. */
+	readonly role: string;
 }
 
-/** What other extensions get (`vscode.extensions.getExtension('countdown.countdown-analytics').exports`). */
+/** Where a DHIS2 download came from, sent with it and shown to the reviewers. */
+export interface IDhis2Provenance {
+	readonly source: 'dhis2';
+	readonly dhis2Url: string;
+	/** The country's mapping version in DataSuite it was extracted with, and its fingerprint: null when there is none
+	 * for its server. `mappingDifferences`: how the mapping used differs from that version (none: it is that version). */
+	readonly mappingVersion: number | null;
+	readonly mappingSha256: string | null;
+	readonly mappingDifferences: readonly string[];
+	readonly districtLevel: number;
+	/** DHIS2 periods, e.g. "202401" and "202412". */
+	readonly startPeriod: string;
+	readonly endPeriod: string;
+	readonly extractedAtUtc: string;
+	readonly tool: string;
+}
+
+/** What an analysis (the .rds or the report) was made from, sent with it: the data files' fingerprints, and the
+ * bundle the .rds and report submitted together share. */
+export interface IAnalysisProvenance {
+	readonly source: 'countdown-analysis';
+	readonly inputs: readonly { readonly fileName: string; readonly sha256: string }[];
+	readonly bundle: string;
+	readonly tool: string;
+}
+
+/** A country's DHIS2 data in DataSuite: a submission of a DHIS2 data item. */
+export interface IDhis2Submission {
+	readonly submissionId: string;
+	readonly countryCycleId: string;
+	/** "Kenya · Cycle 2026 · Data retrieval: DHIS2 data". */
+	readonly label: string;
+	readonly status: string;
+}
+
+/** `MissingDataDto`: what the DHIS2 data lacks, once its waiting days after the checks are over (`ready`). */
+export interface IMissingData {
+	readonly itemId: string;
+	readonly versionNumber: number;
+	readonly availableFromUtc: string;
+	readonly ready: boolean;
+	readonly count: number;
+	readonly truncated: boolean;
+	readonly cells: readonly { readonly indicator: string; readonly district: string; readonly year: number; readonly month: number }[];
+}
+
+/** What other extensions get (`vscode.extensions.getExtension('datasuite.countdown-analytics').exports`). */
 export interface ICountdownSubmitApi {
 	/** Lets the user choose where `filePath` goes (only items taking its file type), then uploads it with progress. The
 	 * submission's id, or undefined when they cancelled. */
 	submitFile(filePath: string, options?: { note?: string }): Promise<string | undefined>;
 	/** Uploads `filePath` to a known item, with progress; the submission's id. */
-	uploadToSubmission(filePath: string, target: Omit<ISubmissionTarget, 'label' | 'allowedExtensions'> & { note?: string }): Promise<string>;
+	uploadToSubmission(filePath: string, target: Omit<ISubmissionTarget, 'label' | 'allowedExtensions' | 'role'> & { note?: string; provenance?: Readonly<Record<string, unknown>> }): Promise<string>;
 	/** Where the signed-in uploader can submit now. */
 	listTargets(): Promise<ISubmissionTarget[]>;
+	/** Uploads a DHIS2 download (`filePath`) as the country's DHIS2 data, with where it came from, choosing the item with
+	 * the user when more than one is open. The submission's id, or undefined when they cancelled. */
+	submitDhis2Data(filePath: string, provenance: IDhis2Provenance, options?: { note?: string }): Promise<string | undefined>;
+	/** Uploads an analysis -- the .rds and, with it, the report -- to the analysis items, each with the fingerprints of
+	 * `inputPaths`, the data files it was made from. The submissions' ids; none when the user cancelled. */
+	submitAnalysis(files: readonly string[], inputPaths: readonly string[], options?: { note?: string }): Promise<string[]>;
+	/** The country's DHIS2 data submitted so far, in the uploader's open activities. */
+	listDhis2Data(): Promise<IDhis2Submission[]>;
+	/** What a DHIS2 data submission lacks (GetMissingDataQuery), for the missing-data template. */
+	missingData(submissionId: string): Promise<IMissingData>;
 	/** Submits `mappingJson` (the DHIS2 server, the district level, each indicator's sources: SubmitCountryMappingCommand)
 	 * as a new version of the uploader's country's mapping, choosing the country with the user when they upload for
 	 * more than one. The version's number, or undefined when they cancelled. */
 	submitCountryMapping(mappingJson: string, options?: { note?: string }): Promise<number | undefined>;
 	/** A country's mapping as DataSuite has it (GetCountryMappingQuery): the version in force, if any, and the latest. */
 	countryMapping(countryId: number): Promise<ICountryMapping>;
+	/** The mappings of the countries the signed-in user uploads for. */
+	myCountryMappings(): Promise<ICountryMapping[]>;
 }
 
 /** `CountryMappingDto`, as far as the extensions use it. */
@@ -98,6 +165,26 @@ const CLOSED_STATUSES = new Set(['GlobalReview', 'Approved', 'Published']);
 export class Submissions implements ICountdownSubmitApi {
 	register(): vscode.Disposable[] {
 		return [
+			vscode.commands.registerCommand('countdown.submit.analysis', async () => {
+				try {
+					const files = await vscode.window.showOpenDialog({ title: 'Submit which analysis? The .rds, and the report made with it', canSelectMany: true, openLabel: 'Submit These',
+						filters: { 'Analysis and report': ['rds', 'docx', 'pdf', 'html'] } });
+					if (!files?.length) {
+						return;
+					}
+					const inputs = await vscode.window.showOpenDialog({ title: 'Which data files was it made from? (the DHIS2 data and the additional data)', canSelectMany: true, openLabel: 'Made From These',
+						filters: { 'Countdown data': ['xlsx', 'xls', 'csv'] } });
+					if (!inputs?.length) {
+						return;
+					}
+					const ids = await this.submitAnalysis(files.map(f => f.fsPath), inputs.map(f => f.fsPath));
+					if (ids.length > 0) {
+						void vscode.window.showInformationMessage(`The analysis (${ids.length} file${ids.length === 1 ? '' : 's'}) was submitted to DataSuite. Its review starts now.`);
+					}
+				} catch (error) {
+					void vscode.window.showErrorMessage(`The analysis wasn't submitted: ${messageOf(error)}`);
+				}
+			}),
 			vscode.commands.registerCommand('countdown.submit.file', async (uri?: vscode.Uri) => {
 				const filePath = uri?.fsPath ?? (await pickFile());
 				if (!filePath) {
@@ -133,7 +220,7 @@ export class Submissions implements ICountdownSubmitApi {
 		return this.uploadToSubmission(filePath, { ...chosen.target, note: note || undefined });
 	}
 
-	async uploadToSubmission(filePath: string, target: Omit<ISubmissionTarget, 'label' | 'allowedExtensions'> & { note?: string }): Promise<string> {
+	async uploadToSubmission(filePath: string, target: Omit<ISubmissionTarget, 'label' | 'allowedExtensions' | 'role'> & { note?: string; provenance?: Readonly<Record<string, unknown>> }): Promise<string> {
 		const session = await this.session(true);
 		const fileName = path.basename(filePath);
 		return vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: `Submitting ${fileName}`, cancellable: true }, async (progress, cancel) => {
@@ -155,6 +242,85 @@ export class Submissions implements ICountdownSubmitApi {
 		});
 	}
 
+	async submitDhis2Data(filePath: string, provenance: IDhis2Provenance, options?: { note?: string }): Promise<string | undefined> {
+		const extension = path.extname(filePath).toLowerCase();
+		const targets = (await this.listTargets(true)).filter(t => t.role === 'Dhis2Data' && (t.allowedExtensions.length === 0 || t.allowedExtensions.includes(extension)));
+		if (targets.length === 0) {
+			throw new UploadError("No activity open for you takes the country's DHIS2 data now. Only a country's uploaders submit it, while its activity is open.");
+		}
+		const target = targets.length === 1 ? targets[0]
+			: (await vscode.window.showQuickPick(targets.map(t => ({ label: t.label, target: t })), { title: 'Submit the DHIS2 data where?' }))?.target;
+		if (!target) {
+			return undefined;
+		}
+		return this.uploadToSubmission(filePath, { ...target, note: options?.note, provenance: { ...provenance } });
+	}
+
+	async submitAnalysis(files: readonly string[], inputPaths: readonly string[], options?: { note?: string }): Promise<string[]> {
+		if (inputPaths.length === 0) {
+			throw new UploadError('Say which data files the analysis was made from: DataSuite checks them against the approved data.');
+		}
+		const targets = (await this.listTargets(true)).filter(t => t.role === 'Analysis');
+		if (targets.length === 0) {
+			throw new UploadError("No activity open for you takes the analysis now. Only a country's uploaders submit it, while its activity is open.");
+		}
+		// each file to an analysis item that takes its type, the user choosing when more than one does
+		const plan: { file: string; target: ISubmissionTarget }[] = [];
+		for (const file of files) {
+			const extension = path.extname(file).toLowerCase();
+			const fits = targets.filter(t => (t.allowedExtensions.length === 0 || t.allowedExtensions.includes(extension)) && !plan.some(p => p.target === t));
+			if (fits.length === 0) {
+				throw new UploadError(`None of your open analysis items takes ${path.basename(file)} (${extension || 'no type'}).`);
+			}
+			const target = fits.length === 1 ? fits[0]
+				: (await vscode.window.showQuickPick(fits.map(t => ({ label: t.label, description: t.allowedExtensions.join(', '), target: t })), { title: `Submit ${path.basename(file)} where?` }))?.target;
+			if (!target) {
+				return [];
+			}
+			plan.push({ file, target });
+		}
+		const note = options?.note ?? await vscode.window.showInputBox({ title: 'A note for the reviewers (optional)', prompt: 'What this analysis is, or what changed' });
+		const provenance: IAnalysisProvenance = {
+			source: 'countdown-analysis',
+			inputs: await Promise.all(inputPaths.map(async p => ({ fileName: path.basename(p), sha256: await sha256File(p) }))),
+			bundle: randomUUID(),
+			tool: `Countdown Analytics ${vscode.extensions.getExtension('datasuite.countdown-analytics')?.packageJSON?.version ?? ''}`.trim(),
+		};
+		const ids: string[] = [];
+		for (const { file, target } of plan) {
+			ids.push(await this.uploadToSubmission(file, { ...target, note: note || undefined, provenance: { ...provenance } }));
+		}
+		return ids;
+	}
+
+	async listDhis2Data(): Promise<IDhis2Submission[]> {
+		const session = await this.session(true);
+		const mine = await this.request<{ countries: { countryCycleId: string }[] }>(session, 'GetMyDataProcessQuery', {});
+		const found: IDhis2Submission[] = [];
+		for (const { countryCycleId } of mine.countries) {
+			const detail = await this.request<{ isSuccess: boolean; value?: { cycleName: string; countryName: string; activities: ICountryActivity[] } }>(
+				session, 'GetCountryCycleDetailQuery', { countryCycleId });
+			for (const activity of detail.isSuccess ? detail.value?.activities ?? [] : []) {
+				for (const slot of activity.slots.filter(s => s.itemRole === 'Dhis2Data' && s.submissionId)) {
+					found.push({
+						submissionId: slot.submissionId!, countryCycleId, status: slot.status,
+						label: `${detail.value!.countryName} · ${detail.value!.cycleName} · ${activity.activity.name}: ${slot.itemName}`,
+					});
+				}
+			}
+		}
+		return found;
+	}
+
+	async missingData(submissionId: string): Promise<IMissingData> {
+		const result = await this.request<{ isSuccess: boolean; value?: IMissingData; error?: { description?: string } }>(
+			await this.session(true), 'GetMissingDataQuery', { itemId: submissionId });
+		if (!result.isSuccess || !result.value) {
+			throw new UploadError(result.error?.description ?? 'What the DHIS2 data lacks could not be read.');
+		}
+		return result.value;
+	}
+
 	async listTargets(interactive = false): Promise<ISubmissionTarget[]> {
 		const session = await this.session(interactive);
 		const mine = await this.request<{ openActivities: IMyActivity[] }>(session, 'GetMyDataProcessQuery', {});
@@ -172,6 +338,7 @@ export class Submissions implements ICountdownSubmitApi {
 						countryCycleId, activityItemId: slot.itemId, day: slot.day,
 						label: `${value.countryName} · ${value.cycleName} · ${activity.activity.name}: ${slot.itemName}${slot.day ? `, day ${slot.day}` : ''}`,
 						allowedExtensions: slot.allowedExtensions.map(e => e.toLowerCase()),
+						role: slot.itemRole ?? 'Other',
 					});
 				}
 			}
@@ -179,7 +346,7 @@ export class Submissions implements ICountdownSubmitApi {
 		return targets;
 	}
 
-	async submitCountryMapping(mappingJson: string, options?: { note?: string }): Promise<number | undefined> {
+	async myCountryMappings(): Promise<ICountryMapping[]> {
 		const session = await this.session(true);
 		const countries = await this.request<{ countryId: number; countryName: string }[]>(session, 'ListCountryMappingsQuery', {});
 		const mine: ICountryMapping[] = [];
@@ -189,6 +356,12 @@ export class Submissions implements ICountdownSubmitApi {
 				mine.push(mapping);
 			}
 		}
+		return mine;
+	}
+
+	async submitCountryMapping(mappingJson: string, options?: { note?: string }): Promise<number | undefined> {
+		const session = await this.session(true);
+		const mine = await this.myCountryMappings();
 		if (mine.length === 0) {
 			throw new UploadError("You don't upload for any country, so you can't submit its mapping. Ask your country's administrator to make you an uploader.");
 		}

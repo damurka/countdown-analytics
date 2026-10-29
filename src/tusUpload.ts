@@ -49,6 +49,8 @@ export interface ISubmitTarget {
 	readonly activityItemId: string;
 	readonly day?: number | null;
 	readonly note?: string | null;
+	/** Where the file came from (for a DHIS2 download, `IDhis2Provenance`), shown to the reviewers. */
+	readonly provenance?: Readonly<Record<string, unknown>> | null;
 }
 
 export class UploadError extends Error {
@@ -133,7 +135,7 @@ export async function submitUpload(location: string, token: string, target: ISub
 	const response = await fetchFn(`${location.replace(/\/+$/, '')}/version`, {
 		method: 'POST',
 		headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-		body: JSON.stringify({ countryCycleId: target.countryCycleId, activityItemId: target.activityItemId, day: target.day ?? null, note: target.note ?? null }),
+		body: JSON.stringify({ countryCycleId: target.countryCycleId, activityItemId: target.activityItemId, day: target.day ?? null, note: target.note ?? null, provenance: target.provenance ?? null }),
 		signal,
 	});
 	if (response.status !== 201) {

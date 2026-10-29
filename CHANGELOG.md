@@ -14,9 +14,13 @@ All notable changes to this extension are documented here. The format is based o
   carries on where it stopped, with its SHA-256, which DataSuite checks on arrival. Signs in with the data client and
   the `data_submit` scope (needs DataSuite with the data sign-in for uploads); only a country's own uploaders can
   submit.
+- **Submit Analysis to DataSuite** (Command Palette): the .rds and the report made with it go to your country's
+  analysis items together, each with the fingerprints (SHA-256) of the data files you say they were made from.
+  DataSuite warns the reviewers when those aren't your country's approved DHIS2 data and additional data.
 - For other extensions (the Data Extractor): this extension's exports `submitFile`, `uploadToSubmission`,
-  `listTargets`, `submitCountryMapping` (a new version of the uploader's country's DHIS2 mapping) and `countryMapping`
-  (the one in force).
+  `listTargets`, `submitCountryMapping` (a new version of the uploader's country's DHIS2 mapping), `countryMapping`
+  (the one in force), `myCountryMappings`, `submitDhis2Data` (a DHIS2 download with where it came from),
+  `listDhis2Data`, `missingData` (what the DHIS2 data lacks, for the missing-data template) and `submitAnalysis`.
 
 ## [2.0.17] - 2026-10-12
 
