@@ -66,6 +66,30 @@ export interface ICountdownSubmitApi {
 	uploadToSubmission(filePath: string, target: Omit<ISubmissionTarget, 'label' | 'allowedExtensions'> & { note?: string }): Promise<string>;
 	/** Where the signed-in uploader can submit now. */
 	listTargets(): Promise<ISubmissionTarget[]>;
+	/** Submits `mappingJson` (the DHIS2 server, the district level, each indicator's sources: SubmitCountryMappingCommand)
+	 * as a new version of the uploader's country's mapping, choosing the country with the user when they upload for
+	 * more than one. The version's number, or undefined when they cancelled. */
+	submitCountryMapping(mappingJson: string, options?: { note?: string }): Promise<number | undefined>;
+	/** A country's mapping as DataSuite has it (GetCountryMappingQuery): the version in force, if any, and the latest. */
+	countryMapping(countryId: number): Promise<ICountryMapping>;
+}
+
+/** `CountryMappingDto`, as far as the extensions use it. */
+export interface ICountryMapping {
+	readonly countryId: number;
+	readonly countryName: string;
+	readonly status: string;
+	readonly inForce: IMappingVersion | null;
+	readonly versions: readonly IMappingVersion[];
+	readonly abilities: { readonly canSubmit: boolean; readonly canReviewCountry: boolean; readonly canReviewGlobal: boolean };
+}
+
+export interface IMappingVersion {
+	readonly number: number;
+	readonly dhis2Url: string;
+	readonly districtLevel: number;
+	readonly sha256: string;
+	readonly indicators: readonly { readonly code: string; readonly sources: readonly { readonly uid: string; readonly type: string; readonly name: string | null; readonly categoryOptionCombos: readonly string[] }[]; readonly notAvailable: string | null }[] | null;
 }
 
 /** States a submission takes no new version in: the data supervisor has it, or it is approved (locked). */
@@ -153,6 +177,44 @@ export class Submissions implements ICountdownSubmitApi {
 			}
 		}
 		return targets;
+	}
+
+	async submitCountryMapping(mappingJson: string, options?: { note?: string }): Promise<number | undefined> {
+		const session = await this.session(true);
+		const countries = await this.request<{ countryId: number; countryName: string }[]>(session, 'ListCountryMappingsQuery', {});
+		const mine: ICountryMapping[] = [];
+		for (const country of countries) {
+			const mapping = await this.countryMappingWith(session, country.countryId);
+			if (mapping.abilities.canSubmit) {
+				mine.push(mapping);
+			}
+		}
+		if (mine.length === 0) {
+			throw new UploadError("You don't upload for any country, so you can't submit its mapping. Ask your country's administrator to make you an uploader.");
+		}
+		const country = mine.length === 1 ? mine[0] : (await vscode.window.showQuickPick(mine.map(m => ({ label: m.countryName, description: m.inForce ? `v${m.inForce.number} in force` : 'none in force', mapping: m })),
+			{ title: 'Submit the mapping for which country?' }))?.mapping;
+		if (!country) {
+			return undefined;
+		}
+		const result = await this.request<{ isSuccess: boolean; value?: number; error?: { description?: string } }>(session, 'SubmitCountryMappingCommand',
+			{ countryId: country.countryId, mappingJson, note: options?.note ?? null });
+		if (!result.isSuccess) {
+			throw new UploadError(result.error?.description ?? 'DataSuite refused the mapping.');
+		}
+		return result.value;
+	}
+
+	async countryMapping(countryId: number): Promise<ICountryMapping> {
+		return this.countryMappingWith(await this.session(true), countryId);
+	}
+
+	private async countryMappingWith(session: vscode.AuthenticationSession, countryId: number): Promise<ICountryMapping> {
+		const result = await this.request<{ isSuccess: boolean; value?: ICountryMapping; error?: { description?: string } }>(session, 'GetCountryMappingQuery', { countryId });
+		if (!result.isSuccess || !result.value) {
+			throw new UploadError(result.error?.description ?? "The country's mapping could not be read.");
+		}
+		return result.value;
 	}
 
 	private async session(create: boolean): Promise<vscode.AuthenticationSession> {

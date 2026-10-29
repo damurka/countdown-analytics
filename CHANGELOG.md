@@ -14,8 +14,9 @@ All notable changes to this extension are documented here. The format is based o
   carries on where it stopped, with its SHA-256, which DataSuite checks on arrival. Signs in with the data client and
   the `data_submit` scope (needs DataSuite with the data sign-in for uploads); only a country's own uploaders can
   submit.
-- For other extensions (the Data Extractor): this extension's exports `submitFile`, `uploadToSubmission` and
-  `listTargets`.
+- For other extensions (the Data Extractor): this extension's exports `submitFile`, `uploadToSubmission`,
+  `listTargets`, `submitCountryMapping` (a new version of the uploader's country's DHIS2 mapping) and `countryMapping`
+  (the one in force).
 
 ## [2.0.17] - 2026-10-12
 
