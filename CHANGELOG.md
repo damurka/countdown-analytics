@@ -4,6 +4,24 @@ All notable changes to this extension are documented here. The format is based o
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Submit to DataSuite** (on a file in the Explorer, or from the Command Palette): lists what you have to submit as
+  your country's uploader -- the open activities' items that take the file's type -- and uploads the file to the one
+  you choose, with a note for the reviewers. The file goes up in resumable 8 MB pieces, so a dropped connection
+  carries on where it stopped, with its SHA-256, which DataSuite checks on arrival. Signs in with the data client and
+  the `data_submit` scope (needs DataSuite with the data sign-in for uploads); only a country's own uploaders can
+  submit.
+- **Submit Analysis to DataSuite** (Command Palette): the .rds and the report made with it go to your country's
+  analysis items together, each with the fingerprints (SHA-256) of the data files you say they were made from.
+  DataSuite warns the reviewers when those aren't your country's approved DHIS2 data and additional data.
+- For other extensions (the Data Extractor): this extension's exports `submitFile`, `uploadToSubmission`,
+  `listTargets`, `submitCountryMapping` (a new version of the uploader's country's DHIS2 mapping), `countryMapping`
+  (the one in force), `myCountryMappings`, `submitDhis2Data` (a DHIS2 download with where it came from),
+  `listDhis2Data`, `missingData` (what the DHIS2 data lacks, for the missing-data template) and `submitAnalysis`.
+
 ## [2.0.17] - 2026-10-12
 
 ### Changed

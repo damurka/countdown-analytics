@@ -604,6 +604,18 @@
         "title": "Open Notebook",
         "category": "Countdown",
         "icon": "$(notebook)"
+      },
+      {
+        "command": "countdown.submit.file",
+        "title": "Submit to DataSuite...",
+        "category": "Countdown",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "countdown.submit.analysis",
+        "title": "Submit Analysis to DataSuite...",
+        "category": "Countdown",
+        "icon": "$(cloud-upload)"
       }
     ],
     "menus": {
@@ -667,6 +679,13 @@
           "command": "countdown.notebook.open",
           "when": "editorTabTypeId == workbench.editorinputs.shinyBrowser",
           "group": "2_datasuite@10"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "countdown.submit.file",
+          "when": "!explorerResourceIsFolder",
+          "group": "7_datasuite@1"
         }
       ]
     },
